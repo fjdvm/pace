@@ -31,7 +31,7 @@ export function StudentSidebar({
   onNavigate,
 }: StudentSidebarProps) {
   const pathname = usePathname();
-  const { collapsed: stored, toggleCollapsed } = useSidebarCollapse();
+  const { collapsed: stored } = useSidebarCollapse();
   const collapsed = forceExpanded ? false : stored;
   const logout = useLogout();
   const displayName = userName || userEmail;
@@ -51,20 +51,10 @@ export function StudentSidebar({
       <div
         className={cn(
           "flex items-center pb-6",
-          collapsed ? "flex-col gap-3.5 pb-5" : "w-full justify-between pl-2.5",
+          collapsed ? "justify-center pb-5" : "w-full pl-2.5",
         )}
       >
         <SidebarBrand collapsed={collapsed} className="px-0" />
-        {!forceExpanded && (
-          <button
-            type="button"
-            onClick={toggleCollapsed}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className="flex size-[34px] cursor-pointer items-center justify-center rounded-[10px]"
-          >
-            <PaceIcon name={collapsed ? "panel-left-open" : "panel-left-close"} size={20} />
-          </button>
-        )}
       </div>
 
       <SidebarNavItem
