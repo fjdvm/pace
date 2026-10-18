@@ -39,7 +39,7 @@ export function ResultModal({ open, onClose, score, passed, total, reward, backH
         <span className="flex size-[72px] items-center justify-center rounded-full bg-pace-green">
           <PaceIcon name="workspace/check-white-36" size={36} />
         </span>
-        <DialogTitle className="text-center text-[32px] font-bold leading-[1.15] tracking-[-0.015em] text-pace-ink">
+        <DialogTitle className="text-center text-[30px] font-bold leading-[1.15] tracking-[-0.02em] text-pace-ink">
           {perfect ? `Submitted! All ${total} tests passed.` : `Submitted! ${passed} of ${total} tests passed.`}
         </DialogTitle>
         <DialogDescription className="max-w-[420px] text-center text-[15px] leading-[1.55] text-pace-ink-2">

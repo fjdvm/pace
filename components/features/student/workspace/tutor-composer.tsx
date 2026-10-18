@@ -37,10 +37,10 @@ export function TutorComposer(props: TutorComposerProps) {
             type="button"
             disabled={locked || isLoading}
             onClick={() => onQuickPrompt(text)}
-            className="flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-pace-line-strong px-3 py-[9px] text-left text-[13px] font-semibold leading-normal text-pace-ink"
+            className="flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-pace-line-strong px-2.5 py-[9px] text-left text-[13px] font-semibold leading-normal text-pace-ink"
           >
             <PaceIcon name={icon} size={14} />
-            <span className="truncate">{label}</span>
+            <span className="whitespace-nowrap">{label}</span>
           </button>
         ))}
       </div>

@@ -28,10 +28,9 @@ export function AssignmentRow({
   className,
 }: AssignmentRowProps) {
   return (
-    <Link
-      href={href}
+    <div
       className={cn(
-        "flex items-center gap-3.5 rounded-2xl border-[1.5px] border-pace-line bg-white px-5 py-4",
+        "relative flex items-center gap-3.5 rounded-2xl border-[1.5px] border-pace-line bg-white px-5 py-4",
         className,
       )}
     >
@@ -39,10 +38,15 @@ export function AssignmentRow({
         <PaceIcon name={icon} size={18} />
       </span>
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="truncate text-[15px] font-semibold leading-snug text-pace-ink">{title}</span>
+        <Link
+          href={href}
+          className="truncate text-[15px] font-semibold leading-snug text-pace-ink after:absolute after:inset-0 after:content-['']"
+        >
+          {title}
+        </Link>
         <span className="truncate text-[13px] text-pace-muted">{subtitle}</span>
       </span>
       {children}
-    </Link>
+    </div>
   );
 }

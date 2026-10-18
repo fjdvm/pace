@@ -57,3 +57,8 @@ export function greetingFor(now = new Date()) {
 export function formatToday(now = new Date()) {
   return new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(now);
 }
+
+export function formatDueSentence(dueIso: string, now = new Date()) {
+  const text = formatDueLong(dueIso, now);
+  return `Due ${/^(Today|Tomorrow)/.test(text) ? text[0].toLowerCase() + text.slice(1) : text}`;
+}

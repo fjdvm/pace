@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PaceTag } from "@/components/features/student/shared/pace-tag";
 import { PaceButton } from "@/components/features/student/shared/pace-button";
 import { PaceIcon } from "@/components/features/student/shared/pace-icon";
-import { formatDueLong, isUrgent } from "@/lib/student-dates";
+import { formatDueSentence, isUrgent } from "@/lib/student-dates";
 import type { StudentAssignment } from "@/components/features/student/types";
 import { HeartsRow } from "@/components/features/student/shared/hearts-row";
 
@@ -36,7 +36,7 @@ export function ContinueCard({ assignment }: ContinueCardProps) {
             className={`flex items-center gap-1.5 font-semibold ${urgent ? "text-pace-red" : "text-pace-ink-2"}`}
           >
             <PaceIcon name="clock" size={16} />
-            Due {formatDueLong(assignment.dueDate)}
+            {formatDueSentence(assignment.dueDate)}
           </span>
         </div>
       </div>

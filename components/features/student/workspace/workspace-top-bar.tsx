@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PaceTag } from "@/components/features/student/shared/pace-tag";
 import { PaceIcon } from "@/components/features/student/shared/pace-icon";
-import { formatDueLong, isUrgent } from "@/lib/student-dates";
+import { formatDueSentence, isUrgent } from "@/lib/student-dates";
 import type { AutosaveStatus } from "@/components/features/assignments/use-autosave";
 import { SaveIndicator } from "./save-indicator";
 
@@ -38,7 +38,7 @@ export function WorkspaceTopBar(props: WorkspaceTopBarProps) {
       </div>
       <PaceTag tone="neutral">{props.language}</PaceTag>
       <PaceTag tone="red" className={isUrgent(props.dueDate) ? "" : "bg-pace-sunken text-pace-ink-2"}>
-        Due {formatDueLong(props.dueDate)}
+        {formatDueSentence(props.dueDate)}
       </PaceTag>
       <div className="flex-1" />
       <SaveIndicator status={props.autosaveStatus} isSubmitted={props.isSubmitted} />

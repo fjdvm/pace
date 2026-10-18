@@ -21,7 +21,7 @@ export function PaceButton({ href, variant = "green", className, children }: Pac
     <Link
       href={href}
       className={cn(
-        "inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-[18px] text-sm font-bold leading-tight",
+        "relative z-10 inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-[18px] text-sm font-bold leading-tight",
         styles[variant],
         className,
       )}

@@ -57,7 +57,7 @@ export function InstructionsPanel({ instructions, testCases, results, hiddenCoun
   const [headline, ...rest] = instructions.split("\n\n");
   const tabs = [
     { id: "instructions" as const, label: "Instructions" },
-    { id: "tests" as const, label: `Tests (${testCases.length + hiddenCount})` },
+    { id: "tests" as const, label: `Tests (${testCases.length})` },
   ];
 
   return (

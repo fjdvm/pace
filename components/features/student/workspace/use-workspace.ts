@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { toast } from "sonner";
@@ -127,9 +127,11 @@ export function useWorkspace(props: WorkspaceViewProps) {
   };
 
   const codeRef = useRef(code);
-  codeRef.current = code;
   const resultsRef = useRef(runResults);
-  resultsRef.current = runResults;
+  useEffect(() => {
+    codeRef.current = code;
+    resultsRef.current = runResults;
+  }, [code, runResults]);
 
   const sendToTutor = useCallback(
     (text: string) => {
@@ -148,10 +150,13 @@ export function useWorkspace(props: WorkspaceViewProps) {
 
   const chatMessages = useMemo(
     () =>
-      messages.map((m: any) => ({
+      messages.map((m) => ({
         id: m.id,
-        role: m.role,
-        content: m.parts?.filter((p: any) => p.type === "text").map((p: any) => p.text).join("") || m.content || "",
+        role: m.role as "user" | "assistant",
+        content: m.parts
+          .filter((p): p is { type: "text"; text: string } => p.type === "text")
+          .map((p) => p.text)
+          .join(""),
       })),
     [messages],
   );

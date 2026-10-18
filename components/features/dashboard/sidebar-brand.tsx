@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Wordmark } from "@/components/features/landing/shared/wordmark";
 
-export function SidebarBrand({ collapsed }: { collapsed: boolean }) {
+export function SidebarBrand({ collapsed, className = "px-8" }: { collapsed: boolean; className?: string }) {
   if (collapsed) {
     return (
       <Link href="/" aria-label="Pace" className="flex justify-center">
@@ -10,5 +10,5 @@ export function SidebarBrand({ collapsed }: { collapsed: boolean }) {
       </Link>
     );
   }
-  return <Wordmark className="px-8" />;
+  return <Wordmark className={className} />;
 }

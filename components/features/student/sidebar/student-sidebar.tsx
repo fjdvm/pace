@@ -54,7 +54,7 @@ export function StudentSidebar({
           collapsed ? "flex-col gap-3.5 pb-5" : "w-full justify-between pl-2.5",
         )}
       >
-        <SidebarBrand collapsed={collapsed} />
+        <SidebarBrand collapsed={collapsed} className="px-0" />
         {!forceExpanded && (
           <button
             type="button"

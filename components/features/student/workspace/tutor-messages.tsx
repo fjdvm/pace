@@ -17,7 +17,6 @@ type TutorMessagesProps = {
 export function TutorMessages({ messages, isLoading, isStreaming, children }: TutorMessagesProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const visible = messages.filter((m) => m.content.trim() !== "" || !isLoading);
-  let hintCount = 0;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,6 +30,7 @@ export function TutorMessages({ messages, isLoading, isStreaming, children }: Tu
         </p>
       )}
       {visible.map((m, i) => {
+        const hintCount = visible.slice(0, i + 1).filter((x) => x.role === "assistant").length;
         if (m.role === "user") {
           return (
             <div key={m.id || i} className="flex justify-end">
@@ -40,7 +40,6 @@ export function TutorMessages({ messages, isLoading, isStreaming, children }: Tu
             </div>
           );
         }
-        hintCount += 1;
         return (
           <div key={m.id || i} className="flex flex-col gap-1.5">
             <span className="flex items-center gap-1.5 text-[13px] leading-normal text-pace-purple">
