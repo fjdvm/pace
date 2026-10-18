@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
+import { notifyAssignmentPublished } from "@/lib/notifications";
 
 interface TestCaseInput {
   input: string;
@@ -70,6 +71,11 @@ export async function createAssignment(params: CreateAssignmentParams) {
     }
 
     const newAssignment = await prisma.$transaction(async (tx) => {
+      const ownedClasses = await tx.class.count({ where: { id: { in: classIds }, instructorId: user.id } });
+      if (ownedClasses !== classIds.length) {
+        throw new Error("You can only assign to your own classes");
+      }
+
       const assignment = await tx.assignment.create({
         data: {
           title: title.trim(),
@@ -110,6 +116,10 @@ export async function createAssignment(params: CreateAssignmentParams) {
 
       return assignment;
     });
+
+    await notifyAssignmentPublished(classIds, newAssignment).catch((err) =>
+      console.error("Failed to notify students:", err),
+    );
 
     return { success: true, assignment: newAssignment };
   } catch (err) {
