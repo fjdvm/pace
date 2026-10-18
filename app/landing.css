@@ -24,6 +24,8 @@
   --color-pace-green-tint: #e7f8ec;
   --color-pace-amber-tint: #fff4d9;
   --color-pace-blue-tint: #eaefff;
+  --color-pace-red-tint: #fde9eb;
+  --color-pace-purple-tint: #f2ecff;
 
   --font-pace-sans: var(--font-funnel-sans), system-ui, sans-serif;
   --font-pace-display: var(--font-funnel-display), system-ui, sans-serif;

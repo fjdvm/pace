@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
-import { StudentView } from "@/components/features/dashboard/student-view";
+import { getStudentHomeData } from "@/lib/student-home-data";
+import { StudentHomeView } from "@/components/features/student/home/student-home-view";
 
 export default async function StudentDashboardPage() {
   const supabase = await createClient();
@@ -13,64 +14,12 @@ export default async function StudentDashboardPage() {
     redirect("/login");
   }
 
-  const enrollments = await prisma.enrollment.findMany({
-    where: { studentId: user.id },
-    include: {
-      class: {
-        include: {
-          instructor: {
-            select: {
-              email: true,
-            },
-          },
-          assignments: {
-            include: {
-              assignment: {
-                include: {
-                  heartsStates: {
-                    where: { studentId: user.id },
-                  },
-                  submissions: {
-                    where: { studentId: user.id },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    orderBy: { enrolledAt: "desc" },
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { name: true, email: true },
   });
+  if (!dbUser) redirect("/login");
 
-  const enrolledClasses = enrollments.map((e) => ({
-    id: e.class.id,
-    name: e.class.name,
-    joinCode: e.class.joinCode,
-    instructorEmail: e.class.instructor.email,
-    enrolledAt: e.enrolledAt.toISOString(),
-    archived: e.archived || e.class.archived,
-    classArchived: e.class.archived,
-    assignments: e.class.assignments.map((ac) => {
-      const hasSubmission = ac.assignment.submissions.length > 0;
-      const hasStarted = ac.assignment.heartsStates.length > 0;
-      
-      let status = "not started";
-      if (hasSubmission) {
-        status = "submitted";
-      } else if (hasStarted) {
-        status = "in progress";
-      }
-
-      return {
-        id: ac.assignment.id,
-        title: ac.assignment.title,
-        language: ac.assignment.language,
-        dueDate: ac.assignment.dueDate.toISOString(),
-        status,
-      };
-    }),
-  }));
-
-  return <StudentView initialClasses={enrolledClasses} />;
+  const data = await getStudentHomeData({ id: user.id, ...dbUser });
+  return <StudentHomeView data={data} />;
 }

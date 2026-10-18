@@ -1,7 +1,7 @@
 "use client";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { AppSidebar } from "./app-sidebar";
+import { RoleSidebar } from "./role-sidebar";
 import { useSidebarCollapse } from "./use-sidebar-collapse";
 
 interface SidebarClass {
@@ -13,13 +13,14 @@ interface SidebarClass {
 
 interface MobileSidebarDrawerProps {
   role: "student" | "instructor" | "admin";
-  userEmail?: string;
+  userEmail: string;
   userName?: string | null;
   classes?: SidebarClass[];
-  studentXp?: { totalXp: number; level: number };
+  studentXp?: { totalXp: number; level: number; currentXp: number; nextThreshold: number };
+  todoCount?: number;
 }
 
-export function MobileSidebarDrawer({ role, userEmail, userName, classes, studentXp }: MobileSidebarDrawerProps) {
+export function MobileSidebarDrawer({ role, userEmail, userName, classes, studentXp, todoCount }: MobileSidebarDrawerProps) {
   const { mobileOpen, setMobileOpen } = useSidebarCollapse();
 
   return (
@@ -29,12 +30,13 @@ export function MobileSidebarDrawer({ role, userEmail, userName, classes, studen
           <SheetTitle>Navigation</SheetTitle>
           <SheetDescription>Dashboard navigation menu</SheetDescription>
         </SheetHeader>
-        <AppSidebar
+        <RoleSidebar
           role={role}
           userEmail={userEmail}
           userName={userName}
           classes={classes}
           studentXp={studentXp}
+          todoCount={todoCount}
           forceExpanded
           onNavigate={() => setMobileOpen(false)}
         />

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { DashboardShell } from "@/components/features/dashboard/dashboard-shell";
 import { computeLevel, getTotalXp } from "@/lib/gamification";
+import { getStudentTodos } from "@/app/actions/student-todos";
 
 export default async function DashboardLayout({
   children,
@@ -30,7 +31,8 @@ export default async function DashboardLayout({
   const role = dbUser.role as "student" | "instructor" | "admin";
 
   let sidebarClasses: { id: string; name: string; archived: boolean; classArchived: boolean }[] = [];
-  let studentXp: { totalXp: number; level: number } | undefined;
+  let studentXp: { totalXp: number; level: number; currentXp: number; nextThreshold: number } | undefined;
+  let todoCount = 0;
   if (role === "instructor") {
     const classes = await prisma.class.findMany({
       where: { instructorId: user.id },
@@ -52,11 +54,14 @@ export default async function DashboardLayout({
     }));
 
     const totalXp = await getTotalXp(user.id);
-    studentXp = { totalXp, level: computeLevel(totalXp).level };
+    const { level, currentXp, nextThreshold } = computeLevel(totalXp);
+    studentXp = { totalXp, level, currentXp, nextThreshold };
+    const todos = await getStudentTodos();
+    todoCount = todos.success ? (todos.todos?.length ?? 0) : 0;
   }
 
   return (
-    <DashboardShell role={role} userEmail={dbUser.email} userName={dbUser.name} classes={sidebarClasses} studentXp={studentXp}>
+    <DashboardShell role={role} userEmail={dbUser.email} userName={dbUser.name} classes={sidebarClasses} studentXp={studentXp} todoCount={todoCount}>
       {children}
     </DashboardShell>
   );
