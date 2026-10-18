@@ -1,14 +1,14 @@
 export const acronym = [
   {
     letter: "P",
-    title: "Programming",
-    description: "You practice by writing real code in Python, C, JavaScript, or C#.",
+    title: "Pair-programming",
+    description: "Practice real code in Python, C, JavaScript, or C# with a tutor beside you.",
     className: "bg-pace-mint",
     letterClassName: "text-pace-green-deep",
   },
   {
     letter: "A",
-    title: "AI-assisted",
+    title: "AI",
     description: "A tutor that explains and hints, limited by hearts.",
     className: "bg-pace-lavender-tint",
     letterClassName: "text-pace-purple",

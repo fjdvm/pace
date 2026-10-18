@@ -5,7 +5,7 @@
 <h1 align="center">PACE</h1>
 
 <p align="center">
-  <strong>Programming AI-assisted Coding Environment</strong><br />
+  <strong>Pair-programming AI Coding Environment</strong><br />
   A gamified coding workspace where an AI tutor gives hints, never answers.
 </p>
 

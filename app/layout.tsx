@@ -23,7 +23,7 @@ const spaceMono = Space_Mono({
 
 export const metadata: Metadata = {
   title: "Pace",
-  description: "Programming AI-assisted Coding Environment",
+  description: "Pair-programming AI Coding Environment",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

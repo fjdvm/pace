@@ -28,7 +28,7 @@ export function LandingFooter({ homeHref = "" }: { homeHref?: string }) {
           <div className="flex flex-col gap-4">
             <Wordmark />
             <p className="pace-body max-w-[360px] text-pace-ink-2">
-              Programming AI-assisted Coding Environment. A research prototype by
+              Pair-programming AI Coding Environment. A research prototype by
               students of PUP Quezon City. Not a commercial product.
             </p>
           </div>
