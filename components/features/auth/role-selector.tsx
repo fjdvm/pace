@@ -21,7 +21,7 @@ const ROLES: { value: AuthRole; label: string; description: string; icon: string
 
 export function RoleSelector({ role, isLoading, onRoleChange }: RoleSelectorProps) {
   return (
-    <div role="radiogroup" aria-label="Account type" className="flex items-start gap-3">
+    <div role="radiogroup" aria-label="Account type" className="flex items-stretch gap-3">
       {ROLES.map((item) => {
         const selected = role === item.value;
         return (
