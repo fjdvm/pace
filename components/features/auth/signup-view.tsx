@@ -6,35 +6,35 @@ import { createClient } from "@/lib/supabase/client";
 import { validatePasswordStrength } from "@/lib/password-policy";
 import { isEmailAlreadyRegistered, isEmailUnconfirmed } from "@/lib/auth-response";
 import { toast } from "sonner";
-import Link from "next/link";
-import { AuthBrandingPane, AuthMobileLogo } from "./auth-branding-pane";
-import { RoleSelector } from "./role-selector";
-import { SignupFormFields, SignupLegalNotice } from "./signup-form-fields";
+import { AuthSplitLayout } from "./auth-split-layout";
+import { AuthFormHeading } from "./auth-form-heading";
+import { AuthSubmitButton } from "./auth-submit-button";
+import { AuthSwitchLink } from "./auth-switch-link";
+import { RoleSelector, type AuthRole } from "./role-selector";
+import { SignupFormFields } from "./signup-form-fields";
+import { SignupLegalNotice } from "./signup-legal-notice";
 import { SignupConfirmationSent } from "./signup-confirmation-sent";
+import { InstructorReviewNote } from "./instructor-review-note";
+import { SIGNUP_COPY } from "./signup-copy";
 
 export function SignupView() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState<"student" | "instructor">("student");
+  const [role, setRole] = useState<AuthRole>("student");
   const [isLoading, setIsLoading] = useState(false);
   const [confirmationSentTo, setConfirmationSentTo] = useState<string | null>(null);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password) {
       toast.error("Please fill in all fields");
       return;
     }
     const passwordCheck = validatePasswordStrength(password);
     if (!passwordCheck.valid) {
       toast.error(passwordCheck.error);
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
       return;
     }
 
@@ -81,70 +81,33 @@ export function SignupView() {
     }
   };
 
+  const copy = SIGNUP_COPY[role];
+
   return (
-    <div className="bg-surface min-h-screen w-full flex items-center justify-center p-4 md:p-10 text-on-surface antialiased">
-      <main className="w-full max-w-[1200px] bg-white rounded-[32px] shadow-sm flex flex-col md:flex-row overflow-hidden min-h-[700px] border border-surface-container">
-        <AuthBrandingPane />
-
-        <div className="w-full md:w-7/12 p-8 md:p-16 flex flex-col relative bg-white">
-          <AuthMobileLogo />
-
-          <div className="flex space-x-8 mb-10 border-b border-surface-container pb-2">
-            <Link
-              href="/login"
-              className="text-base font-semibold pb-2 border-b-2 border-transparent text-secondary hover:text-on-surface transition-colors"
-            >
-              Log In
-            </Link>
-            <button className="text-base font-semibold pb-2 border-b-2 border-primary-container text-on-surface transition-colors">
-              Sign Up
-            </button>
-          </div>
-
-          <div className="flex-grow flex flex-col">
-            {confirmationSentTo ? (
-              <div className="flex-grow flex flex-col justify-center max-w-sm">
-                <SignupConfirmationSent email={confirmationSentTo} />
-              </div>
-            ) : (
-            <>
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-2">Create your character</h2>
-              <p className="text-sm text-secondary">
-                Select your class and begin the tutorial.
-              </p>
-            </div>
-            <form onSubmit={handleSignup} className="space-y-6 flex-grow flex flex-col">
-              <RoleSelector role={role} isLoading={isLoading} onRoleChange={setRole} />
-
-              <SignupFormFields
-                name={name}
-                onNameChange={setName}
-                email={email}
-                onEmailChange={setEmail}
-                password={password}
-                onPasswordChange={setPassword}
-                confirmPassword={confirmPassword}
-                onConfirmPasswordChange={setConfirmPassword}
-                isLoading={isLoading}
-              />
-
-              <div className="mt-auto pt-6">
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-primary-container hover:bg-surface-tint text-on-primary-container hover:text-white font-semibold py-4 rounded-xl transition-colors duration-200 shadow-sm cursor-pointer"
-                >
-                  {isLoading ? "Creating account..." : "Create Account"}
-                </button>
-                <SignupLegalNotice />
-              </div>
-            </form>
-            </>
-            )}
-          </div>
-        </div>
-      </main>
-    </div>
+    <AuthSplitLayout headline={copy.headline} description={copy.description}>
+      {confirmationSentTo ? (
+        <SignupConfirmationSent email={confirmationSentTo} />
+      ) : (
+        <>
+          <AuthFormHeading title={copy.title} subtitle={copy.subtitle} />
+          <form onSubmit={handleSignup} className={`flex flex-col ${role === "instructor" ? "gap-5" : "gap-6"}`}>
+            <RoleSelector role={role} isLoading={isLoading} onRoleChange={setRole} />
+            <SignupFormFields
+              name={name}
+              onNameChange={setName}
+              email={email}
+              onEmailChange={setEmail}
+              password={password}
+              onPasswordChange={setPassword}
+              isLoading={isLoading}
+            />
+            {role === "instructor" && <InstructorReviewNote />}
+            <AuthSubmitButton isLoading={isLoading} label={copy.submit} loadingLabel={copy.loading} />
+            <SignupLegalNotice action={copy.legalAction} />
+          </form>
+          <AuthSwitchLink prompt="Already have an account?" label="Log in" href="/login" />
+        </>
+      )}
+    </AuthSplitLayout>
   );
 }

@@ -6,8 +6,12 @@ import { createClient } from "@/lib/supabase/client";
 import { isEmailUnconfirmed } from "@/lib/auth-response";
 import { toast } from "sonner";
 import Link from "next/link";
-import { AuthBrandingPane, AuthMobileLogo } from "./auth-branding-pane";
+import { AuthSplitLayout } from "./auth-split-layout";
+import { AuthFormHeading } from "./auth-form-heading";
+import { AuthField } from "./auth-field";
 import { PasswordInput } from "./password-input";
+import { AuthSubmitButton } from "./auth-submit-button";
+import { AuthSwitchLink } from "./auth-switch-link";
 
 export function LoginView() {
   const router = useRouter();
@@ -58,84 +62,37 @@ export function LoginView() {
   };
 
   return (
-    <div className="bg-surface min-h-screen w-full flex items-center justify-center p-4 md:p-10 text-on-surface antialiased">
-      <main className="w-full max-w-[1200px] bg-white rounded-[32px] shadow-sm flex flex-col md:flex-row overflow-hidden min-h-[700px] border border-surface-container">
-        <AuthBrandingPane />
-
-        {/* Right Pane: Auth Forms */}
-        <div className="w-full md:w-7/12 p-8 md:p-16 flex flex-col relative bg-white">
-          {/* Mobile Logo */}
-          <AuthMobileLogo />
-
-          {/* Tab Navigation */}
-          <div className="flex space-x-8 mb-10 border-b border-surface-container pb-2">
-            <button className="text-base font-semibold pb-2 border-b-2 border-primary-container text-on-surface transition-colors">
-              Log In
-            </button>
-            <Link
-              href="/signup"
-              className="text-base font-semibold pb-2 border-b-2 border-transparent text-secondary hover:text-on-surface transition-colors"
-            >
-              Sign Up
+    <AuthSplitLayout
+      headline="Pick up where you left off."
+      description="Your assignments, your code, and your tutor are waiting."
+    >
+      <AuthFormHeading title="Log in to PACE" subtitle="Use the email you signed up with." />
+      <form onSubmit={handleLogin} className="flex flex-col gap-6">
+        <AuthField
+          label="Email"
+          type="email"
+          value={email}
+          onValueChange={setEmail}
+          disabled={isLoading}
+          required
+          autoComplete="email"
+          placeholder="you@university.edu"
+        />
+        <PasswordInput
+          value={password}
+          onChange={setPassword}
+          disabled={isLoading}
+          required
+          showToggle
+          aside={
+            <Link href="/forgot-password" className="text-[13px] font-semibold text-pace-green-deep hover:underline">
+              Forgot password?
             </Link>
-          </div>
-
-          {/* LOGIN FORM */}
-          <div className="flex-grow flex flex-col">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-2">Welcome back</h2>
-              <p className="text-sm text-secondary">
-                Continue your journey and maintain your streak.
-              </p>
-            </div>
-            <form onSubmit={handleLogin} className="space-y-6 flex-grow">
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-on-surface uppercase tracking-wider">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={isLoading}
-                  required
-                  className="w-full bg-surface-container-low rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-container text-sm text-on-surface placeholder:text-outline-variant transition-shadow border border-transparent"
-                  placeholder="scholar@academy.edu"
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <label className="text-xs font-semibold text-on-surface uppercase tracking-wider">
-                    Password
-                  </label>
-                  <Link
-                    className="text-xs font-semibold text-primary hover:underline"
-                    href="/forgot-password"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-                <PasswordInput
-                  value={password}
-                  onChange={setPassword}
-                  disabled={isLoading}
-                  required
-                  placeholder="••••••••"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-primary-container hover:bg-surface-tint text-on-primary-container hover:text-white font-semibold py-4 rounded-xl transition-colors duration-200 shadow-sm mt-8 cursor-pointer"
-              >
-                {isLoading ? "Logging in..." : "Log In"}
-              </button>
-            </form>
-
-            {/* SSO buttons removed */}
-          </div>
-        </div>
-      </main>
-    </div>
+          }
+        />
+        <AuthSubmitButton isLoading={isLoading} label="Log in" loadingLabel="Logging in..." />
+      </form>
+      <AuthSwitchLink prompt="New to PACE?" label="Create an account" href="/signup" />
+    </AuthSplitLayout>
   );
 }

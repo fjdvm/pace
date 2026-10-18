@@ -20,6 +20,10 @@
   --color-pace-night: #140404;
   --color-pace-night-2: #2a1a17;
   --color-pace-cream: #fbdfd7;
+  --color-pace-line-strong: #d6d3cb;
+  --color-pace-green-tint: #e7f8ec;
+  --color-pace-amber-tint: #fff4d9;
+  --color-pace-blue-tint: #eaefff;
 
   --font-pace-sans: var(--font-funnel-sans), system-ui, sans-serif;
   --font-pace-display: var(--font-funnel-display), system-ui, sans-serif;

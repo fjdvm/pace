@@ -1,40 +1,65 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { AuthField } from "./auth-field";
+import { AuthIcon } from "./auth-icon";
 
-interface PasswordInputProps {
+type PasswordInputProps = {
+  label?: string;
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
   required?: boolean;
   placeholder?: string;
-}
+  showToggle?: boolean;
+  aside?: React.ReactNode;
+  children?: React.ReactNode;
+};
 
-export function PasswordInput({ value, onChange, disabled, required, placeholder }: PasswordInputProps) {
+export function PasswordInput({
+  label = "Password",
+  value,
+  onChange,
+  disabled,
+  required,
+  placeholder = "••••••••",
+  showToggle = false,
+  aside,
+  children,
+}: PasswordInputProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <div className="relative">
-      <input
+    <div className="flex flex-col gap-2.5">
+      <AuthField
+        label={label}
         type={isVisible ? "text" : "password"}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onValueChange={onChange}
         disabled={disabled}
         required={required}
         placeholder={placeholder}
-        className="w-full bg-surface-container-low rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-container text-sm text-on-surface placeholder:text-outline-variant transition-shadow border border-transparent"
       />
-      <button
-        type="button"
-        onClick={() => setIsVisible((prev) => !prev)}
-        disabled={disabled}
-        tabIndex={-1}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-on-surface transition-colors cursor-pointer disabled:opacity-50"
-        aria-label={isVisible ? "Hide password" : "Show password"}
-      >
-        {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-      </button>
+      {(showToggle || aside) && (
+        <div className="flex items-start justify-between">
+          {showToggle ? (
+            <button
+              type="button"
+              onClick={() => setIsVisible((prev) => !prev)}
+              disabled={disabled}
+              aria-pressed={isVisible}
+              className="flex cursor-pointer items-center gap-1.5 text-[13px] leading-normal text-pace-ink-2 disabled:opacity-50"
+            >
+              <AuthIcon name="eye" size={16} />
+              {isVisible ? "Hide password" : "Show password"}
+            </button>
+          ) : (
+            <span />
+          )}
+          {aside}
+        </div>
+      )}
+      {children}
     </div>
   );
 }

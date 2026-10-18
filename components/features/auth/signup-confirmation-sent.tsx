@@ -1,16 +1,16 @@
-import { MailCheck } from "lucide-react";
+import { AuthIcon } from "./auth-icon";
+import { AuthFormHeading } from "./auth-form-heading";
 
 export function SignupConfirmationSent({ email }: { email: string }) {
   return (
-    <div className="flex flex-col items-start">
-      <div className="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary mb-4">
-        <MailCheck className="h-6 w-6" />
+    <div className="flex flex-col gap-6">
+      <div className="flex size-8 items-center justify-center rounded-full bg-pace-sunken">
+        <AuthIcon name="mail" size={16} />
       </div>
-      <h2 className="text-2xl font-bold mb-2">Check your inbox</h2>
-      <p className="text-sm text-secondary leading-relaxed">
-        We sent a confirmation link to <span className="font-semibold text-on-surface">{email}</span>.
-        Click it to verify your account, then come back and log in.
-      </p>
+      <AuthFormHeading
+        title="Check your inbox"
+        subtitle={`We sent a confirmation link to ${email}. Click it to verify your account, then come back and log in.`}
+      />
     </div>
   );
 }
