@@ -12,9 +12,10 @@ import {
   SheetDescription,
   SheetClose,
 } from "@/components/ui/sheet";
+import type { LandingAccount } from "@/lib/landing-account";
 import { navLinks } from "./nav-links";
 
-export function LandingMobileNav({ homeHref = "" }: { homeHref?: string }) {
+export function LandingMobileNav({ homeHref = "", account }: { homeHref?: string; account: LandingAccount }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -57,12 +58,12 @@ export function LandingMobileNav({ homeHref = "" }: { homeHref?: string }) {
             nativeButton={false}
             render={
               <Link
-                href="/signup"
+                href={account?.href ?? "/signup"}
                 className="pace-press rounded-full bg-pace-green px-6 py-2.5 text-center text-sm font-semibold text-white shadow-[0_3px_0_var(--color-pace-green-deep)]"
               />
             }
           >
-            Create a student account
+            {account ? account.label : "Create a student account"}
           </SheetClose>
         </div>
       </SheetContent>

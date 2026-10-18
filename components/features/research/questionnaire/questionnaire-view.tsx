@@ -1,6 +1,5 @@
 "use client";
 
-import { LandingNav } from "@/components/features/landing/nav/landing-nav";
 import { LandingFooter } from "@/components/features/landing/footer/landing-footer";
 import { landingFontClasses } from "@/components/features/landing/landing-fonts";
 import { TOTAL_STATEMENTS } from "@/lib/study/form-progress";
@@ -15,13 +14,13 @@ import { SubmitBar } from "./submit-bar";
 import { SubmittedCard } from "./submitted-card";
 import { ClosedCard } from "./closed-card";
 
-export function QuestionnaireView({ closed }: { closed: boolean }) {
+export function QuestionnaireView({ closed, nav }: { closed: boolean; nav: React.ReactNode }) {
   const form = useQuestionnaireForm();
   const labels = ["About you", "Ratings", "Comments"];
 
   return (
     <div className={`${landingFontClasses} pace-landing flex min-h-screen flex-col bg-pace-canvas font-pace-sans text-pace-ink`}>
-      <LandingNav homeHref="/" />
+      {nav}
       <main className="flex flex-1 flex-col px-4 pb-24 pt-32 sm:px-6 sm:pt-[150px]">
         {form.summary ? (
           <SubmittedCard summary={form.summary} />
