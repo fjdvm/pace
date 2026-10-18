@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { getOrRegenerateHearts } from "@/lib/hearts";
-import { WorkspaceView } from "@/components/features/assignments/workspace-view";
+import { StudentWorkspaceView } from "@/components/features/student/workspace/student-workspace-view";
 
 interface PageProps {
   params: Promise<{
@@ -30,9 +30,7 @@ export default async function AssignmentWorkspacePage({ params }: PageProps) {
           email: true,
         },
       },
-      testCases: {
-        where: { visible: true },
-      },
+      testCases: true,
     },
   });
 
@@ -52,6 +50,7 @@ export default async function AssignmentWorkspacePage({ params }: PageProps) {
       studentId: user.id,
       classId: { in: classIds },
     },
+    include: { class: { select: { id: true, name: true } } },
   });
 
   if (!enrollment) {
@@ -85,7 +84,8 @@ export default async function AssignmentWorkspacePage({ params }: PageProps) {
     totalSpent: heartsState.totalSpent,
   };
 
-  const formattedTestCases = assignment.testCases.map((tc) => ({
+  const visibleTests = assignment.testCases.filter((tc) => tc.visible);
+  const formattedTestCases = visibleTests.map((tc) => ({
     id: tc.id,
     input: tc.input,
     expectedOutput: tc.expectedOutput,
@@ -129,8 +129,11 @@ export default async function AssignmentWorkspacePage({ params }: PageProps) {
     : null;
 
   return (
-    <WorkspaceView
+    <StudentWorkspaceView
       assignment={formattedAssignment}
+      className={enrollment.class.name}
+      classId={enrollment.class.id}
+      hiddenTestCount={assignment.testCases.length - visibleTests.length}
       initialHearts={formattedHearts}
       visibleTestCases={formattedTestCases}
       initialSubmission={formattedSubmission}

@@ -38,7 +38,7 @@ export function useHeartsTimer({ initialHearts, maxHearts, regenMinutes }: UseHe
       } else {
         const mins = Math.floor(remainingMs / 60000);
         const secs = Math.floor((remainingMs % 60000) / 1000);
-        setTimeToRegen(`${mins}m ${secs}s`);
+        setTimeToRegen(`${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`);
       }
     }, 1000);
 

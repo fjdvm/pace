@@ -4,7 +4,7 @@ import { PaceButton } from "@/components/features/student/shared/pace-button";
 import { PaceIcon } from "@/components/features/student/shared/pace-icon";
 import { formatDueLong, isUrgent } from "@/lib/student-dates";
 import type { StudentAssignment } from "@/components/features/student/types";
-import { HeartsRow } from "./hearts-row";
+import { HeartsRow } from "@/components/features/student/shared/hearts-row";
 
 type ContinueCardProps = {
   assignment: StudentAssignment;

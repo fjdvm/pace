@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
-import { awardSubmissionXp } from "@/lib/gamification";
+import { awardSubmissionXp, getTotalXp } from "@/lib/gamification";
 import { createNotification } from "@/lib/notifications";
 import { computeRiskScore } from "@/lib/risk-score";
 import type { BehavioralSignals } from "@/lib/types/behavioral-signals";
@@ -162,7 +162,8 @@ export async function submitCode(
       where: { studentId_assignmentId: { studentId: user.id, assignmentId } },
     });
     const totalHintsUsed = heartsState?.totalSpent || 0;
-    await awardSubmissionXp(user.id, assignmentId, scorePercentage, totalHintsUsed);
+    const xpEvents = await awardSubmissionXp(user.id, assignmentId, scorePercentage, totalHintsUsed);
+    const totalXp = await getTotalXp(user.id);
 
     await createNotification({
       userId: user.id,
@@ -181,6 +182,7 @@ export async function submitCode(
         testResults: results,
         submittedAt: submission.submittedAt.toISOString(),
       },
+      reward: { events: xpEvents, totalXp, heartsUsed: totalHintsUsed },
     };
   } catch (err) {
     console.error("Code submission error:", err);

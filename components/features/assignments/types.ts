@@ -38,6 +38,9 @@ export interface ChatMessageData {
 
 export interface WorkspaceViewProps {
   assignment: AssignmentData;
+  className: string;
+  classId: string;
+  hiddenTestCount: number;
   initialHearts: HeartsStateData;
   visibleTestCases: TestCaseData[];
   initialSubmission: SubmissionData | null;
