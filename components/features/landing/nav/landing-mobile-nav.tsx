@@ -58,7 +58,7 @@ export function LandingMobileNav({ homeHref = "" }: { homeHref?: string }) {
             render={
               <Link
                 href="/signup"
-                className="rounded-full bg-pace-green px-6 py-2.5 text-center text-sm font-semibold text-white"
+                className="rounded-full bg-pace-green px-6 py-2.5 text-center text-sm font-semibold text-white shadow-[0_3px_0_var(--color-pace-green-deep)] transition-[transform,box-shadow] duration-100 active:translate-y-[3px] active:shadow-[0_0_0_var(--color-pace-green-deep)]"
               />
             }
           >

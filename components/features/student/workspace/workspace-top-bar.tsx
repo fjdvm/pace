@@ -56,7 +56,7 @@ export function WorkspaceTopBar(props: WorkspaceTopBarProps) {
             type="button"
             onClick={props.onSubmit}
             disabled={busy}
-            className="h-10 cursor-pointer rounded-full bg-pace-green px-[18px] text-sm font-bold text-white shadow-[0_3px_0_var(--color-pace-green-deep)] disabled:opacity-60"
+            className="h-10 cursor-pointer rounded-full bg-pace-green px-[18px] text-sm font-bold text-white shadow-[0_3px_0_var(--color-pace-green-deep)] transition-[transform,box-shadow] duration-100 active:translate-y-[3px] active:shadow-[0_0_0_var(--color-pace-green-deep)] disabled:opacity-60"
           >
             {props.isSubmitting ? "Submitting…" : "Submit"}
           </button>
