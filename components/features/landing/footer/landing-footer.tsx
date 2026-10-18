@@ -1,5 +1,6 @@
 import { Wordmark } from "../shared/wordmark";
 import { FooterColumn, type FooterLink } from "./footer-column";
+import { GithubLink } from "./github-link";
 
 const project: FooterLink[] = [
   { label: "The problem", href: "#problem" },
@@ -31,6 +32,7 @@ export function LandingFooter({ homeHref = "" }: { homeHref?: string }) {
               Pair-programming AI Coding Environment. A research prototype by
               students of PUP Quezon City. Not a commercial product.
             </p>
+            <GithubLink />
           </div>
           <div className="flex flex-wrap gap-x-[72px] gap-y-8">
             <FooterColumn title="Project" links={project.map((l) => ({ ...l, href: `${homeHref}${l.href}` }))} />
