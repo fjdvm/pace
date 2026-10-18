@@ -24,7 +24,7 @@ export function ConsolePanel({ results, ranAt, output, isSubmitted }: ConsolePan
   const failureIndex = firstFailure ? visible.indexOf(firstFailure) + 1 : 0;
 
   return (
-    <div className="flex h-[230px] shrink-0 flex-col gap-2.5 overflow-y-auto border-t border-pace-line bg-white px-5 pb-4 pt-3.5">
+    <div className="flex h-full flex-col gap-2.5 overflow-y-auto border-t border-pace-line bg-white px-5 pb-4 pt-3.5">
       <div className="flex items-center gap-4 text-[13px] leading-normal">
         {(["results", "output"] as const).map((id) => (
           <button

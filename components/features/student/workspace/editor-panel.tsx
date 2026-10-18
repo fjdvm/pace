@@ -3,7 +3,9 @@
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { PaceIcon } from "@/components/features/student/shared/pace-icon";
 import type { TestRunResult } from "@/components/features/assignments/types";
+import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ConsolePanel } from "./console-panel";
+import { WorkspaceResizeHandle } from "./workspace-resize-handle";
 
 const MONACO_LANGUAGE_MAP: Record<string, string> = {
   Python: "python",
@@ -49,7 +51,9 @@ export function EditorPanel(props: EditorPanelProps) {
         <span className="flex-1" />
         <span className="text-pace-muted">{props.language}</span>
       </div>
-      <div className="min-h-[200px] flex-1">
+      <ResizablePanelGroup orientation="vertical" className="min-h-0 flex-1">
+        <ResizablePanel id="code" defaultSize="68" minSize="25">
+      <div className="h-full">
         <Editor
           height="100%"
           language={MONACO_LANGUAGE_MAP[props.language]}
@@ -73,12 +77,17 @@ export function EditorPanel(props: EditorPanelProps) {
           }}
         />
       </div>
-      <ConsolePanel
+        </ResizablePanel>
+        <WorkspaceResizeHandle />
+        <ResizablePanel id="console" defaultSize="32" minSize="10">
+        <ConsolePanel
         results={props.runResults}
         ranAt={props.ranAt}
         output={props.consoleOutput}
         isSubmitted={props.isSubmitted}
       />
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 }
