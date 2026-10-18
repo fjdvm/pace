@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-const SHOW_DELAY_MS = 120;
+const MIN_VISIBLE_MS = 1500;
 const GIVE_UP_MS = 20_000;
 
 function isInternalNavigation(event: MouseEvent) {
@@ -18,28 +18,39 @@ const locationKey = (pathname: string, search: string) => `${pathname}?${search}
 export function useNavigationLoading() {
   const key = locationKey(usePathname(), useSearchParams().toString());
   const [pendingFrom, setPendingFrom] = useState<string | null>(null);
-  const [shown, setShown] = useState(false);
-  const pending = pendingFrom === key;
+  const [visible, setVisible] = useState(false);
+  const startedAt = useRef(0);
+  const arrived = pendingFrom !== null && pendingFrom !== key;
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
       if (!isInternalNavigation(event)) return;
+      startedAt.current = Date.now();
       setPendingFrom(locationKey(window.location.pathname, new URLSearchParams(window.location.search).toString()));
+      setVisible(true);
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
   }, []);
 
   useEffect(() => {
-    if (!pending) return;
-    const show = setTimeout(() => setShown(true), SHOW_DELAY_MS);
-    const giveUp = setTimeout(() => setPendingFrom(null), GIVE_UP_MS);
-    return () => {
-      clearTimeout(show);
-      clearTimeout(giveUp);
-      setShown(false);
-    };
-  }, [pending]);
+    if (!arrived) return;
+    const remaining = Math.max(0, MIN_VISIBLE_MS - (Date.now() - startedAt.current));
+    const hide = setTimeout(() => {
+      setVisible(false);
+      setPendingFrom(null);
+    }, remaining);
+    return () => clearTimeout(hide);
+  }, [arrived]);
 
-  return pending && shown;
+  useEffect(() => {
+    if (pendingFrom === null) return;
+    const giveUp = setTimeout(() => {
+      setVisible(false);
+      setPendingFrom(null);
+    }, GIVE_UP_MS);
+    return () => clearTimeout(giveUp);
+  }, [pendingFrom]);
+
+  return visible;
 }
