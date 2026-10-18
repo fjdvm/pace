@@ -27,13 +27,13 @@ export function SubmittedCard({ summary }: { summary: SubmittedSummary }) {
       <div className="flex flex-wrap justify-center gap-3">
         <Link
           href="/"
-          className="pace-body rounded-2xl bg-pace-green px-6 py-3.5 font-semibold text-white shadow-[0_4px_0_0_var(--color-pace-green-deep)] transition-[transform,box-shadow] duration-100 active:translate-y-1 active:shadow-[0_0_0_0_var(--color-pace-green-deep)]"
+          className="pace-press pace-body rounded-2xl bg-pace-green px-6 py-3.5 font-semibold text-white shadow-[0_4px_0_0_var(--color-pace-green-deep)]"
         >
           Back to PACE
         </Link>
         <a
           href="https://github.com/fjdvm/fr-gaits"
-          className="pace-body rounded-2xl border-[1.5px] border-pace-line bg-white px-6 py-3.5 font-semibold text-pace-ink shadow-[0_4px_0_0_#d9d5cc]"
+          className="pace-press pace-body rounded-2xl border-[1.5px] border-pace-line bg-white px-6 py-3.5 font-semibold text-pace-ink shadow-[0_4px_0_0_#d9d5cc]"
         >
           Download the paper
         </a>

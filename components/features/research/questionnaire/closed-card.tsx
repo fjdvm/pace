@@ -7,7 +7,7 @@ export function ClosedCard() {
       <p className="pace-body max-w-[460px] text-pace-ink-2">
         We are no longer collecting responses. Thank you to everyone who took part in evaluating PACE.
       </p>
-      <Link href="/" className="pace-body rounded-2xl bg-pace-ink px-6 py-3.5 font-semibold text-white shadow-[0_4px_0_0_black]">
+      <Link href="/" className="pace-press pace-body rounded-2xl bg-pace-ink px-6 py-3.5 font-semibold text-white shadow-[0_4px_0_0_black]">
         Back to PACE
       </Link>
     </div>

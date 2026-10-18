@@ -232,3 +232,30 @@
 .cn-toast-description {
   font-size: 0.8rem !important;
 }
+
+button:not(:disabled),
+[role="button"],
+.pace-press {
+  transition:
+    transform 90ms ease-out,
+    translate 150ms ease,
+    scale 150ms ease,
+    box-shadow 90ms ease-out,
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease;
+}
+
+button:not(:disabled):active,
+[role="button"]:active,
+.pace-press:active {
+  transform: translateY(2px) scale(0.96);
+}
+
+button:not(:disabled)[class*="shadow-[0_"]:active,
+[role="button"][class*="shadow-[0_"]:active,
+.pace-press[class*="shadow-[0_"]:active {
+  transform: translateY(3px) scale(1);
+  box-shadow: none;
+}

@@ -24,7 +24,7 @@ export function LandingNav({ homeHref = "" }: { homeHref?: string }) {
         <div className="flex w-[200px] items-center justify-end gap-2">
           <Link
             href="/login"
-            className="pace-body rounded-full border-[1.5px] border-pace-line bg-white px-[22px] py-3 font-semibold text-pace-ink transition-colors hover:bg-pace-canvas"
+            className="pace-press pace-body rounded-full border-[1.5px] border-pace-line bg-white px-[22px] py-3 font-semibold text-pace-ink transition-colors hover:bg-pace-canvas"
           >
             Sign in
           </Link>
