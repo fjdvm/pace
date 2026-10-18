@@ -197,7 +197,7 @@ graph TB
 
 ```mermaid
 erDiagram
-    User ||--o{ Class : teaches
+    User ||--o{ Classroom : teaches
     User ||--o{ Enrollment : enrolls
     User ||--o{ Submission : submits
     User ||--o{ ChatMessage : sends
@@ -207,9 +207,9 @@ erDiagram
     User ||--o{ Notification : receives
     User ||--o| Streak : keeps
 
-    Class ||--o{ Enrollment : has
-    Class ||--o{ AssignmentClass : assigns
-    Class ||--o{ Post : stream
+    Classroom ||--o{ Enrollment : has
+    Classroom ||--o{ AssignmentClass : assigns
+    Classroom ||--o{ Post : stream
 
     Assignment ||--o{ AssignmentClass : assigned_to
     Assignment ||--o{ TestCase : has
@@ -222,7 +222,7 @@ erDiagram
     Badge ||--o{ UserBadge : awarded
 ```
 
-Two tables stand alone: `SystemSetting` (key and value store for provider keys and study flags) and `StudyResponse` (anonymous questionnaire answers).
+In the diagram, `Classroom` is the `Class` model (Mermaid reserves the word `Class`). Two tables stand alone: `SystemSetting` (key and value store for provider keys and study flags) and `StudyResponse` (anonymous questionnaire answers).
 
 ### Tutor request flow
 
