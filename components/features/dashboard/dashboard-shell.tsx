@@ -17,26 +17,20 @@ interface DashboardShellProps {
   userName?: string | null;
   classes?: SidebarClass[];
   studentXp?: { totalXp: number; level: number; currentXp: number; nextThreshold: number };
-  todoCount?: number;
+  navBadge?: number;
   children: React.ReactNode;
 }
 
-export function DashboardShell({ role, userEmail, userName, classes, studentXp, todoCount, children }: DashboardShellProps) {
+export function DashboardShell({ role, userEmail, userName, classes, studentXp, navBadge, children }: DashboardShellProps) {
+  const sidebar = { role, userEmail, userName, classes, studentXp, navBadge };
   return (
     <SidebarCollapseProvider>
-      <div className={`flex h-screen w-full overflow-hidden text-on-surface ${role === "student" ? "bg-pace-canvas" : "bg-surface"}`}>
-        {/* Sidebar (desktop) */}
-        <div className="hidden md:block shrink-0 h-full">
-          <RoleSidebar role={role} userEmail={userEmail} userName={userName} classes={classes} studentXp={studentXp} todoCount={todoCount} />
+      <div className="flex h-screen w-full overflow-hidden bg-pace-canvas text-on-surface">
+        <div className="hidden h-full shrink-0 md:block">
+          <RoleSidebar {...sidebar} />
         </div>
-
-        {/* Sidebar (mobile drawer) */}
-        <MobileSidebarDrawer role={role} userEmail={userEmail} userName={userName} classes={classes} studentXp={studentXp} todoCount={todoCount} />
-
-        {/* Content wrapper */}
-        <div className={`flex-1 flex flex-col min-w-0 h-full overflow-y-auto ${role === "student" ? "bg-pace-canvas" : "bg-surface"}`}>
-          {children}
-        </div>
+        <MobileSidebarDrawer {...sidebar} />
+        <div className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto bg-pace-canvas">{children}</div>
       </div>
     </SidebarCollapseProvider>
   );

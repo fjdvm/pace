@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-const styles = {
+export const paceButtonStyles = {
   primary: "bg-pace-ink text-white",
   green: "bg-pace-green text-white shadow-[0_3px_0_var(--color-pace-green-deep)]",
   secondary:
@@ -9,9 +9,12 @@ const styles = {
   ghost: "text-pace-ink",
 };
 
+export const paceButtonBase =
+  "relative z-10 inline-flex h-10 shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-full px-[18px] text-sm font-bold leading-tight disabled:cursor-not-allowed disabled:opacity-50";
+
 type PaceButtonProps = {
   href: string;
-  variant?: keyof typeof styles;
+  variant?: keyof typeof paceButtonStyles;
   className?: string;
   children: React.ReactNode;
 };
@@ -21,8 +24,8 @@ export function PaceButton({ href, variant = "green", className, children }: Pac
     <Link
       href={href}
       className={cn(
-        "relative z-10 inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-[18px] text-sm font-bold leading-tight",
-        styles[variant],
+        paceButtonBase,
+        paceButtonStyles[variant],
         className,
       )}
     >

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PaceIcon } from "@/components/features/student/shared/pace-icon";
 import { PaceTag } from "@/components/features/student/shared/pace-tag";
@@ -6,11 +7,13 @@ import { PaceTag } from "@/components/features/student/shared/pace-tag";
 type SidebarNavItemProps = {
   href: string;
   label: string;
-  icon: string;
+  icon?: string;
+  LucideIcon?: LucideIcon;
   activeIcon?: string;
   active: boolean;
   collapsed: boolean;
   badge?: number;
+  badgeTone?: "red" | "green" | "amber";
   onNavigate?: () => void;
 };
 
@@ -18,10 +21,12 @@ export function SidebarNavItem({
   href,
   label,
   icon,
+  LucideIcon: Glyph,
   activeIcon,
   active,
   collapsed,
   badge,
+  badgeTone = "red",
   onNavigate,
 }: SidebarNavItemProps) {
   const showBadge = badge !== undefined && badge > 0;
@@ -38,13 +43,19 @@ export function SidebarNavItem({
         !active && collapsed && showBadge && "bg-pace-sunken",
       )}
     >
-      <PaceIcon
-        name={active && activeIcon ? activeIcon : icon}
-        size={18}
-        className={active && !activeIcon ? "brightness-0 invert" : undefined}
-      />
+      {Glyph ? (
+        <Glyph className="size-[18px]" strokeWidth={1.75} />
+      ) : (
+        <PaceIcon
+          name={active && activeIcon ? activeIcon : icon ?? ""}
+          size={18}
+          className={active && !activeIcon ? "brightness-0 invert" : undefined}
+        />
+      )}
       {!collapsed && <span>{label}</span>}
-      {!collapsed && showBadge && <PaceTag tone="red" className="ml-auto">{badge}</PaceTag>}
+      {!collapsed && showBadge && <PaceTag tone={badgeTone} className={cn("ml-auto", active && "bg-white text-pace-ink")}>
+          {badge}
+        </PaceTag>}
       {collapsed && showBadge && (
         <PaceIcon name="badge-dot" size={9} className="absolute right-2 top-2.5" />
       )}

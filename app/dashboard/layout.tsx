@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { DashboardShell } from "@/components/features/dashboard/dashboard-shell";
 import { computeLevel, getTotalXp } from "@/lib/gamification";
 import { getStudentTodos } from "@/app/actions/student-todos";
+import { countRecentSubmissions } from "@/lib/instructor-home-data";
 
 export default async function DashboardLayout({
   children,
@@ -32,7 +33,7 @@ export default async function DashboardLayout({
 
   let sidebarClasses: { id: string; name: string; archived: boolean; classArchived: boolean }[] = [];
   let studentXp: { totalXp: number; level: number; currentXp: number; nextThreshold: number } | undefined;
-  let todoCount = 0;
+  let navBadge = 0;
   if (role === "instructor") {
     const classes = await prisma.class.findMany({
       where: { instructorId: user.id },
@@ -40,6 +41,7 @@ export default async function DashboardLayout({
       orderBy: { createdAt: "desc" },
     });
     sidebarClasses = classes.map((c) => ({ ...c, classArchived: c.archived }));
+    navBadge = await countRecentSubmissions(user.id);
   } else if (role === "student") {
     const enrollments = await prisma.enrollment.findMany({
       where: { studentId: user.id },
@@ -57,11 +59,13 @@ export default async function DashboardLayout({
     const { level, currentXp, nextThreshold } = computeLevel(totalXp);
     studentXp = { totalXp, level, currentXp, nextThreshold };
     const todos = await getStudentTodos();
-    todoCount = todos.success ? (todos.todos?.length ?? 0) : 0;
+    navBadge = todos.success ? (todos.todos?.length ?? 0) : 0;
+  } else {
+    navBadge = await prisma.user.count({ where: { role: "instructor", approvalStatus: "pending" } });
   }
 
   return (
-    <DashboardShell role={role} userEmail={dbUser.email} userName={dbUser.name} classes={sidebarClasses} studentXp={studentXp} todoCount={todoCount}>
+    <DashboardShell role={role} userEmail={dbUser.email} userName={dbUser.name} classes={sidebarClasses} studentXp={studentXp} navBadge={navBadge}>
       {children}
     </DashboardShell>
   );

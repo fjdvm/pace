@@ -9,21 +9,23 @@ export type SidebarXp = {
 
 type SidebarProfileProps = {
   name: string;
+  roleLabel?: string;
+  tone?: "green" | "purple" | "blue";
   xp?: SidebarXp;
   collapsed: boolean;
 };
 
-export function SidebarProfile({ name, xp, collapsed }: SidebarProfileProps) {
+export function SidebarProfile({ name, roleLabel = "Student", tone, xp, collapsed }: SidebarProfileProps) {
   if (collapsed) {
-    return <InitialsAvatar name={name} className="size-9" />;
+    return <InitialsAvatar name={name} tone={tone} className="size-9" />;
   }
   return (
     <div className="flex w-full flex-col gap-2.5 rounded-2xl bg-pace-canvas p-3.5">
       <div className="flex items-center gap-2.5">
-        <InitialsAvatar name={name} className="size-9" />
+        <InitialsAvatar name={name} tone={tone} className="size-9" />
         <div className="flex min-w-0 flex-col gap-0.5 text-[13px] leading-normal">
           <span className="truncate font-semibold text-pace-ink">{name}</span>
-          <span className="text-pace-muted">Student</span>
+          <span className="truncate text-pace-muted">{roleLabel}</span>
         </div>
       </div>
       {xp && (

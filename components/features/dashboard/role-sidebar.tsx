@@ -1,7 +1,8 @@
 "use client";
 
-import { AppSidebar } from "./app-sidebar";
 import { StudentSidebar } from "@/components/features/student/sidebar/student-sidebar";
+import { InstructorSidebar } from "@/components/features/instructor/sidebar/instructor-sidebar";
+import { AdminSidebar } from "@/components/features/admin/sidebar/admin-sidebar";
 
 interface SidebarClass {
   id: string;
@@ -16,24 +17,23 @@ export interface RoleSidebarProps {
   userName?: string | null;
   classes?: SidebarClass[];
   studentXp?: { totalXp: number; level: number; currentXp: number; nextThreshold: number };
-  todoCount?: number;
+  navBadge?: number;
   forceExpanded?: boolean;
   onNavigate?: () => void;
 }
 
-export function RoleSidebar({ role, studentXp, todoCount = 0, classes = [], ...rest }: RoleSidebarProps) {
+export function RoleSidebar({ role, studentXp, navBadge = 0, classes = [], ...rest }: RoleSidebarProps) {
+  const shared = {
+    userEmail: rest.userEmail,
+    userName: rest.userName,
+    forceExpanded: rest.forceExpanded,
+    onNavigate: rest.onNavigate,
+  };
   if (role === "student") {
-    return (
-      <StudentSidebar
-        userEmail={rest.userEmail}
-        userName={rest.userName}
-        classes={classes}
-        xp={studentXp}
-        todoCount={todoCount}
-        forceExpanded={rest.forceExpanded}
-        onNavigate={rest.onNavigate}
-      />
-    );
+    return <StudentSidebar {...shared} classes={classes} xp={studentXp} todoCount={navBadge} />;
   }
-  return <AppSidebar role={role} classes={classes} studentXp={studentXp} {...rest} />;
+  if (role === "instructor") {
+    return <InstructorSidebar {...shared} classes={classes.filter((c) => !c.archived)} submissionCount={navBadge} />;
+  }
+  return <AdminSidebar {...shared} pendingCount={navBadge} />;
 }

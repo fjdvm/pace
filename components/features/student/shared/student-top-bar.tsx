@@ -8,12 +8,14 @@ import { PaceIcon } from "./pace-icon";
 
 type StudentTopBarProps = {
   title: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   backHref?: string;
   leadingIcon?: React.ReactNode;
+  actions?: React.ReactNode;
+  hideBell?: boolean;
 };
 
-export function StudentTopBar({ title, subtitle, backHref, leadingIcon }: StudentTopBarProps) {
+export function StudentTopBar({ title, subtitle, backHref, leadingIcon, actions, hideBell }: StudentTopBarProps) {
   const { collapsed, toggleCollapsed, toggleMobileOpen } = useSidebarCollapse();
 
   return (
@@ -43,13 +45,16 @@ export function StudentTopBar({ title, subtitle, backHref, leadingIcon }: Studen
         {leadingIcon}
         <div className="flex min-w-0 flex-col gap-0.5">
           <h1 suppressHydrationWarning className="truncate text-[22px] font-bold leading-tight tracking-[-0.01em] text-pace-ink">{title}</h1>
-          {subtitle && <p suppressHydrationWarning className="truncate text-[13px] leading-normal text-pace-ink-2">{subtitle}</p>}
+          {subtitle && <div suppressHydrationWarning className="flex items-center gap-2 truncate text-[13px] leading-normal text-pace-ink-2">{subtitle}</div>}
         </div>
       </div>
       <div className="flex-1" />
-      <div className="flex size-10 shrink-0 items-center justify-center rounded-full border-[1.5px] border-pace-line">
-        <NotificationBell />
-      </div>
+      {actions}
+      {!hideBell && (
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-full border-[1.5px] border-pace-line">
+          <NotificationBell />
+        </div>
+      )}
     </header>
   );
 }
