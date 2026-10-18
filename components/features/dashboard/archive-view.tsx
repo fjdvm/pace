@@ -1,7 +1,7 @@
 "use client";
 
 import { ArchiveX } from "lucide-react";
-import { DashboardHeader } from "./dashboard-header";
+import { StudentTopBar } from "@/components/features/student/shared/student-top-bar";
 import { ClassLink } from "./sidebar-class-list";
 import { useClassMembershipActions } from "./use-class-membership-actions";
 
@@ -23,15 +23,15 @@ export function ArchiveView({ role, classes }: ArchiveViewProps) {
 
   return (
     <>
-      <DashboardHeader
+      <StudentTopBar
         title="Archive"
-        description={
+        subtitle={
           role === "instructor"
-            ? "Classes you've archived. Restore one to bring it back to your active list."
-            : "Classes your instructor has archived. Leave one if you no longer need it."
+            ? "Restore a class to bring it back to your active list"
+            : "Leave classes your instructor archived"
         }
       />
-      <main className="flex-grow overflow-y-auto p-6 md:p-10 flex flex-col items-center">
+      <main className="flex flex-1 flex-col items-center p-4 md:p-10">
         {classes.length === 0 ? (
           <div className="bg-white border border-surface-container rounded-[24px] p-12 text-center flex flex-col items-center max-w-3xl w-full">
             <ArchiveX className="h-12 w-12 text-secondary/30 mb-4" />

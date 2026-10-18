@@ -20,14 +20,15 @@ type AssignmentFormViewProps = {
   initial?: AssignmentFormValues;
   assignmentId?: string;
   locked?: boolean;
+  defaultClassId?: string;
 };
 
-export function AssignmentFormView({ classes, initial, assignmentId, locked = false }: AssignmentFormViewProps) {
+export function AssignmentFormView({ classes, initial, assignmentId, locked = false, defaultClassId }: AssignmentFormViewProps) {
   const isEditing = !!assignmentId;
   const form = useAssignmentForm({
     initial,
     assignmentId,
-    onlyClassId: classes.length === 1 ? classes[0].id : undefined,
+    onlyClassId: defaultClassId ?? (classes.length === 1 ? classes[0].id : undefined),
   });
   const { restoreDraft } = form;
   const remove = useAssignmentActions();

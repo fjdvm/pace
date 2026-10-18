@@ -1,8 +1,15 @@
 import { cn } from "@/lib/utils";
 
+const fills = {
+  green: "bg-pace-green",
+  amber: "bg-pace-amber",
+  red: "bg-pace-red",
+  purple: "bg-pace-purple",
+};
+
 type ProgressBarProps = {
   value: number;
-  tone?: "green" | "amber";
+  tone?: keyof typeof fills;
   className?: string;
 };
 
@@ -11,7 +18,7 @@ export function ProgressBar({ value, tone = "green", className }: ProgressBarPro
   return (
     <div className={cn("h-2 w-full overflow-hidden rounded-full bg-pace-sunken", className)}>
       <div
-        className={cn("h-full rounded-full", tone === "green" ? "bg-pace-green" : "bg-pace-amber")}
+        className={cn("h-full rounded-full", fills[tone])}
         style={{ width: `${width}%` }}
       />
     </div>

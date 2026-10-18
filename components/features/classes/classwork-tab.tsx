@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { BookOpen, Plus, Layers, Trash2 } from "lucide-react";
-import { CreateAssignmentForm } from "@/components/features/dashboard/instructor/create-assignment-form";
+import { PaceButton } from "@/components/features/student/shared/pace-button";
 import { useAssignmentActions } from "@/components/features/dashboard/instructor/components/use-assignment-actions";
 import { DeleteAssignmentDialog } from "@/components/features/submissions/delete-assignment-dialog";
 
@@ -18,32 +17,18 @@ interface ClassworkAssignment {
 
 interface ClassworkTabProps {
   classId: string;
-  className: string;
   assignments: ClassworkAssignment[];
 }
 
-export function ClassworkTab({ classId, className, assignments }: ClassworkTabProps) {
-  const [showCreateForm, setShowCreateForm] = useState(false);
+export function ClassworkTab({ classId, assignments }: ClassworkTabProps) {
   const { pendingDelete, isDeleting, requestDelete, cancelDelete, confirmDelete } = useAssignmentActions();
-
-  if (showCreateForm) {
-    return (
-      <CreateAssignmentForm
-        classes={[{ id: classId, name: className }]}
-        onCancel={() => setShowCreateForm(false)}
-      />
-    );
-  }
 
   return (
     <div className="space-y-4 max-w-3xl w-full">
       <div className="flex justify-end">
-        <button
-          onClick={() => setShowCreateForm(true)}
-          className="px-4 py-2 bg-primary-container hover:bg-surface-tint text-on-primary-container hover:text-white rounded-xl font-bold text-xs transition-colors cursor-pointer flex items-center gap-1.5"
-        >
-          <Plus className="h-3.5 w-3.5" /> Create Assignment
-        </button>
+        <PaceButton href={`/dashboard/instructor/assignments/new?classId=${classId}`} variant="primary">
+          <Plus className="mr-1.5 size-4" /> New assignment
+        </PaceButton>
       </div>
 
       {assignments.length === 0 ? (

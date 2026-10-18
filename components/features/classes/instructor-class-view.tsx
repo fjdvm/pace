@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { DashboardHeader } from "@/components/features/dashboard/dashboard-header";
-import { BackButton } from "@/components/features/dashboard/back-button";
+import { StudentTopBar } from "@/components/features/student/shared/student-top-bar";
+import { PaceActionButton } from "@/components/features/student/shared/pace-action-button";
+import { useClassActions } from "@/components/features/dashboard/instructor/components/use-class-actions";
+import { splitClassName } from "@/lib/class-name";
 import { ClassTabs, type ClassTab } from "./class-tabs";
 import { StreamTab } from "./stream-tab";
 import { ClassworkTab } from "./classwork-tab";
@@ -54,12 +56,31 @@ export function InstructorClassView({
   myRank,
 }: InstructorClassViewProps) {
   const [activeTab, setActiveTab] = useState<ClassTab>("stream");
+  const { handleArchiveToggle, handleDelete, copyToClipboard } = useClassActions();
+  const { code, description } = splitClassName(className);
+  const summary = { id: classId, name: className, joinCode, studentCount: roster.length, createdAt: "", archived: false };
 
   return (
     <>
-      <DashboardHeader title={className} description={`Join code: ${joinCode}`} />
-      <BackButton href="/dashboard/instructor" />
-      <main className="flex-grow overflow-y-auto p-6 md:p-10 space-y-6 flex flex-col items-center">
+      <StudentTopBar
+        title={code}
+        subtitle={description ? `${description} · ${roster.length} students` : `${roster.length} students`}
+        backHref="/dashboard/instructor"
+        actions={
+          <div className="flex items-center gap-2">
+            <PaceActionButton variant="secondary" onClick={() => copyToClipboard(joinCode)}>
+              Join code {joinCode}
+            </PaceActionButton>
+            <PaceActionButton variant="ghost" onClick={() => handleArchiveToggle(summary)}>
+              Archive
+            </PaceActionButton>
+            <PaceActionButton variant="ghost" className="text-pace-red" onClick={() => handleDelete(summary)}>
+              Delete
+            </PaceActionButton>
+          </div>
+        }
+      />
+      <main className="flex flex-1 flex-col items-center gap-6 p-4 md:p-10">
         <ClassTabs activeTab={activeTab} onChange={setActiveTab} />
 
         {activeTab === "stream" && (
@@ -72,9 +93,7 @@ export function InstructorClassView({
             instructor={instructor}
           />
         )}
-        {activeTab === "classwork" && (
-          <ClassworkTab classId={classId} className={className} assignments={assignments} />
-        )}
+        {activeTab === "classwork" && <ClassworkTab classId={classId} assignments={assignments} />}
         {activeTab === "people" && <PeopleTab classId={classId} instructor={instructor} roster={roster} />}
         {activeTab === "leaderboard" && <ClassLeaderboardTab leaderboard={leaderboard} myRank={myRank} />}
       </main>

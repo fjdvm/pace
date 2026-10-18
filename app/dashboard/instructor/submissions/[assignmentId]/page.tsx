@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getAssignmentScoreTable } from "@/app/actions/assignment-score-table";
-import { AssignmentScoreTable } from "@/components/features/submissions/assignment-score-table";
+import { getAssignmentOverview } from "@/lib/assignment-overview-data";
+import { AssignmentOverviewView } from "@/components/features/instructor/submissions/assignment-overview-view";
 
-interface PageProps {
-  params: Promise<{ assignmentId: string }>;
-}
+type PageProps = { params: Promise<{ assignmentId: string }> };
 
 export default async function AssignmentSubmissionsPage({ params }: PageProps) {
   const { assignmentId } = await params;
@@ -13,14 +11,8 @@ export default async function AssignmentSubmissionsPage({ params }: PageProps) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const result = await getAssignmentScoreTable(assignmentId);
-  if (!result.success) redirect("/dashboard/instructor/submissions");
+  const overview = await getAssignmentOverview(user.id, assignmentId);
+  if (!overview) redirect("/dashboard/instructor/submissions");
 
-  return (
-    <AssignmentScoreTable
-      assignmentId={assignmentId}
-      assignmentTitle={result.assignmentTitle!}
-      students={result.students!}
-    />
-  );
+  return <AssignmentOverviewView overview={overview} />;
 }

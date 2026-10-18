@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
-import { SubmissionDetailView } from "@/components/features/submissions/submission-detail-view";
+import { getSubmissionDetail } from "@/lib/submission-detail-data";
+import { SubmissionDetailView } from "@/components/features/instructor/submissions/detail/submission-detail-view";
 
-interface PageProps {
-  params: Promise<{ assignmentId: string; studentId: string }>;
-}
+type PageProps = { params: Promise<{ assignmentId: string; studentId: string }> };
 
 export default async function SubmissionDetailPage({ params }: PageProps) {
   const { assignmentId, studentId } = await params;
@@ -13,37 +11,8 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId } });
-  if (!assignment || assignment.createdBy !== user.id) redirect("/dashboard/instructor/submissions");
+  const detail = await getSubmissionDetail(user.id, assignmentId, studentId);
+  if (!detail) redirect("/dashboard/instructor/submissions");
 
-  const submission = await prisma.submission.findUnique({
-    where: { studentId_assignmentId: { studentId, assignmentId } },
-    include: { student: { select: { email: true } } },
-  });
-
-  const chatMessages = await prisma.chatMessage.findMany({
-    where: { studentId, assignmentId },
-    orderBy: { createdAt: "asc" },
-  });
-
-  const student = await prisma.user.findUnique({ where: { id: studentId }, select: { email: true, name: true } });
-
-  return (
-    <SubmissionDetailView
-      assignmentId={assignmentId}
-      assignmentTitle={assignment.title}
-      assignmentLanguage={assignment.language}
-      studentId={studentId}
-      studentEmail={student?.email || "Unknown"}
-      studentName={student?.name ?? null}
-      submission={submission ? {
-        code: submission.code,
-        score: submission.score,
-        testResults: submission.testResults as any,
-        behavioralSignals: submission.behavioralSignals as any,
-        submittedAt: submission.submittedAt.toISOString(),
-      } : null}
-      chatMessages={chatMessages.map((m) => ({ role: m.role, content: m.content, createdAt: m.createdAt.toISOString() }))}
-    />
-  );
+  return <SubmissionDetailView detail={detail} />;
 }

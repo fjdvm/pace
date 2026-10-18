@@ -4,6 +4,7 @@ const tones = {
   green: "bg-pace-green-tint text-pace-green-deep",
   red: "bg-pace-red-tint text-pace-red",
   amber: "bg-pace-amber-tint text-pace-ink",
+  purple: "bg-pace-purple-tint text-pace-purple",
   neutral: "bg-pace-sunken text-pace-ink-2",
 };
 
