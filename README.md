@@ -1,591 +1,373 @@
-# GAITS — Gamified AI-Assisted Integrated Tutoring System
+<p align="center">
+  <img src="public/pace-mark.svg" alt="PACE logo" width="96" height="96" />
+</p>
 
-![Next.js](https://img.shields.io/badge/Next.js-16.3.1-black?logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
-![Prisma](https://img.shields.io/badge/Prisma-7.9-2D3748?logo=prisma)
-![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20DB-3ECF8E?logo=supabase)
-![Vercel AI SDK](https://img.shields.io/badge/Vercel%20AI%20SDK-7-black?logo=vercel)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?logo=tailwindcss)
-![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-latest-000000)
-![Judge0](https://img.shields.io/badge/Judge0-Code%20Execution-green)
-![Deployed on Vercel](https://img.shields.io/badge/Deployed-Vercel%20(sin1)-black?logo=vercel)
-![License](https://img.shields.io/badge/License-Private-red)
+<h1 align="center">PACE</h1>
 
----
+<p align="center">
+  <strong>Programming AI-assisted Coding Environment</strong><br />
+  A gamified coding workspace where an AI tutor gives hints, never answers.
+</p>
 
-## Problem Statement
+<p align="center">
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" />
+  <img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?logo=react" />
+  <img alt="Prisma" src="https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma" />
+  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-Auth%20and%20DB-3ECF8E?logo=supabase" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?logo=tailwindcss" />
+  <img alt="Vercel" src="https://img.shields.io/badge/Deployed-Vercel-black?logo=vercel" />
+</p>
 
-Traditional programming education lacks:
-
-- **Real-time, personalized guidance** — students get stuck without immediate help
-- **Safeguards against plagiarism** — students can easily copy-paste solutions from AI tools
-- **Engagement mechanics** — assignments feel repetitive with no progression or reward
-- **Scalability** — instructors cannot provide 1-on-1 help to dozens of students simultaneously
+PACE is a research prototype built by students of the Polytechnic University of the Philippines, Quezon City. It was previously called GAITS, and the repository is still named `fr-gaits`. It is not a commercial product.
 
 ---
 
-## Solution
+## Table of contents
 
-GAITS is a gamified web platform that integrates:
-
-1. **AI Tutor with Tiered Hints** — a hearts-gated, Socratic AI assistant that progressively reveals more detailed guidance as students invest effort
-2. **Secure Code Execution** — sandboxed Judge0 environment for running and grading code against visible and hidden test cases
-3. **Behavioral Signal Tracking** — monitors paste frequency, keystrokes, typing speed, and focus time to detect academic dishonesty
-4. **Gamification Engine** — XP, levels, badges, streaks, and class leaderboards to drive engagement
-5. **Role-Based Access** — students, instructors, and admins each with dedicated dashboards and capabilities
+1. [The problem](#the-problem)
+2. [Our approach](#our-approach)
+3. [Roles and pages](#roles-and-pages)
+4. [The research study](#the-research-study)
+5. [Architecture](#architecture)
+6. [How the main features work](#how-the-main-features-work)
+7. [Tech stack](#tech-stack)
+8. [Getting started](#getting-started)
+9. [Testing](#testing)
+10. [Deployment](#deployment)
+11. [Project structure](#project-structure)
 
 ---
 
-## App Design
+## The problem
 
-### User Roles & Flows
+Programming courses struggle with four things at once:
 
-| Role | Capabilities |
-|------|-------------|
-| **Student** | Join classes, view assignments, write code in Monaco editor, run tests, chat with AI tutor, submit solutions, earn XP/badges, view leaderboard |
-| **Instructor** | Create classes (with join codes), create assignments with test cases, configure AI provider per class, view submissions and scores |
-| **Admin** | Approve instructor accounts, manage system-wide AI API keys |
+- Students get stuck and nobody is there to help in the moment.
+- General-purpose AI tools hand out complete solutions, so students copy instead of learn.
+- Assignments feel repetitive, with no sense of progress.
+- Instructors cannot give one-on-one help to dozens of students at the same time.
 
-### Key Pages
+## Our approach
 
-- `/login`, `/signup` — Authentication with role selection
-- `/dashboard/student` — Assignment list, XP/level progress, join class
-- `/dashboard/student/assignments/[id]` — Full workspace (editor + AI chat + instructions)
-- `/dashboard/student/leaderboard` — Class rankings
-- `/dashboard/instructor` — Class management, assignment creation
-- `/dashboard/instructor/submissions` — Grade overview and detailed submission view
-- `/dashboard/admin` — Instructor approvals and API key settings
+PACE puts the editor, the test runner, and the AI tutor in one place, and limits how much help a student can ask for.
 
-### Student Data Flow
+1. **Hearts-gated AI tutor.** Each assignment gives a student a set number of hearts. Every tutor question costs one heart, and hearts come back on a timer set by the instructor.
+2. **Tiered hints.** The more hearts a student has spent, the more specific the hint gets, from a gentle nudge up to near-pseudocode. The tutor never writes the solution or the corrected code.
+3. **Secure code execution.** Code runs in the Judge0 sandbox against visible and hidden test cases.
+4. **Integrity signals.** Paste activity, typing, and focus time feed a risk score, and a structural similarity check compares submissions within an assignment. Both are prompts for the instructor to review, not proof of copying.
+5. **Gamification.** XP, levels, badges, weekly streaks, and class leaderboards keep students engaged.
+6. **Role-based dashboards.** Students, instructors, and admins each get their own interface.
+
+---
+
+## Roles and pages
+
+| Role | What they can do |
+|------|------------------|
+| **Student** | Join classes with a code, see a to-do list, write code in a Monaco editor, run visible tests, ask the AI tutor, submit, earn XP and badges, view the class leaderboard |
+| **Instructor** | Create classes, build assignments with test cases and tutor settings, review submissions and flags, compare similar submissions, export scores, archive classes |
+| **Admin** | Approve or decline instructor requests, manage AI provider keys, check system status, view the research study results |
+
+### Key routes
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Public landing page |
+| `/login`, `/signup` | Authentication with role selection |
+| `/research/questionnaire` | Public, anonymous evaluation questionnaire |
+| `/dashboard/student` | Home, to-do, archive, class pages, assignment workspace |
+| `/dashboard/student/assignments/[id]` | Workspace with resizable instructions, editor, console, and tutor panels |
+| `/dashboard/instructor` | Home with stats, assignments table, and class join codes |
+| `/dashboard/instructor/assignments/new` and `.../[id]/edit` | Assignment form with live checklist and local drafts |
+| `/dashboard/instructor/submissions` | Assignment list, per-assignment overview, per-student review, side-by-side compare |
+| `/dashboard/admin` | Platform overview, instructor requests, system status |
+| `/dashboard/admin/approvals` | Pending and reviewed instructors |
+| `/dashboard/admin/study-results` | Overview, Items, Comments, and Respondents tabs, with `.xlsx` export |
+| `/dashboard/admin/settings` | AI provider keys and system status |
+
+Dashboard navigation shows a blurred loading overlay with a beating Pace heart for at least 1.5 seconds.
+
+### Student flow
 
 ```mermaid
 flowchart TD
-    A[Student Login] --> B[Student Dashboard]
-    B --> C[Join Class via Code]
-    B --> D[View Assignments]
-    B --> E[View Leaderboard]
-    D --> F[Open Workspace]
-    F --> G[Write Code in Editor]
-    F --> H[Chat with AI Tutor]
-    H --> I{Hearts Available?}
-    I -->|Yes| J[Deduct Heart + Send Message]
-    J --> K[Receive Tiered Hint via Stream]
-    I -->|No| L[Wait for Regeneration]
-    G --> M[Run Code - Visible Tests]
-    M --> N[View Results in Console]
-    G --> O[Submit Code - All Tests]
-    O --> P[Calculate Score]
-    P --> Q[Award XP]
-    Q --> R[Check Badges]
-    R --> S[Update Streak]
-    S --> T[Update Leaderboard Position]
+    A[Student logs in] --> B[Student home]
+    B --> C[Join a class with a code]
+    B --> D[Open an assignment]
+    D --> E[Write code in the editor]
+    D --> F[Ask the AI tutor]
+    F --> G{Hearts available?}
+    G -->|Yes| H[Spend a heart and stream a tiered hint]
+    G -->|No| I[Wait for a heart to refill]
+    E --> J[Run visible tests]
+    E --> K[Submit against all tests]
+    K --> L[Score, XP, badges, streak]
+    L --> M[Leaderboard updates]
 ```
 
-### Instructor Data Flow
+### Instructor flow
 
 ```mermaid
 flowchart TD
-    A[Instructor Login] --> B{Account Approved?}
-    B -->|No| C[Pending Approval Page]
-    B -->|Yes| D[Instructor Dashboard]
-    D --> E[Create Class]
-    E --> F[Generate Join Code]
-    D --> G[Create Assignment]
-    G --> H[Set Instructions + Language]
-    H --> I[Add Test Cases]
-    I --> J[Set Visible / Hidden]
-    G --> K[Configure Hearts + Regen Time]
-    D --> L[Configure AI Provider]
-    L --> M[Select Provider + Enter API Key]
-    M --> N[Encrypt + Store Key]
-    D --> O[View Submissions]
-    O --> P[View Assignment Scores Table]
-    P --> Q[View Individual Submission Detail]
-    Q --> R[See Code + Score + Behavioral Signals]
+    A[Instructor signs up] --> B{Approved by admin?}
+    B -->|No| C[Pending approval page]
+    B -->|Yes| D[Instructor home]
+    D --> E[Create a class and share the join code]
+    D --> F[Create an assignment]
+    F --> G[Instructions, language, due date]
+    F --> H[Visible and hidden test cases]
+    F --> I[Hearts per student and refill time]
+    D --> J[Review submissions]
+    J --> K[Scores, hearts used, risk and similarity flags]
+    K --> L[Open a student's code, tutor chat, and tests]
+    K --> M[Compare two similar submissions]
+    J --> N[AI summary and CSV export]
 ```
 
-### Admin Data Flow
+### Admin flow
 
 ```mermaid
 flowchart TD
-    A[Admin Login] --> B[Admin Dashboard]
-    B --> C[View Pending Instructors]
-    C --> D[Review Instructor Request]
-    D --> E{Approve?}
-    E -->|Yes| F[Set Status to Approved]
-    E -->|No| G[Reject Request]
-    B --> H[System Settings]
-    H --> I[Manage AI API Keys]
-    I --> J[Add/Update Groq Key]
-    I --> K[Add/Update Google Key]
-    J --> L[Encrypt with AES-256-GCM]
-    K --> L
-    L --> M[Store in SystemSetting Table]
-    M --> N[Available as Fallback for All Classes]
+    A[Admin logs in] --> B[Platform overview]
+    B --> C[Instructor requests]
+    C --> D{Decision}
+    D -->|Approve| E[Instructor can create classes]
+    D -->|Decline| F[Instructor sees a declined notice]
+    B --> G[Settings]
+    G --> H[Encrypt and store AI provider keys]
+    B --> I[Study results]
+    I --> J[Acceptability, reliability, comparison, themes]
+    I --> K[Export workbook]
 ```
 
 ---
 
-## Architecture Design
+## The research study
 
-### High-Level System Architecture
+PACE is evaluated with a technology acceptance questionnaire covering four constructs: perceived usefulness (PU), perceived ease of use (PEOU), attitude toward use (ATU), and behavioral intention (BI). Each construct has five statements rated from 1 to 5.
+
+- **Collecting responses.** Participants answer at `/research/questionnaire` without logging in. They choose a student or instructor version, answer a short "About you" section, rate 20 statements, and may leave three optional comments. Responses are stored anonymously in the `study_responses` table with no user link.
+- **Reading results.** Admins see weighted means with interpretation bands, Cronbach's alpha per construct, a Mann-Whitney U comparison of students and instructors, an items view with the distribution of answers per statement, and a comments view.
+- **Coding comments.** Admins tag each comment with one or more themes and can add new themes.
+- **Closing.** Closing the questionnaire stops new responses and switches reliability from the pilot sample to the final data.
+- **Export.** Results download as an `.xlsx` workbook.
+
+The student target uses Slovin's formula (N = 652, e = 0.05, giving 248 students).
+
+---
+
+## Architecture
+
+### System overview
 
 ```mermaid
 graph TB
-    subgraph Client["Browser (React 19)"]
-        UI[Next.js App Router + shadcn/ui]
-        Editor[Monaco Code Editor]
-        Chat[AI Chat Panel - useChat hook]
+    subgraph Client["Browser"]
+        UI[Next.js App Router and shadcn/ui]
+        Editor[Monaco editor]
+        Chat[AI chat panel]
     end
 
-    subgraph Vercel["Vercel (sin1 region)"]
-        Pages[Server Components / Pages]
-        Actions[Server Actions]
-        API[API Route - /api/chat]
-        MW[Middleware - Auth Guard]
+    subgraph Vercel["Vercel"]
+        Pages[Server components]
+        Actions[Server actions]
+        API["API route /api/chat"]
+        Proxy["proxy.ts (auth and role guard)"]
     end
 
-    subgraph External["External Services"]
-        Supabase[(Supabase PostgreSQL + Auth)]
-        Judge0[Judge0 Cloud API]
-        LLM[LLM Providers]
+    subgraph External["External services"]
+        Supabase[(Supabase Postgres and Auth)]
+        Judge0[Judge0 cloud]
+        LLM[LLM providers]
     end
 
     UI --> Pages
     Editor --> Actions
-    Chat -->|SSE Stream| API
-    MW --> Pages
-    MW --> Actions
+    Chat -->|streamed response| API
+    Proxy --> Pages
     Pages --> Supabase
     Actions --> Supabase
     Actions --> Judge0
     API --> Supabase
-    API -->|streamText| LLM
-
-    LLM -->|Groq - llama-3.3-70b| API
-    LLM -->|OpenAI - gpt-4o-mini| API
-    LLM -->|Anthropic - claude-3.5-haiku| API
-    LLM -->|Google - gemini-1.5-flash| API
+    API --> LLM
 ```
 
-### Database Entity Relationship Diagram
+### Data model
 
 ```mermaid
 erDiagram
+    User ||--o{ Class : teaches
     User ||--o{ Enrollment : enrolls
-    User ||--o{ Classroom : creates
     User ||--o{ Submission : submits
     User ||--o{ ChatMessage : sends
     User ||--o{ HeartsState : has
     User ||--o{ XpEvent : earns
-    User ||--o{ UserBadge : achieves
-    User ||--|| Streak : maintains
+    User ||--o{ UserBadge : earns
+    User ||--o{ Notification : receives
+    User ||--o| Streak : keeps
 
-    Classroom ||--o{ Enrollment : contains
-    Classroom ||--o{ AssignmentClass : links
+    Class ||--o{ Enrollment : has
+    Class ||--o{ AssignmentClass : assigns
+    Class ||--o{ Post : stream
 
-    Assignment ||--o{ AssignmentClass : links
+    Assignment ||--o{ AssignmentClass : assigned_to
     Assignment ||--o{ TestCase : has
-    Assignment ||--o{ HeartsState : tracks
     Assignment ||--o{ Submission : receives
+    Assignment ||--o{ HeartsState : tracks
     Assignment ||--o{ ChatMessage : contains
+    Assignment ||--o{ CodeDraft : autosaves
 
+    Post ||--o{ Comment : has
     Badge ||--o{ UserBadge : awarded
-
-    User {
-        string id PK
-        string email
-        string role
-        string approvalStatus
-        datetime createdAt
-    }
-
-    Classroom {
-        string id PK
-        string name
-        string instructorId FK
-        string joinCode UK
-        string aiProvider
-        string aiApiKeyEnc
-        int leaderboardSize
-    }
-
-    Assignment {
-        string id PK
-        string title
-        text instructions
-        string language
-        datetime dueDate
-        int heartsCount
-        int heartsRegenMinutes
-        string createdBy FK
-    }
-
-    TestCase {
-        string id PK
-        string assignmentId FK
-        text input
-        text expectedOutput
-        boolean visible
-    }
-
-    Submission {
-        string id PK
-        string studentId FK
-        string assignmentId FK
-        text code
-        float score
-        json testResults
-        json behavioralSignals
-        datetime submittedAt
-    }
-
-    HeartsState {
-        string studentId PK
-        string assignmentId PK
-        int currentCount
-        datetime lastRegenAt
-        int totalSpent
-    }
-
-    ChatMessage {
-        string id PK
-        string studentId FK
-        string assignmentId FK
-        string role
-        text content
-        datetime createdAt
-    }
-
-    XpEvent {
-        string id PK
-        string studentId FK
-        string eventType
-        int xpAmount
-        string assignmentId
-    }
-
-    Badge {
-        string id PK
-        string name UK
-        string description
-        string condition
-    }
-
-    Streak {
-        string studentId PK
-        int currentStreak
-        int lastSubmissionWeek
-    }
 ```
 
-### Request Flow — AI Tutor Chat
+Two tables stand alone: `SystemSetting` (key and value store for provider keys and study flags) and `StudyResponse` (anonymous questionnaire answers).
+
+### Tutor request flow
 
 ```mermaid
 sequenceDiagram
-    participant S as Student Browser
+    participant S as Student
     participant API as /api/chat
-    participant DB as PostgreSQL
-    participant LLM as LLM Provider
+    participant DB as Postgres
+    participant LLM as LLM provider
 
-    S->>API: POST {assignmentId, message, currentCode, lastRunResults}
-    API->>DB: Verify auth + check submission status
-    API->>DB: getOrRegenerateHearts()
-    alt Hearts > 0
-        API->>DB: Deduct 1 heart
-        API->>DB: Save user message
-        API->>DB: Fetch full chat history
-        API->>LLM: streamText(systemPrompt + history)
-        LLM-->>S: SSE token stream (real-time)
-        LLM-->>API: onFinish(fullText)
-        API->>DB: Save assistant message
-    else Hearts = 0
-        API-->>S: 403 "No hearts remaining"
+    S->>API: message, current code, last run results
+    API->>DB: verify auth, regenerate hearts
+    alt hearts available
+        API->>DB: spend a heart, save message
+        API->>LLM: stream with tier-aware system prompt
+        LLM-->>S: token stream
+        API->>DB: save reply when finished
+    else no hearts
+        API-->>S: 403 no hearts remaining
     end
 ```
 
-### Request Flow — Code Execution & Submission
+### Submission flow
 
 ```mermaid
 sequenceDiagram
-    participant S as Student Browser
-    participant SA as Server Action
-    participant DB as PostgreSQL
-    participant J as Judge0 Cloud
+    participant S as Student
+    participant SA as Server action
+    participant J as Judge0
+    participant DB as Postgres
 
-    S->>SA: submitCode(assignmentId, code, behavioralSignals)
-    SA->>DB: Verify auth, no prior submission, not past due
-    SA->>DB: Fetch ALL test cases (visible + hidden)
-    loop Each Test Case
-        SA->>J: POST /submissions {source_code, stdin, expected_output}
-        J-->>SA: {stdout, stderr, compile_output, status}
+    S->>SA: submit code and behavioral signals
+    SA->>DB: check auth, due date, no prior submission
+    SA->>DB: load all test cases
+    loop each test case
+        SA->>J: run with stdin
+        J-->>SA: stdout, stderr, status
     end
-    SA->>SA: Compare outputs, calculate score
-    SA->>DB: Create Submission record
-    SA->>SA: awardSubmissionXp(score, hintsUsed)
-    SA->>DB: Create XpEvent records
-    SA->>DB: Check & award badges
-    SA->>DB: Update streak
-    SA-->>S: {score, testResults}
+    SA->>SA: compare output, compute score and risk
+    SA->>DB: save submission
+    SA->>DB: award XP, badges, streak
+    SA-->>S: score and test results
 ```
 
 ---
 
-## Detailed Framework Diagram
+## How the main features work
 
-```mermaid
-graph LR
-    subgraph Frontend["Frontend Layer"]
-        direction TB
-        NextApp[Next.js 16 App Router]
-        ShadcnUI[shadcn/ui Components]
-        Monaco[Monaco Editor]
-        AIChat[useChat - @ai-sdk/react]
-        TailwindCSS[Tailwind CSS v4]
-    end
+### Tiered hints
 
-    subgraph Backend["Backend Layer"]
-        direction TB
-        ServerActions[Server Actions]
-        APIRoutes[API Routes]
-        Middleware[Auth Middleware]
-        PrismaORM[Prisma ORM v7]
-    end
+The tier is based on hearts spent, capped at five.
 
-    subgraph Services["External Services"]
-        direction TB
-        SupabaseAuth[Supabase Auth]
-        SupabaseDB[(Supabase PostgreSQL)]
-        Judge0API[Judge0 Cloud CE]
-        GroqAI[Groq - Llama 3.3 70B]
-        GoogleAI[Google - Gemini 1.5 Flash]
-        OpenAI[OpenAI - GPT-4o Mini]
-        AnthropicAI[Anthropic - Claude 3.5 Haiku]
-    end
+| Tier | Level name | What the tutor gives |
+|------|------------|----------------------|
+| 1 | Gentle nudge | A vague conceptual nudge |
+| 2 | Concept hint | A general strategy |
+| 3 | Specific steps | Specific logic, step by step |
+| 4 | Guided walkthrough | A structural outline of control flow and variables |
+| 5 | Near-pseudocode | A near-pseudocode translation |
 
-    subgraph Security["Security Layer"]
-        direction TB
-        AES[AES-256-GCM Encryption]
-        RateLimit[Rate Limiting - 5 req/min]
-        RoleGuard[Role-Based Access Control]
-        IntentGuard[AI Intent Guardrail]
-    end
+An intent guardrail makes the tutor decline requests for a full solution or corrected code, while still explaining code, tracing output, and pointing at where a bug likely is.
 
-    Frontend --> Backend
-    Backend --> Services
-    Security -.-> Backend
-```
+### Hearts
 
----
+Each student has a heart count per assignment. When hearts are below the maximum, they regenerate one per cooldown period, using the elapsed time since the last refill. The instructor sets both the maximum and the cooldown for each assignment.
 
-## Algorithms
+### Integrity signals
 
-### 1. Tiered Hint Algorithm
+- **Behavioral risk score.** Paste size relative to final code, paste timing, idle time before pasting, keystroke ratio, and low-effort run patterns combine into a Low, Medium, or High flag.
+- **Similarity.** Submissions are tokenized with tree-sitter and compared with winnowing fingerprints. Pairs at 40 percent or higher are flagged, and an instructor can open both submissions side by side.
 
-The AI tutor uses a progressive disclosure model based on hearts spent:
+### XP, levels, and badges
 
-```mermaid
-flowchart TD
-    A[Student sends message] --> B{Hearts > 0?}
-    B -->|No| C[Reject - 403]
-    B -->|Yes| D[Deduct 1 heart]
-    D --> E[Calculate tier = min 5 max 1 totalSpent]
-    E --> F{Tier Level}
-    F -->|Tier 1| G[Vague conceptual nudge]
-    F -->|Tier 2| H[General strategy hint]
-    F -->|Tier 3| I[Specific logic step-by-step]
-    F -->|Tier 4| J[Structural outline with control flow]
-    F -->|Tier 5| K[Near-pseudocode translation]
-    G & H & I & J & K --> L[Append to system prompt]
-    L --> M[Stream response with Socratic guardrail]
-    M --> N{Student asks for full solution?}
-    N -->|Yes| O[Reject - ask Socratic questions instead]
-    N -->|No| P[Deliver hint at tier level]
-```
+| Event | XP |
+|-------|----|
+| Passing tests | 10 per test-case share of the score |
+| Perfect score | 50 |
+| Submitting with no hints | 30 |
+| Submitting with 1 or 2 hints | 15 |
+| Keeping a weekly streak | 20 |
 
-### 2. Hearts Regeneration Algorithm
+Level thresholds in total XP: 0, 100, 250, 500, 800, 1200, 1700, 2300, 3000, 4000, 5000.
 
-```
-function getOrRegenerateHearts(studentId, assignmentId):
-    state = DB.find(studentId, assignmentId)
-    if state is null:
-        state = DB.create(studentId, assignmentId, count=maxHearts)
-        return state
+Badges: First Submit, Perfect Score, Five Perfects, 5-Week Streak, 10-Week Streak, XP Master (1000 XP), and XP Legend (5000 XP).
 
-    if state.currentCount >= maxHearts:
-        return state
+### AI provider selection
 
-    elapsed = now() - state.lastRegenAt
-    cooldown = assignment.heartsRegenMinutes * 60 * 1000
-    heartsToRestore = floor(elapsed / cooldown)
+1. If the class has its own provider and key, that is used first. Keys are encrypted with AES-256-GCM before storage.
+2. Otherwise the default is Groq from the `GROQ_API_KEY` environment variable.
+3. Then Google from `GOOGLE_GENERATIVE_AI_API_KEY`.
+4. Finally any key an admin saved in system settings.
 
-    if heartsToRestore > 0:
-        newCount = min(maxHearts, state.currentCount + heartsToRestore)
-        state.currentCount = newCount
-        state.lastRegenAt = lastRegenAt + (heartsToRestore * cooldown)
-        DB.update(state)
-
-    return state
-```
-
-### 3. XP Award Algorithm
-
-```
-function awardSubmissionXp(student, assignment, score, hintsUsed):
-    xpEvents = []
-
-    // Proportional XP for passing test cases
-    if score > 0:
-        caseXp = round((score / 100) * 50)
-        xpEvents.push({type: "pass_case", amount: caseXp})
-
-    // Perfect score bonus
-    if score == 100:
-        xpEvents.push({type: "perfect_score", amount: 50})
-
-    // Hint efficiency bonuses
-    if hintsUsed == 0:
-        xpEvents.push({type: "no_hints", amount: 30})
-    else if hintsUsed <= 2:
-        xpEvents.push({type: "few_hints", amount: 15})
-
-    // Streak bonus (weekly cadence)
-    currentWeek = getISOWeek(now())
-    if streak.lastSubmissionWeek == currentWeek - 1:
-        streak.currentStreak += 1
-        xpEvents.push({type: "streak", amount: 20})
-    else if streak.lastSubmissionWeek != currentWeek:
-        streak.currentStreak = 1
-
-    // Badge checks
-    checkAndAwardBadges(student, totalXp, streak, submissions)
-
-    return xpEvents
-```
-
-### 4. Code Execution Scoring Algorithm
-
-```
-function scoreSubmission(code, language, testCases):
-    results = []
-    for each testCase in testCases:
-        response = Judge0.submit({
-            source_code: code,
-            language_id: LANGUAGE_MAP[language],
-            stdin: testCase.input,
-            expected_output: testCase.expectedOutput,
-            cpu_time_limit: 10
-        })
-
-        passed = normalize(response.stdout) == normalize(testCase.expectedOutput)
-        results.push({testCase, passed, stdout, stderr, compileOutput})
-
-    score = (results.filter(r => r.passed).length / results.length) * 100
-    return {score, results}
-
-function normalize(output):
-    return output.trim().replaceAll("\r\n", "\n")
-```
-
-### 5. AI Provider Fallback Algorithm
-
-```mermaid
-flowchart TD
-    A[Request arrives] --> B[Lookup assignment's class]
-    B --> C{Class has AI provider configured?}
-    C -->|Yes| D[Decrypt instructor's API key]
-    D --> E{Key valid?}
-    E -->|Yes| F[Use instructor's provider]
-    E -->|No| G[Fallback to default]
-    C -->|No| G
-    G --> H{GROQ_API_KEY env set?}
-    H -->|Yes| I[Use Groq - llama-3.3-70b]
-    H -->|No| J{GOOGLE_AI_KEY env set?}
-    J -->|Yes| K[Use Google - gemini-1.5-flash]
-    J -->|No| L[Check SystemSetting table]
-    L --> M{Admin keys found?}
-    M -->|Yes| N[Use first valid admin key]
-    M -->|No| O[Error: No AI key configured]
-```
+If none are available, the request fails with a clear error.
 
 ---
 
-## Gamification Design
-
-### Level Progression
-
-| Level | XP Required | Cumulative |
-|-------|-------------|------------|
-| 1 | 0 | 0 |
-| 2 | 100 | 100 |
-| 3 | 250 | 250 |
-| 4 | 500 | 500 |
-| 5 | 800 | 800 |
-| 6 | 1,200 | 1,200 |
-| 7 | 1,700 | 1,700 |
-| 8 | 2,300 | 2,300 |
-| 9 | 3,000 | 3,000 |
-| 10 | 4,000 | 4,000 |
-| 11 | 5,000 | 5,000 |
-
-### Badges
-
-| Badge | Condition |
-|-------|-----------|
-| First Submit | Complete first assignment submission |
-| Perfect Score | Score 100% on any assignment |
-| Five Perfect | Score 100% on 5 assignments |
-| Streak 5 | Maintain 5-week submission streak |
-| Streak 10 | Maintain 10-week submission streak |
-| XP 1000 | Accumulate 1,000 total XP |
-| XP 5000 | Accumulate 5,000 total XP |
-
----
-
-## Tech Stack Summary
+## Tech stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4, shadcn/ui |
-| Code Editor | Monaco Editor (@monaco-editor/react) |
-| AI Chat | Vercel AI SDK (useChat + streamText) |
-| Backend | Next.js Server Actions + API Routes |
-| Database | PostgreSQL via Supabase |
-| ORM | Prisma 7 (with @prisma/adapter-pg) |
-| Auth | Supabase Auth (email/password + role metadata) |
-| Code Execution | Judge0 Cloud API (sandboxed) |
-| AI Providers | Groq, OpenAI, Anthropic, Google (multi-provider with fallback) |
-| Encryption | AES-256-GCM (for API keys at rest) |
-| Deployment | Vercel (Singapore region) |
+| Framework | Next.js 16 (App Router), React 19, TypeScript 5 |
+| UI | Tailwind CSS 4, shadcn/ui, Base UI, lucide-react |
+| Editor | Monaco (`@monaco-editor/react`) |
+| Panels | `react-resizable-panels` |
+| AI | Vercel AI SDK with Groq, Google, OpenAI, and Anthropic providers |
+| Database | PostgreSQL on Supabase |
+| ORM | Prisma 7 with `@prisma/adapter-pg` |
+| Auth | Supabase Auth with role and approval metadata |
+| Code execution | Judge0 cloud (Python, C, JavaScript, C#) |
+| Similarity | `web-tree-sitter` and winnowing |
+| Reports | `exceljs` for the study workbook |
+| Tests | Vitest |
+| Hosting | Vercel |
 
 ---
 
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
-- Node.js 18+
-- PostgreSQL (or Supabase project)
-- Judge0 Cloud API access
-- At least one LLM API key (Groq recommended)
+- Node.js 20 or newer
+- A Supabase project (Postgres and Auth)
+- At least one LLM API key (Groq is the default)
 
-### Environment Variables
+### Environment variables
 
-Copy `.env.example` and fill in:
+Copy `.env.example` to `.env.local` and fill in the values.
 
-```bash
-DATABASE_URL=
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SERVICE_ROLE_KEY=
-ENCRYPTION_KEY=
-GROQ_API_KEY=
-GOOGLE_GENERATIVE_AI_API_KEY=
-JUDGE0_API_KEY=
-```
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | Postgres connection string. On Vercel, use the transaction pooler (port 6543). |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
+| `SERVICE_ROLE_KEY` | Supabase service role key, used for admin actions |
+| `ENCRYPTION_KEY` | Secret used to encrypt stored API keys |
+| `GROQ_API_KEY` | Default AI provider |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Backup AI provider |
+| `GITHUB_TOKEN` | Creates issues from the in-app report-an-issue button |
+| `NEXT_PUBLIC_ADMIN_CONTACT_EMAIL` | Shown to instructors waiting for approval |
 
-### Development
+Judge0 runs on the public cloud endpoint and needs no key.
+
+Never commit real `.env` files. Only `.env.example` is tracked.
+
+### Run locally
 
 ```bash
 npm install
@@ -596,35 +378,81 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-### Production Build
+Row level security is enabled on every table in the Supabase project. If you add a model, enable it on the new table as well.
+
+### Seed demo classes
+
+With an approved instructor and a student account already created:
+
+```bash
+node scripts/seed-classes.js instructor@example.com student@example.com
+```
+
+This creates three classes with five assignments each and enrolls the student. It skips classes that already exist.
+
+### Scripts
+
+| Command | What it does |
+|---------|--------------|
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run start` | Run the production build |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run the Vitest suite once |
+| `npm run test:watch` | Run Vitest in watch mode |
+
+---
+
+## Testing
+
+Pure logic (scoring helpers, statistics, form validation, date helpers, the study analysis) has unit tests that run without a database. A number of server action tests create and delete real rows, so they need a working `DATABASE_URL`. Point them at a development database, not production.
+
+```bash
+npm test
+```
+
+---
+
+## Deployment
+
+The app deploys to Vercel from `main`. The build command is set in `vercel.json`:
 
 ```bash
 npx prisma generate && next build
 ```
 
+Notes for production:
+
+- Use the Supabase **transaction pooler** (port 6543) for `DATABASE_URL`. The session pooler has a small connection cap that serverless functions can exhaust.
+- The Prisma pool is capped at three connections per instance with a short idle timeout.
+- The function region is Singapore (`sin1`).
+
 ---
 
-## Project Structure
+## Project structure
 
 ```
 fr-gaits/
 ├── app/
-│   ├── layout.tsx              # Root layout (fonts, Toaster)
-│   ├── page.tsx                # Root redirect
-│   ├── login/                  # Login page
-│   ├── signup/                 # Signup page
-│   ├── pending-approval/       # Instructor waiting page
+│   ├── actions/              Server actions (classes, assignments, submissions, study, admin)
+│   ├── api/chat/             Streaming AI tutor endpoint
 │   ├── dashboard/
-│   │   ├── student/            # Student dashboard + workspace
-│   │   ├── instructor/         # Instructor dashboard + submissions
-│   │   └── admin/              # Admin dashboard + settings
-│   ├── actions/                # Server actions
-│   └── api/chat/               # AI tutor streaming endpoint
+│   │   ├── student/          Home, to-do, archive, classes, workspace
+│   │   ├── instructor/       Home, assignments, submissions, classes, archive
+│   │   └── admin/            Overview, approvals, study results, settings
+│   ├── research/questionnaire/   Public evaluation questionnaire
+│   ├── login/ signup/ ...    Auth and legal pages
+│   └── page.tsx              Landing page
 ├── components/
-│   ├── ui/                     # shadcn/ui primitives
-│   └── features/               # Domain feature components
-├── lib/                        # Core utilities (prisma, AI, auth, gamification)
-├── prisma/schema.prisma        # Database schema
-├── proxy.ts                    # Auth middleware
-└── vercel.json                 # Deployment config
+│   ├── ui/                   shadcn/ui primitives
+│   └── features/             Feature folders (student, instructor, admin, research, landing, ...)
+├── hooks/                    Shared React hooks
+├── lib/                      Domain logic (hearts, gamification, similarity, study analysis, data loaders)
+├── prisma/schema.prisma      Database schema
+├── scripts/                  One-off scripts such as the demo class seeder
+├── public/                   Static assets and logos
+├── proxy.ts                  Session refresh and role-based route guard
+└── vercel.json               Build and region configuration
 ```
+
+Pages stay thin: each one fetches data on the server and renders a single feature component from `components/features`.
