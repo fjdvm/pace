@@ -3,6 +3,7 @@ import { PaceTag } from "@/components/features/student/shared/pace-tag";
 import { PaceIcon } from "@/components/features/student/shared/pace-icon";
 import { formatDueSentence, isUrgent } from "@/lib/student-dates";
 import type { AutosaveStatus } from "@/components/features/assignments/use-autosave";
+import { FeedbackButton } from "@/components/features/feedback/feedback-button";
 import { SaveIndicator } from "./save-indicator";
 
 type WorkspaceTopBarProps = {
@@ -42,6 +43,7 @@ export function WorkspaceTopBar(props: WorkspaceTopBarProps) {
       </PaceTag>
       <div className="flex-1" />
       <SaveIndicator status={props.autosaveStatus} isSubmitted={props.isSubmitted} />
+      <FeedbackButton inline />
       {!props.isSubmitted && (
         <>
           <button
