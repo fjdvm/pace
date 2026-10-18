@@ -1,3 +1,4 @@
+import { formatMean, formatSd, hasData } from "./format";
 import { StudyCard } from "./study-card";
 import { PositionTrack } from "./position-track";
 import { InterpretationTag } from "./interpretation-tag";
@@ -41,16 +42,20 @@ export function AcceptabilityCard({ constructs }: { constructs: StudyResults["co
               <span className="text-xs text-pace-muted">{c.name}</span>
             </span>
             <span className="text-sm font-bold text-pace-ink">
-              {c.student.mean.toFixed(2)} <span className="font-normal text-pace-muted">({c.student.sd.toFixed(2)})</span>
+              {formatMean(c.student)} <span className="font-normal text-pace-muted">{formatSd(c.student)}</span>
             </span>
             <span className="text-sm font-bold text-pace-ink">
-              {c.instructor.mean.toFixed(2)}{" "}
-              <span className="font-normal text-pace-muted">({c.instructor.sd.toFixed(2)})</span>
+              {formatMean(c.instructor)}{" "}
+              <span className="font-normal text-pace-muted">{formatSd(c.instructor)}</span>
             </span>
-            <PositionTrack student={c.student.mean} instructor={c.instructor.mean} />
+            {hasData(c.student) && hasData(c.instructor) ? (
+              <PositionTrack student={c.student.mean} instructor={c.instructor.mean} />
+            ) : (
+              <span className="text-xs text-pace-muted">Needs both groups</span>
+            )}
             <span className="flex flex-col items-start gap-1.5">
-              <InterpretationTag group="S" label={c.student.label} />
-              <InterpretationTag group="I" label={c.instructor.label} />
+              {hasData(c.student) && <InterpretationTag group="S" label={c.student.label} />}
+              {hasData(c.instructor) && <InterpretationTag group="I" label={c.instructor.label} />}
             </span>
           </div>
         ))}

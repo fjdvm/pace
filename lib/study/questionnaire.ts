@@ -1,48 +1,74 @@
 export type ConstructId = "PU" | "PEOU" | "ATU" | "BI";
 export type ThemeTone = "green" | "red" | "amber" | "blue" | "neutral";
 
+export const ITEMS_PER_CONSTRUCT = 5;
+
 export const CONSTRUCTS: { id: ConstructId; name: string; items: string[] }[] = [
   {
     id: "PU",
     name: "Perceived usefulness",
     items: [
-      "PACE helps me understand programming concepts faster.",
-      "The hint levels help me fix my own mistakes.",
-      "PACE improves the quality of my code.",
-      "I find PACE useful for my programming course.",
+      "Using PACE lets me write, run, and submit programming assignments without switching between separate tools.",
+      "The AI tutor\u2019s hints help me find where my code goes wrong.",
+      "The AI tutor\u2019s explanations help me understand the concepts used in the assignment.",
+      "The hearts limit makes me try to solve the problem on my own before asking the AI tutor.",
+      "Overall, PACE is useful for completing programming assignments.",
     ],
   },
   {
     id: "PEOU",
     name: "Perceived ease of use",
     items: [
-      "Learning to use PACE was easy for me.",
-      "The workspace is clear and easy to navigate.",
-      "Asking the tutor for help is simple.",
-      "It is easy to see my hearts and when they refill.",
+      "Learning to use PACE is easy for me.",
+      "Writing and running code in the PACE editor is easy.",
+      "It is easy to ask the AI tutor a question and understand its answer.",
+      "The hearts counter and regeneration timer are easy to understand.",
+      "Overall, PACE is easy to use.",
     ],
   },
   {
     id: "ATU",
     name: "Attitude toward use",
     items: [
-      "Using PACE for coding practice is a good idea.",
-      "I enjoy working on assignments in PACE.",
-      "I like that the tutor guides me instead of giving answers.",
-      "Using PACE makes programming practice more pleasant.",
+      "Using PACE for programming assignments is a good idea.",
+      "I like using PACE.",
+      "I am comfortable with an AI tutor that gives hints instead of complete solutions.",
+      "Using PACE is a pleasant experience.",
+      "I would rather use PACE than switch between an LMS, an IDE, and a separate AI tool.",
     ],
   },
   {
     id: "BI",
     name: "Intention to use",
     items: [
-      "I intend to keep using PACE in my programming course.",
-      "I would use PACE again for future assignments.",
-      "I would recommend PACE to my classmates.",
-      "I plan to use PACE regularly.",
+      "I intend to use PACE for future programming assignments if it is available.",
+      "When I get stuck, I would ask PACE\u2019s AI tutor before turning to a general-purpose AI tool.",
+      "I would recommend PACE to other students.",
+      "I plan to keep using PACE throughout a programming course.",
+      "I would use PACE for practice even when my instructor does not require it.",
     ],
   },
 ];
+
+export const LIKERT_LABELS = ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"];
+
+export type QuestionnaireVersion = "student" | "instructor";
+
+export const YEAR_LEVELS = ["1st year", "2nd year", "3rd year", "4th year"];
+export const COURSE_COUNTS = ["1", "2", "3", "4", "5 or more"];
+export const AI_USAGE_OPTIONS = [
+  { id: "never", label: "Never" },
+  { id: "sometimes", label: "Sometimes" },
+  { id: "often", label: "Often" },
+];
+
+export const COMMENT_PROMPTS = [
+  { id: "helpful", label: "What did you find most helpful about PACE?" },
+  { id: "problems", label: "What problems did you encounter while using PACE?" },
+  { id: "improve", label: "What would you change or add to improve PACE?" },
+] as const;
+
+export type CommentPromptId = (typeof COMMENT_PROMPTS)[number]["id"];
 
 export const THEMES: { id: string; label: string; tone: ThemeTone }[] = [
   { id: "hints-helped", label: "Hints helped me find the bug myself", tone: "green" },
@@ -50,10 +76,10 @@ export const THEMES: { id: string; label: string; tone: ThemeTone }[] = [
   { id: "vague-hints", label: "Level 1 hints felt too vague", tone: "amber" },
   { id: "faster-runs", label: "Faster code runs", tone: "blue" },
   { id: "other", label: "Other", tone: "neutral" },
+  { id: "uncoded", label: "Not yet coded", tone: "neutral" },
 ];
 
 export const SCALE_CUTOFF = 0.7;
 export const POPULATION = 652;
 export const MARGIN_OF_ERROR = 0.05;
-export const ELIGIBLE_INSTRUCTORS = 11;
 export const PILOT_SIZE = 30;

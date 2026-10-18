@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { analyzeStudy } from "./analysis";
-import { buildSampleDataset } from "./sample-dataset";
+import { buildFixtureDataset } from "./fixtures";
 import type { Respondent, StudyDataset } from "./dataset";
 
 function respondent(id: string, role: "student" | "instructor", score: number): Respondent {
-  const answers = { PU: [score, score, score, score], PEOU: [score, score, score, score], ATU: [score, score, score, score], BI: [score, score, score, score] };
+  const answers = { PU: Array(5).fill(score), PEOU: Array(5).fill(score), ATU: Array(5).fill(score), BI: Array(5).fill(score) };
   return { id, role, submittedAt: "2026-10-03T00:00:00.000Z", answers };
 }
 
 const tiny: StudyDataset = {
   respondents: [respondent("S1", "student", 4), respondent("S2", "student", 5), respondent("I1", "instructor", 3)],
-  comments: [{ respondentId: "S1", role: "student", themeId: "hints-helped", text: "Good" }],
+  comments: [{ respondentId: "S1", role: "student", promptId: "helpful", themeId: "hints-helped", text: "Good", key: "S1:helpful" }],
   studentTarget: 10,
   instructorTarget: 2,
 };
@@ -35,12 +35,12 @@ describe("analyzeStudy on a tiny dataset", () => {
   });
 
   it("lists every questionnaire item", () => {
-    expect(results.items).toHaveLength(16);
+    expect(results.items).toHaveLength(20);
   });
 });
 
-describe("analyzeStudy on the sample dataset", () => {
-  const dataset = buildSampleDataset();
+describe("analyzeStudy on the fixture dataset", () => {
+  const dataset = buildFixtureDataset();
   const results = analyzeStudy(dataset, { final: false });
 
   it("matches the study design", () => {
@@ -50,7 +50,7 @@ describe("analyzeStudy on the sample dataset", () => {
   });
 
   it("is deterministic", () => {
-    expect(analyzeStudy(buildSampleDataset(), { final: false })).toEqual(results);
+    expect(analyzeStudy(buildFixtureDataset(), { final: false })).toEqual(results);
   });
 
   it("produces plausible Likert means and acceptable reliability", () => {
@@ -61,6 +61,15 @@ describe("analyzeStudy on the sample dataset", () => {
     expect(results.reliability.basis).toBe("pilot, n = 30");
     expect(results.reliability.minAlpha).toBeGreaterThan(0.7);
     expect(results.reliability.passes).toBe(true);
+  });
+
+  it("handles an empty dataset without inventing numbers", () => {
+    const empty = analyzeStudy({ respondents: [], comments: [], studentTarget: 248, instructorTarget: 3 }, { final: false });
+    expect(empty.responses.student).toEqual({ count: 0, target: 248 });
+    expect(empty.constructs[0].student.label).toBe("No data");
+    expect(empty.reliability.minAlpha).toBeNull();
+    expect(empty.comparison[0].result).toBe("Not enough data");
+    expect(empty.overall.label).toBe("No data");
   });
 
   it("anonymises respondents", () => {

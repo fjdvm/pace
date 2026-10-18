@@ -10,15 +10,15 @@ export default async function StudyResultsPage() {
     redirect("/login");
   }
 
-  const { dataset, results, closedAt, isSample } = await getStudyBundle();
+  const { dataset, results, closedAt } = await getStudyBundle();
   return (
     <StudyResultsView
       data={{
         results,
         closedAt,
-        isSample,
-        respondents: dataset.respondents.map(({ id, role, submittedAt }) => ({ id, role, submittedAt })),
-        comments: dataset.comments.map(({ respondentId, role, themeId, text }) => ({ respondentId, role, themeId, text })),
+        questionnairePath: "/research/questionnaire",
+        respondents: dataset.respondents.map(({ id, role, submittedAt, profile }) => ({ id, role, submittedAt, profile })),
+        comments: dataset.comments,
       }}
     />
   );

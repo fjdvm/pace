@@ -17,10 +17,10 @@ const prototype: FooterLink[] = [
 
 const research: FooterLink[] = [
   { label: "Paper", href: "https://github.com/fjdvm/fr-gaits", download: true },
-  { label: "Questionnaire", href: "https://github.com/fjdvm/fr-gaits" },
+  { label: "Questionnaire", href: "/research/questionnaire" },
 ];
 
-export function LandingFooter() {
+export function LandingFooter({ homeHref = "" }: { homeHref?: string }) {
   return (
     <footer className="bg-pace-canvas px-6 pb-10 pt-[72px]">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-12">
@@ -33,7 +33,7 @@ export function LandingFooter() {
             </p>
           </div>
           <div className="flex flex-wrap gap-x-[72px] gap-y-8">
-            <FooterColumn title="Project" links={project} />
+            <FooterColumn title="Project" links={project.map((l) => ({ ...l, href: `${homeHref}${l.href}` }))} />
             <FooterColumn title="Prototype" links={prototype} />
             <FooterColumn title="Research" links={research} />
           </div>

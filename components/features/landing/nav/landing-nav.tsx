@@ -3,7 +3,7 @@ import { Wordmark } from "../shared/wordmark";
 import { LandingMobileNav } from "./landing-mobile-nav";
 import { navLinks } from "./nav-links";
 
-export function LandingNav() {
+export function LandingNav({ homeHref = "" }: { homeHref?: string }) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-3.5 sm:px-7">
       <div className="mx-auto flex max-w-[1384px] items-center justify-between rounded-full border-[1.5px] border-pace-line bg-white py-2 pl-7 pr-2 shadow-[0_4px_16px_rgba(0,0,0,0.05)]">
@@ -14,7 +14,7 @@ export function LandingNav() {
           {navLinks.map((link) => (
             <a
               key={link.href}
-              href={link.href}
+              href={`${homeHref}${link.href}`}
               className="transition-colors hover:text-pace-ink"
             >
               {link.label}
@@ -28,7 +28,7 @@ export function LandingNav() {
           >
             Sign in
           </Link>
-          <LandingMobileNav />
+          <LandingMobileNav homeHref={homeHref} />
         </div>
       </div>
     </header>

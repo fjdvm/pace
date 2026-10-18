@@ -7,7 +7,7 @@ export type GroupStats = { mean: number; sd: number; label: string };
 export type StudyResults = {
   responses: Record<StudyRole, { count: number; target: number }>;
   overall: { student: number; instructor: number; label: string };
-  reliability: { basis: string; minAlpha: number; passes: boolean; constructs: { id: ConstructId; alpha: number }[] };
+  reliability: { basis: string; minAlpha: number | null; passes: boolean; constructs: { id: ConstructId; alpha: number }[] };
   constructs: { id: ConstructId; name: string; student: GroupStats; instructor: GroupStats }[];
   comparison: {
     id: ConstructId;
@@ -23,16 +23,26 @@ export type StudyResults = {
   commentCount: number;
 };
 
+export const NO_DATA = "No data";
+
 const constructScore = (respondent: Respondent, id: ConstructId) => mean(respondent.answers[id]);
 
 function describe(values: number[]): GroupStats {
+  if (values.length === 0) return { mean: 0, sd: 0, label: NO_DATA };
   const m = mean(values);
   return { mean: m, sd: sampleSd(values), label: interpretMean(m) };
 }
 
-function comparisonResult(p: number, studentMedian: number, instructorMedian: number) {
+function comparisonResult(p: number, studentMedian: number, instructorMedian: number, enough: boolean) {
+  if (!enough) return "Not enough data";
   if (p >= 0.05) return "No significant difference";
   return studentMedian > instructorMedian ? "Students rate higher" : "Instructors rate higher";
+}
+
+function overallLabel(student: number, instructor: number, both: boolean) {
+  if (!both) return NO_DATA;
+  const a = interpretMean(student);
+  return a === interpretMean(instructor) ? a : "Mixed";
 }
 
 export function analyzeStudy(dataset: StudyDataset, { final }: { final: boolean }): StudyResults {
@@ -48,7 +58,7 @@ export function analyzeStudy(dataset: StudyDataset, { final }: { final: boolean 
   }));
 
   const alphas = CONSTRUCTS.map(({ id }) => ({ id, alpha: cronbachAlpha(reliabilitySample.map((r) => r.answers[id])) }));
-  const minAlpha = alphas.length ? Math.min(...alphas.map((a) => a.alpha)) : 0;
+  const minAlpha = reliabilitySample.length >= 2 ? Math.min(...alphas.map((a) => a.alpha)) : null;
 
   const overallStudent = mean(constructs.map((c) => c.student.mean));
   const overallInstructor = mean(constructs.map((c) => c.instructor.mean));
@@ -66,14 +76,12 @@ export function analyzeStudy(dataset: StudyDataset, { final }: { final: boolean 
     overall: {
       student: overallStudent,
       instructor: overallInstructor,
-      label: interpretMean(Math.min(overallStudent, overallInstructor)) === interpretMean(Math.max(overallStudent, overallInstructor))
-        ? interpretMean(overallStudent)
-        : "Mixed",
+      label: overallLabel(overallStudent, overallInstructor, students.length > 0 && instructors.length > 0),
     },
     reliability: {
       basis: final ? `final, n = ${students.length}` : `pilot, n = ${reliabilitySample.length}`,
       minAlpha,
-      passes: alphas.every((a) => a.alpha >= SCALE_CUTOFF),
+      passes: minAlpha !== null && alphas.every((a) => a.alpha >= SCALE_CUTOFF),
       constructs: alphas,
     },
     constructs,
@@ -88,7 +96,7 @@ export function analyzeStudy(dataset: StudyDataset, { final }: { final: boolean 
         u: test.u,
         p: test.p,
         r: test.r,
-        result: comparisonResult(test.p, median(s), median(i)),
+        result: comparisonResult(test.p, median(s), median(i), s.length > 0 && i.length > 0),
       };
     }),
     items: CONSTRUCTS.flatMap(({ id, items }) =>

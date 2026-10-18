@@ -13,9 +13,15 @@ type ThemesCardProps = {
 
 export function ThemesCard({ themes, commentCount, onSeeAll }: ThemesCardProps) {
   const coded = themes.filter((t) => t.tone !== "neutral").sort((a, b) => b.count - a.count);
-  const max = Math.max(1, ...coded.map((t) => t.count));
+  const peak = Math.max(0, ...coded.map((t) => t.count));
+  const max = peak;
   return (
     <StudyCard title="Top themes in comments" subtitle={`${commentCount} comments, coded by the team · SOP 4`}>
+      {max === 0 && (
+        <p className="text-xs text-pace-muted">
+          Code comments in the Comments tab to see themes here.
+        </p>
+      )}
       <div className="flex flex-col gap-3.5">
         {coded.map((theme) => (
           <div key={theme.id} className="flex flex-col gap-1.5">
@@ -24,7 +30,7 @@ export function ThemesCard({ themes, commentCount, onSeeAll }: ThemesCardProps) 
               <span className="font-bold text-pace-ink">{theme.count}</span>
             </div>
             <div className="h-1.5 rounded-full bg-pace-sunken">
-              <div className={cn("h-full rounded-full", fills[theme.tone])} style={{ width: `${(theme.count / max) * 100}%` }} />
+              <div className={cn("h-full rounded-full", fills[theme.tone])} style={{ width: `${max ? (theme.count / max) * 100 : 0}%` }} />
             </div>
           </div>
         ))}

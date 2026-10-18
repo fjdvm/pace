@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import { CONSTRUCTS, THEMES } from "./questionnaire";
+import { COMMENT_PROMPTS, CONSTRUCTS, THEMES } from "./questionnaire";
 import type { StudyResults } from "./analysis";
 import type { StudyDataset } from "./dataset";
 
@@ -10,7 +10,7 @@ export async function buildStudyWorkbook(dataset: StudyDataset, results: StudyRe
 
   const about = workbook.addWorksheet("About");
   about.addRow(["PACE acceptability evaluation"]);
-  about.addRow(["Sample data: generated for demonstration. These are not real respondents."]);
+  about.addRow(["Anonymous responses collected through the PACE questionnaire. No names or accounts are stored."]);
 
   const summary = workbook.addWorksheet("Constructs");
   summary.addRow(["Construct", "Students mean", "Students SD", "Students interpretation", "Instructors mean", "Instructors SD", "Instructors interpretation"]);
@@ -31,15 +31,15 @@ export async function buildStudyWorkbook(dataset: StudyDataset, results: StudyRe
   }
 
   const respondents = workbook.addWorksheet("Respondents");
-  respondents.addRow(["Respondent", "Role", "Submitted", ...CONSTRUCTS.flatMap((c) => c.items.map((_, i) => `${c.id}${i + 1}`))]);
+  respondents.addRow(["Respondent", "Role", "Submitted", "Year level", "Courses taken", "AI tool use", ...CONSTRUCTS.flatMap((c) => c.items.map((_, i) => `${c.id}${i + 1}`))]);
   for (const r of dataset.respondents) {
-    respondents.addRow([r.id, r.role, r.submittedAt, ...CONSTRUCTS.flatMap((c) => r.answers[c.id])]);
+    respondents.addRow([r.id, r.role, r.submittedAt, r.profile?.yearLevel ?? "", r.profile?.coursesTaken ?? "", r.profile?.aiUsage ?? "", ...CONSTRUCTS.flatMap((c) => r.answers[c.id])]);
   }
 
   const comments = workbook.addWorksheet("Comments");
-  comments.addRow(["Respondent", "Role", "Theme", "Comment"]);
+  comments.addRow(["Respondent", "Role", "Prompt", "Theme", "Comment"]);
   for (const c of dataset.comments) {
-    comments.addRow([c.respondentId, c.role, THEMES.find((t) => t.id === c.themeId)?.label ?? c.themeId, c.text]);
+    comments.addRow([c.respondentId, c.role, COMMENT_PROMPTS.find((p) => p.id === c.promptId)?.label ?? c.promptId, THEMES.find((t) => t.id === c.themeId)?.label ?? c.themeId, c.text]);
   }
 
   for (const sheet of workbook.worksheets) sheet.getRow(1).font = { bold: true };

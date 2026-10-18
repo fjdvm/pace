@@ -1,4 +1,4 @@
-import { ELIGIBLE_INSTRUCTORS, MARGIN_OF_ERROR, POPULATION, type ConstructId } from "./questionnaire";
+import { ITEMS_PER_CONSTRUCT, MARGIN_OF_ERROR, POPULATION, type ConstructId } from "./questionnaire";
 import { slovinSampleSize } from "./stats";
 import type { Respondent, StudyComment, StudyDataset, StudyRole } from "./dataset";
 
@@ -81,7 +81,7 @@ function makeRespondent(role: StudyRole, index: number, random: () => number): R
   const effect = gaussian(random) * 0.55;
   const answers = {} as Record<ConstructId, number[]>;
   for (const id of Object.keys(TARGET_MEANS[role]) as ConstructId[]) {
-    answers[id] = Array.from({ length: 4 }, () => {
+    answers[id] = Array.from({ length: ITEMS_PER_CONSTRUCT }, () => {
       const raw = TARGET_MEANS[role][id] + effect + gaussian(random) * 0.45;
       return Math.min(5, Math.max(1, Math.round(raw)));
     });
@@ -105,7 +105,7 @@ function shuffle<T>(items: T[], random: () => number) {
   return copy;
 }
 
-export function buildSampleDataset(): StudyDataset {
+export function buildFixtureDataset(): StudyDataset {
   const random = mulberry32(20261003);
   const respondents = [
     ...Array.from({ length: STUDENT_COUNT }, (_, i) => makeRespondent("student", i, random)),
@@ -119,7 +119,14 @@ export function buildSampleDataset(): StudyDataset {
   for (const { themeId, count, texts } of COMMENT_PLAN) {
     for (let i = 0; i < count; i++) {
       const author = authors[cursor++];
-      comments.push({ respondentId: author.id, role: author.role, themeId, text: texts[i % texts.length] });
+      comments.push({
+        key: `${author.id}:helpful`,
+        respondentId: author.id,
+        role: author.role,
+        promptId: "helpful",
+        themeId,
+        text: texts[i % texts.length],
+      });
     }
   }
 
@@ -127,6 +134,6 @@ export function buildSampleDataset(): StudyDataset {
     respondents,
     comments,
     studentTarget: slovinSampleSize(POPULATION, MARGIN_OF_ERROR),
-    instructorTarget: ELIGIBLE_INSTRUCTORS,
+    instructorTarget: 11,
   };
 }

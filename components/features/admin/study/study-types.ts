@@ -1,12 +1,12 @@
 import type { StudyResults } from "@/lib/study/analysis";
-import type { StudyRole } from "@/lib/study/dataset";
+import type { RespondentProfile, StudyComment, StudyRole } from "@/lib/study/dataset";
 
 export type StudyViewData = {
   results: StudyResults;
   closedAt: string | null;
-  isSample: boolean;
-  respondents: { id: string; role: StudyRole; submittedAt: string }[];
-  comments: { respondentId: string; role: StudyRole; themeId: string; text: string }[];
+  questionnairePath: string;
+  respondents: { id: string; role: StudyRole; submittedAt: string; profile?: RespondentProfile }[];
+  comments: StudyComment[];
 };
 
 export type StudyTab = "overview" | "items" | "comments" | "respondents";

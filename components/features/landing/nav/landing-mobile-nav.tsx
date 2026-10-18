@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { navLinks } from "./nav-links";
 
-export function LandingMobileNav() {
+export function LandingMobileNav({ homeHref = "" }: { homeHref?: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -43,7 +43,7 @@ export function LandingMobileNav() {
               nativeButton={false}
               render={
                 <a
-                  href={link.href}
+                  href={`${homeHref}${link.href}`}
                   className="rounded-lg px-2 py-3 text-sm font-medium text-pace-ink hover:bg-pace-canvas"
                 />
               }

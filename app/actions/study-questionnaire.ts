@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/require-admin";
-import { QUESTIONNAIRE_CLOSED_KEY } from "@/lib/study/study-data";
+import { QUESTIONNAIRE_CLOSED_KEY } from "@/lib/study/questionnaire-status";
 
 export async function setQuestionnaireOpen(open: boolean) {
   try {

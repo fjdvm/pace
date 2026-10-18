@@ -256,3 +256,17 @@ model SystemSetting {
 
   @@map("system_settings")
 }
+
+model StudyResponse {
+  id String @id @default(uuid())
+  version String
+  yearLevel String? @map("year_level")
+  coursesTaken String? @map("courses_taken")
+  aiUsage String @map("ai_usage")
+  answers Json
+  comments Json @default("{}")
+  commentThemes Json @default("{}") @map("comment_themes")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("study_responses")
+}

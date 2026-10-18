@@ -57,16 +57,22 @@ export function SummaryCards({ results }: { results: StudyResults }) {
         Icon={Scale}
         tone="bg-pace-blue-tint text-pace-blue"
         label="Overall weighted mean"
-        value={`${overall.student.toFixed(2)} · ${overall.instructor.toFixed(2)}`}
-        note={`Students · Instructors. ${overall.label === "Mixed" ? "Groups fall in different bands." : `Both "${overall.label}"`}`}
+        value={overall.label === "No data" ? "—" : `${overall.student.toFixed(2)} · ${overall.instructor.toFixed(2)}`}
+        note={
+          overall.label === "No data"
+            ? "Needs responses from both groups"
+            : `Students · Instructors. ${overall.label === "Mixed" ? "Groups fall in different bands." : `Both "${overall.label}"`}`
+        }
       />
       <SummaryCard
         Icon={ShieldCheck}
         tone="bg-pace-amber-tint text-pace-amber"
         label={`Reliability (${reliability.basis})`}
-        value={`α ≥ ${reliability.minAlpha.toFixed(2)}`}
+        value={reliability.minAlpha === null ? "α —" : `α ≥ ${reliability.minAlpha.toFixed(2)}`}
         note={
-          reliability.passes
+          reliability.minAlpha === null
+            ? "Needs at least two student responses"
+            : reliability.passes
             ? `All four constructs pass the ${SCALE_CUTOFF.toFixed(2)} cutoff`
             : `Some constructs fall below the ${SCALE_CUTOFF.toFixed(2)} cutoff`
         }

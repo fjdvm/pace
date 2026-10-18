@@ -29,7 +29,7 @@ export function ComparisonCard({ rows }: { rows: StudyResults["comparison"] }) {
             <span className="font-mono text-xs text-pace-ink">{row.p.toFixed(2)}</span>
             <span className="font-mono text-xs text-pace-ink">{row.r.toFixed(2)}</span>
             <span>
-              <PaceTag tone={row.p < 0.05 ? "amber" : "neutral"} className="px-2.5 py-0.5 text-[11px]">
+              <PaceTag tone={row.result === "Not enough data" ? "neutral" : row.p < 0.05 ? "amber" : "neutral"} className="px-2.5 py-0.5 text-[11px]">
                 {row.result}
               </PaceTag>
             </span>
