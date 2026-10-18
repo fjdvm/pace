@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { toDataset, type StoredResponse } from "./to-dataset";
+import { DEFAULT_THEMES } from "./themes";
 
 const answers = { PU: [5, 5, 5, 5, 5], PEOU: [4, 4, 4, 4, 4], ATU: [3, 3, 3, 3, 3], BI: [2, 2, 2, 2, 2] };
 
@@ -21,11 +22,12 @@ function row(id: string, version: string, extra: Partial<StoredResponse> = {}): 
 describe("toDataset", () => {
   const dataset = toDataset(
     [
-      row("a", "student", { comments: { helpful: "Hints", improve: "More hearts" }, commentThemes: { helpful: "hints-helped" } }),
+      row("a", "student", { comments: { helpful: "Hints", improve: "More hearts" }, commentThemes: { helpful: ["hints-helped", "more-hearts", "deleted-theme"] } }),
       row("b", "instructor"),
       row("c", "student"),
     ],
     4,
+    DEFAULT_THEMES,
   );
 
   it("numbers respondents per group without exposing database ids", () => {
@@ -33,10 +35,10 @@ describe("toDataset", () => {
     expect(JSON.stringify(dataset.respondents)).not.toContain('"a"');
   });
 
-  it("turns each non-empty comment into a keyed comment, uncoded by default", () => {
+  it("turns each non-empty comment into a keyed comment, keeping only known themes", () => {
     expect(dataset.comments).toEqual([
-      { key: "a:helpful", respondentId: "S001", role: "student", promptId: "helpful", themeId: "hints-helped", text: "Hints" },
-      { key: "a:improve", respondentId: "S001", role: "student", promptId: "improve", themeId: "uncoded", text: "More hearts" },
+      { key: "a:helpful", respondentId: "S001", role: "student", yearLevel: "2nd year", promptId: "helpful", themeIds: ["hints-helped", "more-hearts"], text: "Hints" },
+      { key: "a:improve", respondentId: "S001", role: "student", yearLevel: "2nd year", promptId: "improve", themeIds: [], text: "More hearts" },
     ]);
   });
 

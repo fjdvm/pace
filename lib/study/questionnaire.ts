@@ -1,5 +1,4 @@
 export type ConstructId = "PU" | "PEOU" | "ATU" | "BI";
-export type ThemeTone = "green" | "red" | "amber" | "blue" | "neutral";
 
 export const ITEMS_PER_CONSTRUCT = 5;
 
@@ -63,21 +62,12 @@ export const AI_USAGE_OPTIONS = [
 ];
 
 export const COMMENT_PROMPTS = [
-  { id: "helpful", label: "What did you find most helpful about PACE?" },
-  { id: "problems", label: "What problems did you encounter while using PACE?" },
-  { id: "improve", label: "What would you change or add to improve PACE?" },
+  { id: "helpful", short: "Most helpful", label: "What did you find most helpful about PACE?" },
+  { id: "problems", short: "Problems", label: "What problems did you encounter while using PACE?" },
+  { id: "improve", short: "Improvements", label: "What would you change or add to improve PACE?" },
 ] as const;
 
 export type CommentPromptId = (typeof COMMENT_PROMPTS)[number]["id"];
-
-export const THEMES: { id: string; label: string; tone: ThemeTone }[] = [
-  { id: "hints-helped", label: "Hints helped me find the bug myself", tone: "green" },
-  { id: "more-hearts", label: "Wants more hearts or a faster refill", tone: "red" },
-  { id: "vague-hints", label: "Level 1 hints felt too vague", tone: "amber" },
-  { id: "faster-runs", label: "Faster code runs", tone: "blue" },
-  { id: "other", label: "Other", tone: "neutral" },
-  { id: "uncoded", label: "Not yet coded", tone: "neutral" },
-];
 
 export const SCALE_CUTOFF = 0.7;
 export const POPULATION = 652;

@@ -1,8 +1,10 @@
-import { CONSTRUCTS, PILOT_SIZE, SCALE_CUTOFF, THEMES, type ConstructId, type ThemeTone } from "./questionnaire";
+import { CONSTRUCTS, PILOT_SIZE, SCALE_CUTOFF, type ConstructId } from "./questionnaire";
+import type { ThemeTone } from "./themes";
 import { cronbachAlpha, interpretMean, mannWhitney, mean, median, sampleSd } from "./stats";
 import type { Respondent, StudyDataset, StudyRole } from "./dataset";
 
 export type GroupStats = { mean: number; sd: number; label: string };
+export type ItemStats = GroupStats & { n: number; distribution: number[] };
 
 export type StudyResults = {
   responses: Record<StudyRole, { count: number; target: number }>;
@@ -18,9 +20,10 @@ export type StudyResults = {
     r: number;
     result: string;
   }[];
-  items: { constructId: ConstructId; text: string; student: GroupStats; instructor: GroupStats }[];
+  items: { constructId: ConstructId; id: string; text: string; student: ItemStats; instructor: ItemStats }[];
   themes: { id: string; label: string; tone: ThemeTone; count: number }[];
   commentCount: number;
+  uncodedCount: number;
 };
 
 export const NO_DATA = "No data";
@@ -31,6 +34,13 @@ function describe(values: number[]): GroupStats {
   if (values.length === 0) return { mean: 0, sd: 0, label: NO_DATA };
   const m = mean(values);
   return { mean: m, sd: sampleSd(values), label: interpretMean(m) };
+}
+
+function describeItem(values: number[]): ItemStats {
+  const distribution = [1, 2, 3, 4, 5].map((rating) =>
+    values.length ? (values.filter((v) => v === rating).length / values.length) * 100 : 0,
+  );
+  return { ...describe(values), n: values.length, distribution };
 }
 
 function comparisonResult(p: number, studentMedian: number, instructorMedian: number, enough: boolean) {
@@ -65,7 +75,7 @@ export function analyzeStudy(dataset: StudyDataset, { final }: { final: boolean 
 
   const commentCounts = new Map<string, number>();
   for (const comment of dataset.comments) {
-    commentCounts.set(comment.themeId, (commentCounts.get(comment.themeId) ?? 0) + 1);
+    for (const themeId of comment.themeIds) commentCounts.set(themeId, (commentCounts.get(themeId) ?? 0) + 1);
   }
 
   return {
@@ -102,12 +112,14 @@ export function analyzeStudy(dataset: StudyDataset, { final }: { final: boolean 
     items: CONSTRUCTS.flatMap(({ id, items }) =>
       items.map((text, index) => ({
         constructId: id,
+        id: `${id}${index + 1}`,
         text,
-        student: describe(students.map((r) => r.answers[id][index])),
-        instructor: describe(instructors.map((r) => r.answers[id][index])),
+        student: describeItem(students.map((r) => r.answers[id][index])),
+        instructor: describeItem(instructors.map((r) => r.answers[id][index])),
       })),
     ),
-    themes: THEMES.map((theme) => ({ ...theme, count: commentCounts.get(theme.id) ?? 0 })),
+    themes: dataset.themes.map((theme) => ({ ...theme, count: commentCounts.get(theme.id) ?? 0 })),
     commentCount: dataset.comments.length,
+    uncodedCount: dataset.comments.filter((c) => c.themeIds.length === 0).length,
   };
 }

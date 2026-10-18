@@ -19,6 +19,7 @@ export default async function StudyResultsPage() {
         questionnairePath: "/research/questionnaire",
         respondents: dataset.respondents.map(({ id, role, submittedAt, profile }) => ({ id, role, submittedAt, profile })),
         comments: dataset.comments,
+        themes: dataset.themes,
       }}
     />
   );

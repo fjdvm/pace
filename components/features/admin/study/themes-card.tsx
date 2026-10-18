@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import type { StudyResults } from "@/lib/study/analysis";
 import { StudyCard } from "./study-card";
 
-const fills = { green: "bg-pace-green", red: "bg-pace-red", amber: "bg-pace-amber", blue: "bg-pace-blue", neutral: "bg-pace-line-strong" };
+import { themeFills } from "./theme-colors";
 
 type ThemesCardProps = {
   themes: StudyResults["themes"];
@@ -30,7 +30,7 @@ export function ThemesCard({ themes, commentCount, onSeeAll }: ThemesCardProps) 
               <span className="font-bold text-pace-ink">{theme.count}</span>
             </div>
             <div className="h-1.5 rounded-full bg-pace-sunken">
-              <div className={cn("h-full rounded-full", fills[theme.tone])} style={{ width: `${max ? (theme.count / max) * 100 : 0}%` }} />
+              <div className={cn("h-full rounded-full", themeFills[theme.tone])} style={{ width: `${max ? (theme.count / max) * 100 : 0}%` }} />
             </div>
           </div>
         ))}

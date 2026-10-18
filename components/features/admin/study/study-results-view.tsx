@@ -35,8 +35,8 @@ export function StudyResultsView({ data }: { data: StudyViewData }) {
         </div>
         {empty && tab === "overview" && <EmptyStateCard path={data.questionnairePath} closed={!!data.closedAt} />}
         {tab === "overview" && <OverviewTab data={data} onNavigate={setTab} />}
-        {tab === "items" && <ItemsTab items={data.results.items} />}
-        {tab === "comments" && <CommentsTab comments={data.comments} />}
+        {tab === "items" && <ItemsTab results={data.results} />}
+        {tab === "comments" && <CommentsTab comments={data.comments} themes={data.themes} />}
         {tab === "respondents" && <RespondentsTab respondents={data.respondents} />}
       </main>
     </>

@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import { COMMENT_PROMPTS, CONSTRUCTS, THEMES } from "./questionnaire";
+import { COMMENT_PROMPTS, CONSTRUCTS } from "./questionnaire";
 import type { StudyResults } from "./analysis";
 import type { StudyDataset } from "./dataset";
 
@@ -39,7 +39,7 @@ export async function buildStudyWorkbook(dataset: StudyDataset, results: StudyRe
   const comments = workbook.addWorksheet("Comments");
   comments.addRow(["Respondent", "Role", "Prompt", "Theme", "Comment"]);
   for (const c of dataset.comments) {
-    comments.addRow([c.respondentId, c.role, COMMENT_PROMPTS.find((p) => p.id === c.promptId)?.label ?? c.promptId, THEMES.find((t) => t.id === c.themeId)?.label ?? c.themeId, c.text]);
+    comments.addRow([c.respondentId, c.role, COMMENT_PROMPTS.find((p) => p.id === c.promptId)?.label ?? c.promptId, c.themeIds.map((id) => dataset.themes.find((t) => t.id === id)?.label ?? id).join("; "), c.text]);
   }
 
   for (const sheet of workbook.worksheets) sheet.getRow(1).font = { bold: true };

@@ -8,10 +8,10 @@ const tones: Record<string, "green" | "blue" | "amber" | "red"> = {
   "Not acceptable": "red",
 };
 
-export function InterpretationTag({ group, label }: { group: "S" | "I"; label: string }) {
+export function InterpretationTag({ group, label, plain }: { group: "S" | "I"; label: string; plain?: boolean }) {
   return (
     <PaceTag tone={tones[label] ?? "neutral"} className="px-2.5 py-0.5 text-[11px]">
-      {group} · {label}
+      {plain ? label : `${group} · ${label}`}
     </PaceTag>
   );
 }

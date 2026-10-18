@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { analyzeStudy } from "./analysis";
+import { DEFAULT_THEMES } from "./themes";
 import { buildFixtureDataset } from "./fixtures";
 import type { Respondent, StudyDataset } from "./dataset";
 
@@ -10,7 +11,8 @@ function respondent(id: string, role: "student" | "instructor", score: number): 
 
 const tiny: StudyDataset = {
   respondents: [respondent("S1", "student", 4), respondent("S2", "student", 5), respondent("I1", "instructor", 3)],
-  comments: [{ respondentId: "S1", role: "student", promptId: "helpful", themeId: "hints-helped", text: "Good", key: "S1:helpful" }],
+  comments: [{ respondentId: "S1", role: "student", yearLevel: "2nd year", promptId: "helpful", themeIds: ["hints-helped", "faster-runs"], text: "Good", key: "S1:helpful" }],
+  themes: DEFAULT_THEMES,
   studentTarget: 10,
   instructorTarget: 2,
 };
@@ -31,11 +33,20 @@ describe("analyzeStudy on a tiny dataset", () => {
 
   it("tallies comment themes", () => {
     expect(results.themes.find((t) => t.id === "hints-helped")?.count).toBe(1);
+    expect(results.themes.find((t) => t.id === "faster-runs")?.count).toBe(1);
     expect(results.commentCount).toBe(1);
   });
 
-  it("lists every questionnaire item", () => {
+  it("lists every questionnaire item with its answer distribution", () => {
     expect(results.items).toHaveLength(20);
+    const first = results.items[0];
+    expect(first.student.n).toBe(2);
+    expect(first.student.distribution).toEqual([0, 0, 0, 50, 50]);
+    expect(first.instructor.distribution).toEqual([0, 0, 100, 0, 0]);
+  });
+
+  it("counts comments that have no theme yet", () => {
+    expect(results.uncodedCount).toBe(0);
   });
 });
 
@@ -64,7 +75,7 @@ describe("analyzeStudy on the fixture dataset", () => {
   });
 
   it("handles an empty dataset without inventing numbers", () => {
-    const empty = analyzeStudy({ respondents: [], comments: [], studentTarget: 248, instructorTarget: 3 }, { final: false });
+    const empty = analyzeStudy({ respondents: [], comments: [], themes: DEFAULT_THEMES, studentTarget: 248, instructorTarget: 3 }, { final: false });
     expect(empty.responses.student).toEqual({ count: 0, target: 248 });
     expect(empty.constructs[0].student.label).toBe("No data");
     expect(empty.reliability.minAlpha).toBeNull();

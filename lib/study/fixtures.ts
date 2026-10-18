@@ -1,5 +1,6 @@
 import { ITEMS_PER_CONSTRUCT, MARGIN_OF_ERROR, POPULATION, type ConstructId } from "./questionnaire";
 import { slovinSampleSize } from "./stats";
+import { DEFAULT_THEMES } from "./themes";
 import type { Respondent, StudyComment, StudyDataset, StudyRole } from "./dataset";
 
 const STUDENT_COUNT = 186;
@@ -123,8 +124,9 @@ export function buildFixtureDataset(): StudyDataset {
         key: `${author.id}:helpful`,
         respondentId: author.id,
         role: author.role,
+        yearLevel: author.profile?.yearLevel ?? null,
         promptId: "helpful",
-        themeId,
+        themeIds: themeId === "other" ? [] : [themeId],
         text: texts[i % texts.length],
       });
     }
@@ -133,6 +135,7 @@ export function buildFixtureDataset(): StudyDataset {
   return {
     respondents,
     comments,
+    themes: DEFAULT_THEMES,
     studentTarget: slovinSampleSize(POPULATION, MARGIN_OF_ERROR),
     instructorTarget: 11,
   };
