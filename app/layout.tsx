@@ -21,8 +21,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GAIT Platform",
-  description: "Gamified AI-Assisted Integrated Tutoring System",
+  title: "Pace",
+  description: "Programming AI-assisted Coding Environment",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
