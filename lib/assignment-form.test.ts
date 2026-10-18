@@ -36,7 +36,9 @@ describe("validateAssignment", () => {
   it.each([
     [{ title: " " }, "Please enter a title"],
     [{ instructions: "" }, "Please enter instructions"],
-    [{ dueDate: "" }, "Please set a due date"],
+    [{ dueDate: "" }, "Please set a valid due date"],
+    [{ dueDate: "not a date" }, "Please set a valid due date"],
+    [{ language: "Cobol" }, "Choose a supported language"],
     [{ classIds: [] }, "Please assign to at least one class"],
     [{ testCases: [] }, "Add at least one test case"],
     [{ testCases: [{ input: "", expectedOutput: " ", visible: true }] }, "Every test case needs an expected output"],

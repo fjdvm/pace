@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
+import { validateAssignment } from "@/lib/assignment-form";
 import { notifyAssignmentPublished } from "@/lib/notifications";
 
 interface TestCaseInput {
@@ -33,6 +34,11 @@ export async function createAssignment(params: CreateAssignmentParams) {
       classIds,
       testCases,
     } = params;
+
+    const invalid = validateAssignment({ title, instructions, language, dueDate, heartsCount, heartsRegenMinutes, classIds, testCases });
+    if (invalid) {
+      throw new Error(invalid);
+    }
 
     if (!title || title.trim() === "") {
       throw new Error("Title cannot be empty");

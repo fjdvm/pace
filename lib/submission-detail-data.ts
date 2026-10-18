@@ -32,6 +32,10 @@ export async function getSubmissionDetail(
     prisma.heartsState.findUnique({ where: { studentId_assignmentId: { studentId, assignmentId } } }),
   ]);
   if (!student) return null;
+  const enrolled = await prisma.enrollment.count({
+    where: { studentId, class: { assignments: { some: { assignmentId } } } },
+  });
+  if (!submissions.some((s) => s.studentId === studentId) && enrolled === 0) return null;
 
   const names = new Map(submissions.map((s) => [s.studentId, getDisplayName(s.student)]));
   const submission = submissions.find((s) => s.studentId === studentId) ?? null;

@@ -77,7 +77,8 @@ export async function getAssignmentOverview(
   const order = { submitted: 0, "in-progress": 1, "not-started": 2 };
   students.sort((a, b) => order[a.status] - order[b.status] || (b.score ?? 0) - (a.score ?? 0) || a.name.localeCompare(b.name));
 
-  const scores = submissions.map((s) => s.score);
+  const rosterIds = new Set(roster.map((r) => r.id));
+  const scores = submissions.filter((s) => rosterIds.has(s.studentId)).map((s) => s.score);
   const totalHearts = roster.reduce((sum, s) => sum + (heartsBy.get(s.id) ?? 0), 0);
 
   return {
@@ -91,7 +92,7 @@ export async function getAssignmentOverview(
     },
     students,
     stats: {
-      submitted: submissions.length,
+      submitted: scores.length,
       total: roster.length,
       average: scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null,
       median: median(scores),

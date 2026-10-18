@@ -28,7 +28,8 @@ export function decodeLineBreaks(value: string) {
 export function validateAssignment(values: AssignmentFormValues) {
   if (!values.title.trim()) return "Please enter a title";
   if (!values.instructions.trim()) return "Please enter instructions";
-  if (!values.dueDate) return "Please set a due date";
+  if (!values.dueDate || Number.isNaN(new Date(values.dueDate).getTime())) return "Please set a valid due date";
+  if (!LANGUAGES.includes(values.language)) return "Choose a supported language";
   if (values.heartsCount < 1) return "Hearts per student must be at least 1";
   if (values.heartsRegenMinutes < 1) return "Cooldown must be at least 1 minute";
   if (values.classIds.length === 0) return "Please assign to at least one class";
