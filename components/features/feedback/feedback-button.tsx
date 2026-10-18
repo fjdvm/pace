@@ -12,7 +12,7 @@ export function FeedbackButton() {
       <button
         onClick={() => setOpen(true)}
         aria-label="Report an issue"
-        className="fixed bottom-6 right-6 z-[9999] w-12 h-12 rounded-full bg-primary text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all cursor-pointer flex items-center justify-center"
+        className="fixed bottom-6 right-6 z-[9999] w-12 h-12 rounded-full bg-pace-ink text-white shadow-[0_4px_0_0_var(--color-pace-line-strong)] hover:scale-105 transition-all cursor-pointer flex items-center justify-center"
       >
         <HelpCircle className="h-5 w-5" />
       </button>
