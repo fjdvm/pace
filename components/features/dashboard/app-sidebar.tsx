@@ -13,9 +13,9 @@ import {
   Archive,
 } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { useSidebarCollapse } from "./use-sidebar-collapse";
+import { SidebarBrand } from "./sidebar-brand";
 import { SidebarClassList } from "./sidebar-class-list";
 import { LogoutConfirmDialog } from "./logout-confirm-dialog";
 
@@ -98,26 +98,8 @@ export function AppSidebar({ role, userEmail, userName, classes = [], studentXp,
         }`}
       >
         <div className="overflow-y-auto min-h-0 flex-1">
-          <div className="mb-12 flex items-center px-0">
-            {collapsed ? (
-              <Image
-                src="/solo-logo.png"
-                alt="GAITS"
-                width={1254}
-                height={1254}
-                className="w-full h-auto"
-                priority
-              />
-            ) : (
-              <Image
-                src="/logo.png"
-                alt="GAITS"
-                width={2172}
-                height={724}
-                className="w-full h-auto"
-                priority
-              />
-            )}
+          <div className="mb-12">
+            <SidebarBrand collapsed={collapsed} />
           </div>
 
           <nav className="flex flex-col space-y-2 pr-4">
