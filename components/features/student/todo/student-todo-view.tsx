@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { StudentTopBar } from "@/components/features/student/shared/student-top-bar";
-import { isDueWithin48Hours } from "@/lib/student-dates";
+import { isDueThisWeek, isDueWithin48Hours } from "@/lib/student-dates";
 import type { StudentAssignment, StudentClass } from "@/components/features/student/types";
 import { ClassFilterPills } from "./class-filter-pills";
 import { TodoSection } from "./todo-section";
@@ -16,14 +16,15 @@ export function StudentTodoView({ classes }: { classes: StudentClass[] }) {
   const [selected, setSelected] = useState("all");
   const active = classes.filter((c) => !c.archived);
 
-  const { soon, later, submitted } = useMemo(() => {
+  const { soon, week, later, submitted } = useMemo(() => {
     const all = active
       .filter((c) => selected === "all" || c.id === selected)
       .flatMap((c) => c.assignments);
     const open = all.filter((a) => a.status !== "submitted").sort(byDue);
     return {
       soon: open.filter((a) => isDueWithin48Hours(a.dueDate)),
-      later: open.filter((a) => !isDueWithin48Hours(a.dueDate)),
+      week: open.filter((a) => !isDueWithin48Hours(a.dueDate) && isDueThisWeek(a.dueDate)),
+      later: open.filter((a) => !isDueWithin48Hours(a.dueDate) && !isDueThisWeek(a.dueDate)),
       submitted: all
         .filter((a) => a.status === "submitted")
         .sort((a, b) => (b.submittedAt ?? "").localeCompare(a.submittedAt ?? ""))
@@ -31,7 +32,7 @@ export function StudentTodoView({ classes }: { classes: StudentClass[] }) {
     };
   }, [active, selected]);
 
-  const empty = soon.length + later.length === 0;
+  const empty = soon.length + week.length + later.length === 0;
 
   return (
     <>
@@ -43,7 +44,12 @@ export function StudentTodoView({ classes }: { classes: StudentClass[] }) {
             <TodoRow key={a.id} assignment={a} />
           ))}
         </TodoSection>
-        <TodoSection title="This week" count={later.length} tone="neutral">
+        <TodoSection title="This week" count={week.length} tone="neutral">
+          {week.map((a) => (
+            <TodoRow key={a.id} assignment={a} />
+          ))}
+        </TodoSection>
+        <TodoSection title="Later" count={later.length} tone="neutral">
           {later.map((a) => (
             <TodoRow key={a.id} assignment={a} />
           ))}
