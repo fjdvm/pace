@@ -1,15 +1,13 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getStudentTodos } from "@/app/actions/student-todos";
-import { TodoView } from "@/components/features/dashboard/todo-view";
+import { getStudentClasses } from "@/lib/student-home-data";
+import { StudentTodoView } from "@/components/features/student/todo/student-todo-view";
 
 export default async function StudentTodoPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const result = await getStudentTodos();
-  if (!result.success) redirect("/dashboard/student");
-
-  return <TodoView todos={result.todos!} classes={result.classes!} />;
+  const classes = await getStudentClasses(user.id);
+  return <StudentTodoView classes={classes} />;
 }
