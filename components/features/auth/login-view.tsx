@@ -46,7 +46,7 @@ export function LoginView() {
 
         toast.success("Welcome back!");
 
-        if (role === "instructor" && approvalStatus === "pending") {
+        if (role === "instructor" && approvalStatus !== "approved") {
           router.push("/pending-approval");
         } else {
           router.push(`/dashboard/${role}`);

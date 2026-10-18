@@ -1,20 +1,14 @@
-import { prisma } from "@/lib/prisma";
-import { getAdminKpis } from "@/app/actions/admin-kpis";
-import { AdminView } from "@/components/features/dashboard/admin-view";
+import { redirect } from "next/navigation";
+import { requireAdmin } from "@/lib/require-admin";
+import { getAdminOverview } from "@/lib/admin-overview-data";
+import { AdminOverviewView } from "@/components/features/admin/overview/admin-overview-view";
 
 export default async function AdminDashboardPage() {
-  const pendingInstructors = await prisma.user.findMany({
-    where: { role: "instructor", approvalStatus: "pending" },
-    orderBy: { createdAt: "desc" },
-  });
-
-  const formattedInstructors = pendingInstructors.map((inst) => ({
-    id: inst.id,
-    email: inst.email,
-    createdAt: inst.createdAt.toISOString(),
-  }));
-
-  const kpis = await getAdminKpis();
-
-  return <AdminView initialPendingInstructors={formattedInstructors} kpis={kpis} />;
+  try {
+    await requireAdmin();
+  } catch {
+    redirect("/login");
+  }
+  const data = await getAdminOverview();
+  return <AdminOverviewView data={data} />;
 }

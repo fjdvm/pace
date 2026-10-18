@@ -13,13 +13,17 @@ import { PendingActions } from "./pending-actions";
 export function PendingView() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [declined, setDeclined] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     createClient()
       .auth.getUser()
-      .then(({ data }) => setEmail(data.user?.email ?? ""));
+      .then(({ data }) => {
+        setEmail(data.user?.email ?? "");
+        setDeclined(data.user?.user_metadata?.approval_status === "declined");
+      });
   }, []);
 
   const handleLogout = async () => {
@@ -45,13 +49,14 @@ export function PendingView() {
       <main className="flex w-full max-w-[560px] flex-col gap-6 rounded-[20px] border-[1.5px] border-pace-line bg-white p-6 shadow-[0_4px_0_0_var(--color-pace-line)] sm:p-10">
         <Wordmark />
         <h1 className="text-[32px] font-bold leading-[1.15] tracking-[-0.48px]">
-          Your instructor account is almost ready
+          {declined ? "Your instructor request was not approved" : "Your instructor account is almost ready"}
         </h1>
         <p className="text-[15px] leading-[1.55] text-pace-ink-2">
-          An administrator checks every instructor account before it can create classes. This keeps
-          student data safe.
+          {declined
+            ? "An administrator reviewed your request and could not approve it. If you think this is a mistake, contact the administrator."
+            : "An administrator checks every instructor account before it can create classes. This keeps student data safe."}
         </p>
-        <PendingSteps email={email} />
+        {!declined && <PendingSteps email={email} />}
         <PendingActions
           disabled={isLoggingOut}
           isLoggingOut={isLoggingOut}

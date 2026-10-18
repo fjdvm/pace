@@ -63,7 +63,7 @@ export async function updateSession(request: NextRequest) {
   const role = user.user_metadata?.role || "student";
   const approvalStatus = user.user_metadata?.approval_status || "approved";
 
-  if (role === "instructor" && approvalStatus === "pending") {
+  if (role === "instructor" && approvalStatus !== "approved") {
     if (url.pathname !== "/pending-approval") {
       url.pathname = "/pending-approval";
       return NextResponse.redirect(url);
@@ -84,7 +84,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (isAuthRoute) {
-    if (role === "instructor" && approvalStatus === "pending") {
+    if (role === "instructor" && approvalStatus !== "approved") {
       url.pathname = "/pending-approval";
     } else {
       url.pathname = `/dashboard/${role}`;
