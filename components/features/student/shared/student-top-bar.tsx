@@ -19,7 +19,7 @@ export function StudentTopBar({ title, subtitle, backHref, leadingIcon, actions,
   const { collapsed, toggleCollapsed, toggleMobileOpen } = useSidebarCollapse();
 
   return (
-    <header className="flex shrink-0 items-center gap-4 border-b border-pace-line bg-white px-4 py-5 md:px-10">
+    <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-3 border-b border-pace-line bg-white px-4 py-5 md:px-10">
       <button
         type="button"
         onClick={toggleMobileOpen}
@@ -36,7 +36,7 @@ export function StudentTopBar({ title, subtitle, backHref, leadingIcon, actions,
       >
         <PanelLeftIcon className="size-5 text-pace-ink-2" />
       </button>
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3 sm:flex-none">
         {backHref && (
           <Link href={backHref} aria-label="Back" className="shrink-0">
             <PaceIcon name="arrow-left" size={18} />
@@ -44,12 +44,12 @@ export function StudentTopBar({ title, subtitle, backHref, leadingIcon, actions,
         )}
         {leadingIcon}
         <div className="flex min-w-0 flex-col gap-0.5">
-          <h1 suppressHydrationWarning className="truncate text-[22px] font-bold leading-tight tracking-[-0.01em] text-pace-ink">{title}</h1>
-          {subtitle && <div suppressHydrationWarning className="flex items-center gap-2 truncate text-[13px] leading-normal text-pace-ink-2">{subtitle}</div>}
+          <h1 suppressHydrationWarning className="sm:truncate text-[22px] font-bold leading-tight tracking-[-0.01em] text-pace-ink">{title}</h1>
+          {subtitle && <div suppressHydrationWarning className="flex flex-wrap items-center gap-x-2 text-[13px] sm:truncate leading-normal text-pace-ink-2">{subtitle}</div>}
         </div>
       </div>
       <div className="flex-1" />
-      {actions}
+      {actions && <div className="max-sm:order-last max-sm:w-full">{actions}</div>}
       {!hideBell && (
         <div className="flex size-10 shrink-0 items-center justify-center rounded-full border-[1.5px] border-pace-line">
           <NotificationBell />

@@ -10,12 +10,17 @@ export function TutorChatTab({ chat }: { chat: SubmissionDetail["chat"] }) {
     return <p className="py-10 text-center text-sm text-pace-muted">This student did not ask the tutor anything.</p>;
   }
 
-  let level = 0;
+  const levels = chat.reduce<number[]>((acc, message, i) => {
+    const previous = i === 0 ? 0 : acc[i - 1];
+    acc.push(message.role === "assistant" ? Math.min(MAX_HINT_LEVEL, previous + 1) : previous);
+    return acc;
+  }, []);
+
   return (
     <div className="flex flex-col gap-2.5">
       {chat.map((message, i) => {
         const isTutor = message.role === "assistant";
-        if (isTutor) level = Math.min(MAX_HINT_LEVEL, level + 1);
+        const level = levels[i];
         return (
           <div key={i} className={cn("flex flex-col gap-1", isTutor ? "items-start" : "items-end")}>
             {isTutor && (

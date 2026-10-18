@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Code2, Lock, Sparkles } from "lucide-react";
 import { PaceTag } from "@/components/features/student/shared/pace-tag";
 import { PaceButton } from "@/components/features/student/shared/pace-button";
@@ -23,7 +22,7 @@ export function SystemStatusCard({ items, showManageKeys = true }: SystemStatusC
             <Icon className="size-4 shrink-0 text-pace-ink-2" />
             <div className="flex min-w-0 flex-1 flex-col">
               <span className="text-xs font-semibold text-pace-ink">{item.title}</span>
-              <span className="truncate text-xs text-pace-muted">{item.detail}</span>
+              <span className="text-xs text-pace-muted">{item.detail}</span>
             </div>
             <PaceTag tone={tones[item.state]} className="px-2.5 py-0.5 text-[11px]">
               {item.badge}

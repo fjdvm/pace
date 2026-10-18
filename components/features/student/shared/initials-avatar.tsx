@@ -13,7 +13,10 @@ type InitialsAvatarProps = {
 };
 
 export function getInitials(name: string) {
-  const parts = name.replace(/@.*/, "").split(/[\s._-]+/).filter(Boolean);
+  const parts = name
+    .replace(/@.*/, "")
+    .split(/[\s._-]+/)
+    .filter((part) => part && !/^(prof|dr|mr|ms|mrs)$/i.test(part));
   return parts.slice(0, 2).map((p) => p[0]?.toUpperCase()).join("") || "?";
 }
 
