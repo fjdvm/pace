@@ -4,7 +4,7 @@ import { PaceIcon } from "./pace-icon";
 
 type AssignmentRowProps = {
   href: string;
-  icon: "code-green" | "code-purple" | "check-18";
+  icon: "code-green" | "code-purple" | "check-18" | "code-gray";
   iconTone?: "green" | "purple" | "sunken";
   title: string;
   subtitle: string;

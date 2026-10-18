@@ -4,7 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getClassStream } from "@/app/actions/class-stream";
 import { getClassRoster } from "@/app/actions/class-roster";
 import { getClassLeaderboardTabData } from "@/app/actions/class-leaderboard";
-import { StudentClassView } from "@/components/features/classes/student-class-view";
+import { getStudentClasses } from "@/lib/student-home-data";
+import { StudentClassPageView } from "@/components/features/student/classes/student-class-page-view";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -27,36 +28,29 @@ export default async function StudentClassDetailPage({ params }: PageProps) {
   const cls = await prisma.class.findUnique({ where: { id } });
   if (!cls) redirect("/dashboard/student");
 
-  const [streamResult, rosterResult, assignmentLinks, leaderboardResult] = await Promise.all([
+  const [streamResult, rosterResult, studentClasses, leaderboardResult] = await Promise.all([
     getClassStream(id),
     getClassRoster(id),
-    prisma.assignmentClass.findMany({
-      where: { classId: id },
-      include: { assignment: true },
-      orderBy: { assignment: { dueDate: "asc" } },
-    }),
+    getStudentClasses(user.id),
     getClassLeaderboardTabData(id),
   ]);
 
-  const assignments = assignmentLinks.map((link) => ({
-    id: link.assignment.id,
-    title: link.assignment.title,
-    language: link.assignment.language,
-    dueDate: link.assignment.dueDate.toISOString(),
-  }));
+  const assignments = (studentClasses.find((c) => c.id === id)?.assignments ?? []).sort(
+    (x, y) => new Date(x.dueDate).getTime() - new Date(y.dueDate).getTime(),
+  );
 
   return (
-    <StudentClassView
+    <StudentClassPageView
       classId={id}
-      className={cls!.name}
-      classArchived={cls!.archived}
-      initialPosts={streamResult.success ? streamResult.posts! : []}
+      className={cls.name}
+      joinCode={cls.joinCode}
+      classArchived={cls.archived}
       currentUserId={user.id}
       assignments={assignments}
+      posts={streamResult.success ? streamResult.posts! : []}
       roster={rosterResult.success ? rosterResult.students! : []}
-      instructor={rosterResult.success ? rosterResult.instructor! : { id: cls!.instructorId, email: "", name: null }}
+      instructor={rosterResult.success ? rosterResult.instructor! : { id: cls.instructorId, email: "", name: null }}
       leaderboard={leaderboardResult.success ? leaderboardResult.leaderboard! : []}
-      myRank={leaderboardResult.success ? leaderboardResult.myRank : 0}
     />
   );
 }
