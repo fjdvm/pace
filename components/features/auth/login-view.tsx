@@ -12,12 +12,14 @@ import { AuthField } from "./auth-field";
 import { PasswordInput } from "./password-input";
 import { AuthSubmitButton } from "./auth-submit-button";
 import { AuthSwitchLink } from "./auth-switch-link";
+import { ResendConfirmation } from "./resend-confirmation";
 
 export function LoginView() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +29,7 @@ export function LoginView() {
     }
 
     setIsLoading(true);
+    setNeedsConfirmation(false);
     try {
       const supabase = createClient();
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -36,8 +39,10 @@ export function LoginView() {
 
       if (error) {
         toast.error(error.message);
+        setNeedsConfirmation(error.code === "email_not_confirmed");
       } else if (data?.user && isEmailUnconfirmed(data.user)) {
         await supabase.auth.signOut();
+        setNeedsConfirmation(true);
         toast.error("Please confirm your email before logging in. Check your inbox for the confirmation link.");
       } else if (data?.user) {
         const role = data.user.user_metadata?.role || "student";
@@ -92,6 +97,7 @@ export function LoginView() {
         />
         <AuthSubmitButton isLoading={isLoading} label="Log in" loadingLabel="Logging in..." />
       </form>
+      {needsConfirmation && <ResendConfirmation email={email} />}
       <AuthSwitchLink prompt="New to PACE?" label="Create an account" href="/signup" />
     </AuthSplitLayout>
   );
