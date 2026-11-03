@@ -2,6 +2,7 @@ import { SectionHeading } from "../shared/section-heading";
 import { ApproachCard } from "./approach-card";
 import { HeartRow } from "./heart-row";
 import { LanguageChips } from "./language-chips";
+import { ActivityLevels } from "./activity-levels";
 
 export function ApproachSection() {
   return (
@@ -11,7 +12,7 @@ export function ApproachSection() {
           tone="dark"
           eyebrow="Our approach"
           eyebrowClassName="text-pace-green"
-          title="One place to code, and a tutor that knows when to hold back."
+          title="One place to code, a tutor that holds back, and a view of the process."
           description="PACE answers each problem with one design decision."
         />
         <div className="grid gap-5 lg:grid-cols-3">
@@ -20,7 +21,7 @@ export function ApproachSection() {
             iconClassName="bg-pace-green"
             badge="Answers problem 01"
             title="One workspace"
-            description="Read the assignment, write code, run tests in a sandbox, and submit, all in the browser. Scores come from the share of test cases passed."
+            description="Read the activity, write code, run tests in a sandbox, and submit, all in the browser. Scores come from the share of test cases passed, so instructors never check files by hand."
           >
             <LanguageChips />
           </ApproachCard>
@@ -28,17 +29,19 @@ export function ApproachSection() {
             icon="icon-sparkles-dark"
             iconClassName="bg-pace-lavender"
             badge="Answers problem 02"
-            title="A tutor that guides, not solves"
-            description="It reads your code and latest test results, then does four things only: explain code, hint at errors, clarify concepts, and guide problem-solving. It declines requests for full solutions."
-          />
-          <ApproachCard
-            icon="heart-red-large"
-            iconClassName="bg-pace-cream"
-            badge="Answers problem 03"
-            title="Hearts make each question count"
-            description="Each assignment gives you 5 hearts. A question costs one, and one comes back every 30 minutes. Instructors can change both."
+            title="A tutor that guides, with limits"
+            description="It reads your code and latest test results, then only explains, hints, clarifies, and guides. It declines requests for full solutions, and each question costs one of 5 hearts."
           >
             <HeartRow />
+          </ApproachCard>
+          <ApproachCard
+            icon="icon-search-purple"
+            iconClassName="bg-pace-cream"
+            badge="Answers problem 03"
+            title="Instructors see the process"
+            description="While students work, PACE records typing, pasting, tab switches, and runs, then sums them up as an activity level. Students are told about it before they start."
+          >
+            <ActivityLevels />
           </ApproachCard>
         </div>
       </div>

@@ -10,8 +10,8 @@ export function StudySection() {
       <SectionHeading
         eyebrow="The study"
         eyebrowClassName="text-pace-green-deep"
-        title="What we’re measuring, and what we’re not."
-        description="Students and instructors use PACE, then rate it on a 5-point scale adapted from the Technology Acceptance Model (Davis, 1989). We compare the two groups with the Mann-Whitney U test."
+        title="Current workflow vs. PACE, rated by the same people."
+        description="First- and second-year BSIT students and programming instructors rate their current workflow first. Then they use PACE and rate it on the same items, adapted from the Technology Acceptance Model (Davis, 1989). We compare each person’s two ratings with the Wilcoxon signed-rank test."
       />
       <div className="flex flex-col gap-6 lg:flex-row">
         <TamPanel />

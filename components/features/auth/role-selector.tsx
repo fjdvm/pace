@@ -10,11 +10,11 @@ interface RoleSelectorProps {
 }
 
 const ROLES: { value: AuthRole; label: string; description: string; icon: string }[] = [
-  { value: "student", label: "Student", description: "Join classes, code, and ask the tutor", icon: "cap" },
+  { value: "student", label: "Student", description: "Join classes, do activities, and ask the tutor", icon: "cap" },
   {
     value: "instructor",
     label: "Instructor",
-    description: "Create classes and assignments. Needs admin approval",
+    description: "Create classes and activities. Needs admin approval",
     icon: "book",
   },
 ];

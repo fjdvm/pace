@@ -2,9 +2,9 @@ import { LandingIcon } from "../shared/landing-icon";
 import { SectionHeading } from "../shared/section-heading";
 import { SectionShell } from "../shared/section-shell";
 import { FlagsIllustration } from "./flags-illustration";
-import { HeartsIllustration } from "./hearts-illustration";
 import { InstructorCard } from "./instructor-card";
-import { TestsIllustration } from "./tests-illustration";
+import { ItemsIllustration } from "./items-illustration";
+import { ImportIllustration } from "./import-illustration";
 
 export function InstructorsSection() {
   return (
@@ -12,27 +12,29 @@ export function InstructorsSection() {
       <SectionHeading
         eyebrow="For instructors"
         eyebrowClassName="text-pace-blue"
-        title="Instructors set the rules."
-        description="Teachers create the assignments, decide how much help students get, and review the results in one place."
+        title="Instructors set the rules and see the process."
+        description="Teachers build the activities, decide how much help students get (5 hearts and 30 minutes per heart by default), and review the results in one place."
       />
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <InstructorCard
-          title="Assignments with hidden tests"
-          description="Write the instructions, add visible tests for practice and hidden tests for grading, and set a due date. Scores are computed automatically."
+          title="Activities with several items"
+          description="Mix coding, multiple-choice, and short-answer items in one activity. Coding items get visible tests for practice and hidden tests for grading, scored automatically."
           illustrationClassName="bg-pace-sky"
+          tag="In development"
         >
-          <TestsIllustration />
+          <ItemsIllustration />
         </InstructorCard>
         <InstructorCard
-          title="You decide how much help"
-          description="Set the number of hearts per student and how long each one takes to come back. The defaults are 5 hearts and 30 minutes."
-          illustrationClassName="bg-pace-peach"
+          title="Write items, or import a file"
+          description="Add items yourself, or upload a PDF, Word file, or photo of your activity sheet. The AI reads it, splits it into items, and drafts test cases. Nothing is posted until you check it."
+          illustrationClassName="bg-pace-lavender-tint"
+          tag="In development"
         >
-          <HeartsIllustration />
+          <ImportIllustration />
         </InstructorCard>
         <InstructorCard
           title="Flags, not verdicts"
-          description="PACE flags very similar submissions and unusual activity, such as large pastes. A flag means “take a look,” not proof of copying."
+          description="Each submission shows its activity level and timeline, and PACE flags very similar submissions. A flag means “take a look,” not proof of copying."
           illustrationClassName="bg-pace-sun"
         >
           <FlagsIllustration />

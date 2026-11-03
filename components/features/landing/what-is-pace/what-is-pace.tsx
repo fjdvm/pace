@@ -9,10 +9,12 @@ export function WhatIsPace() {
         <p className="font-pace-display text-[clamp(26px,3.6vw,36px)] font-medium leading-[1.25] tracking-[-0.01em] text-pace-ink max-w-[920px] text-center">
           PACE is a research prototype. It puts a{" "}
           <span className="text-pace-purple">hint-only AI tutor</span> inside a
-          browser code editor and uses{" "}
+          browser code editor, uses{" "}
           <span className="text-pace-red">hearts</span> to limit how often
-          students ask. We are studying whether students and instructors{" "}
-          <span className="text-pace-green-deep">accept it</span>.
+          students ask, and shows instructors how each submission was written.
+          We are{" "}
+          <span className="text-pace-green-deep">comparing it with the current workflow</span>{" "}
+          of an LMS, a separate IDE, and general AI tools.
         </p>
         <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {acronym.map((item) => (

@@ -5,6 +5,7 @@ const claims = [
   { title: "A tutor that adapts to you.", note: "Hint levels depend only on hearts spent." },
   { title: "That flags prove copying.", note: "They only prompt an instructor to review." },
   { title: "That hearts build self-regulation.", note: "It’s the reason for the design, not a measured result." },
+  { title: "Results for every student.", note: "Only first- and second-year students rate PACE, after one to three sessions." },
 ];
 
 export function ClaimsPanel() {

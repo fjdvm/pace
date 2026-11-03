@@ -44,7 +44,7 @@ export function ForgotPasswordView() {
   return (
     <AuthSplitLayout
       headline="Pick up where you left off."
-      description="Your assignments, your code, and your tutor are waiting."
+      description="Your activities, your code, and your tutor are right where you left them."
     >
       {isSent ? (
         <AuthFormHeading

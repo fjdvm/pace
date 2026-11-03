@@ -12,13 +12,13 @@ export function IllustrationRow({ icon, label, className, children }: Illustrati
   return (
     <div
       className={cn(
-        "flex items-center justify-between rounded-[14px] bg-white px-3.5 py-2.5",
+        "flex min-w-0 items-center justify-between gap-2 rounded-[14px] bg-white px-3.5 py-2.5",
         className,
       )}
     >
-      <div className="flex items-center gap-2.5">
+      <div className="flex min-w-0 items-center gap-2.5">
         <LandingIcon name={icon} size={16} />
-        <span className="pace-small whitespace-nowrap font-semibold text-pace-ink">{label}</span>
+        <span className="pace-small truncate font-semibold text-pace-ink">{label}</span>
       </div>
       {children}
     </div>

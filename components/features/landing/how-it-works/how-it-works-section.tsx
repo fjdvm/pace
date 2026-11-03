@@ -27,7 +27,7 @@ export function HowItWorksSection() {
         reverse
         title="Hints get more specific as you spend hearts"
         description="Your first question gets a conceptual nudge. Each heart you spend moves the tutor one level closer to the details, up to near-pseudocode at level 5. You get only as much help as you need."
-        citation="Scaffolding (Wood, Bruner & Ross, 1976)"
+        citation="Multi-level hints (Xiao et al., 2024)"
       >
         <HintStaircaseVisual />
       </FeatureRow>

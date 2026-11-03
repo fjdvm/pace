@@ -69,7 +69,7 @@ export function LoginView() {
   return (
     <AuthSplitLayout
       headline="Pick up where you left off."
-      description="Your assignments, your code, and your tutor are waiting."
+      description="Your activities, your code, and your tutor are right where you left them."
     >
       <AuthFormHeading title="Log in to PACE" subtitle="Use the email you signed up with." />
       <form onSubmit={handleLogin} className="flex flex-col gap-6">

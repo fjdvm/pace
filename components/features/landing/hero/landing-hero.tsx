@@ -8,7 +8,7 @@ export function LandingHero() {
       <ResearchChip />
       <HeroArt />
       <p className="pace-body-l max-w-[720px] pt-6 text-[22px] text-pace-ink">
-        A coding workspace with an AI tutor that guides you, not solves it for you.
+        One place to code, test, and submit, with an AI tutor that guides you instead of solving it for you.
       </p>
       <HeroActions />
     </section>

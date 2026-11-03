@@ -9,8 +9,9 @@ export function CtaSection() {
         <p className="pace-eyebrow text-pace-ink">For study participants</p>
         <h2 className="pace-h2 max-w-[640px] text-pace-ink">Taking part in the study?</h2>
         <p className="pace-body-l max-w-[600px] text-pace-ink">
-          Sign in, work through an assignment with the tutor, then answer the
-          questionnaire. Your feedback shapes the next version of PACE.
+          Rate your current workflow, work through an activity in PACE with the
+          tutor, then rate PACE. Your answers and comments shape the next
+          version.
         </p>
         <div className="flex flex-col gap-3.5 pt-2 sm:flex-row">
           <Link

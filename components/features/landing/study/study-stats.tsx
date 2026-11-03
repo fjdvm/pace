@@ -1,7 +1,7 @@
 const stats = [
-  { value: "2", label: "respondent groups: students and programming instructors" },
-  { value: "20", label: "rating items per questionnaire version" },
-  { value: "5", label: "point scale, from Strongly Disagree to Strongly Agree, with Neutral in the middle" },
+  { value: "2", label: "setups rated by each person: the current workflow and PACE" },
+  { value: "3", label: "problem areas: separate tools, AI use, and seeing how code is made" },
+  { value: "4", label: "acceptance factors with 5 items each, on a 5-point scale" },
   { value: "1", label: "university setting, so results describe PUP Quezon City only" },
 ];
 

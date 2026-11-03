@@ -27,7 +27,14 @@ export function AuthPreviewCards() {
           <HeartsMeter />
         </div>
         <p className="text-[13px] leading-normal text-pace-ink-2">
-          Before I hint: what do you expect line 3 to print?
+          Hint 1 of 5: what does your program print when both numbers are 0?
+        </p>
+      </div>
+      <div className={`${cardClass} flex items-center gap-3 px-[18px] py-3.5`}>
+        <AuthIcon name="info" size={18} />
+        <p className="flex-1 text-[13px] leading-normal text-pace-ink-2">
+          Typing, pastes, and tab switches are recorded while you work, so your
+          instructor sees how the code was made.
         </p>
       </div>
     </div>

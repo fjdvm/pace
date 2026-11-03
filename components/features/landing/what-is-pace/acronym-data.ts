@@ -23,7 +23,7 @@ export const acronym = [
   {
     letter: "E",
     title: "Environment",
-    description: "Assignments, tests, and submissions live in one place.",
+    description: "Activities, tests, submissions, and activity records live in one place.",
     className: "bg-pace-sun",
     letterClassName: "text-pace-ink",
   },

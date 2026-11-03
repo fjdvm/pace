@@ -12,8 +12,8 @@ interface SignupCopy {
 
 export const SIGNUP_COPY: Record<AuthRole, SignupCopy> = {
   student: {
-    headline: "Code, test, and get unstuck in one place.",
-    description: "Join your class with the code from your instructor. It takes about a minute.",
+    headline: "Code, test, and submit in one place.",
+    description: "Join your class with the code from your instructor. While you work, PACE records typing, pasting, and tab switches so your instructor can see how your code was made.",
     title: "Create your account",
     subtitle: "First, tell us how you’ll use PACE.",
     submit: "Create account",
@@ -21,8 +21,8 @@ export const SIGNUP_COPY: Record<AuthRole, SignupCopy> = {
     legalAction: "creating an account",
   },
   instructor: {
-    headline: "Set the assignments. Decide how much help students get.",
-    description: "Create classes, add visible and hidden tests, and choose how many hearts each student gets.",
+    headline: "Build the activities. Decide how much help students get.",
+    description: "Create classes and activities, add visible and hidden tests, choose how many hearts each student gets, and see how each submission was written.",
     title: "Request instructor access",
     subtitle: "An administrator checks every instructor account first.",
     submit: "Request access",

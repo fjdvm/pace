@@ -62,7 +62,7 @@ export function ResetPasswordView() {
   return (
     <AuthSplitLayout
       headline="Pick up where you left off."
-      description="Your assignments, your code, and your tutor are waiting."
+      description="Your activities, your code, and your tutor are right where you left them."
     >
       {!isReady ? (
         <p className="text-[15px] leading-[1.55] text-pace-ink-2">Verifying your reset link...</p>

@@ -14,7 +14,7 @@ export function PendingSteps({ email }: { email: string }) {
         icon="mail"
         iconBg="bg-pace-sunken"
         title="You get an email"
-        detail="Then you can create your first class"
+        detail="Then you can create your first class and activity"
       />
     </ul>
   );

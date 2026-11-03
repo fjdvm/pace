@@ -1,8 +1,8 @@
 const constructs = [
-  { code: "PU", title: "Perceived usefulness", question: "“Does PACE help me practice and finish my assignments?”" },
-  { code: "PEOU", title: "Perceived ease of use", question: "“Are the editor, tutor, and hearts easy to learn?”" },
-  { code: "ATU", title: "Attitude toward use", question: "“Do I like using a tutor that has limits?”" },
-  { code: "BI", title: "Intention to use", question: "“Would I keep using PACE and recommend it?”" },
+  { code: "PU", title: "Perceived usefulness", question: "“Does this setup help me finish my programming assignments?”" },
+  { code: "PEOU", title: "Perceived ease of use", question: "“Is this setup easy to learn and use?”" },
+  { code: "ATU", title: "Attitude toward use", question: "“Do I like working this way?”" },
+  { code: "BI", title: "Intention to use", question: "“Would I keep using it and recommend it?”" },
 ];
 
 export function TamPanel() {
@@ -11,7 +11,7 @@ export function TamPanel() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="pace-h4 text-pace-ink">Four things we ask about</p>
         <span className="pace-small rounded-full bg-white px-3 py-1.5 font-semibold text-pace-ink">
-          5 items each · 2 versions
+          5 items each · rated for both setups
         </span>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
