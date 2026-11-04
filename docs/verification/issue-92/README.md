@@ -59,4 +59,4 @@ The private-comment input and send button fit inside both a 300px desktop card a
 - `git diff --check`: passed.
 - `test/migrations/post-saved-time.sql`: passed; existing Post data is preserved with a non-null saved timestamp.
 
-Apply `supabase/migrations/20261105050000_post_saved_time.sql` before deploying the new code and regenerate Prisma Client. No production migration was applied.
+Applied `supabase/migrations/20261104213006_post_saved_time.sql` to the configured Supabase project (`hqlvekxkwaghkuktydmj`) after the user requested migration. All 15 existing Posts remain, none have a missing saved timestamp, and Prisma Client was regenerated. The filename matches the recorded Supabase migration version.
