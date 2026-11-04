@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getDisplayName } from "@/lib/display-name";
 import { kickStudent } from "@/app/actions/kick-student";
+import { NoEnrolledCard } from "./no-enrolled-card";
 import { KickStudentDialog } from "./kick-student-dialog";
 import type { RosterStudent, RosterInstructor } from "./types";
 
@@ -51,6 +52,7 @@ export function PeopleTab({ classId, instructor, roster }: PeopleTabProps) {
       <p className="text-xs font-bold text-secondary uppercase tracking-wide px-1">
         Students {roster.length > 0 && `(${roster.length})`}
       </p>
+      {roster.length === 0 && classId && <NoEnrolledCard />}
       {roster.map((student) => (
         <div
           key={student.id}
