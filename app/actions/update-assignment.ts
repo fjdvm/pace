@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { createClient } from "@/lib/supabase/server";
 import { notifyAssignmentPublished } from "@/lib/notifications";
 import { validateAssignment, type AssignmentFormValues } from "@/lib/assignment-form";
@@ -19,7 +20,7 @@ export async function updateAssignment(assignmentId: string, values: AssignmentF
       include: { classes: { select: { classId: true } }, _count: { select: { submissions: true } } },
     });
     if (!assignment) throw new Error("Assignment not found");
-    if (assignment.createdBy !== user.id) throw new Error("Unauthorized: Only the assignment's creator can edit it");
+    if (!(await isAssignmentInstructor(assignmentId, user.id))) throw new Error("Unauthorized: Only the class's instructor can edit this assignment");
 
     const previousClassIds = new Set(assignment.classes.map((c) => c.classId));
     const addedClassIds = values.classIds.filter((id) => !previousClassIds.has(id));

@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { createClient } from "@/lib/supabase/server";
 import { tokenize, type SupportedLanguage } from "@/lib/similarity/tokenizer";
 import { computeSimilarity } from "@/lib/similarity/winnowing";
@@ -52,7 +53,7 @@ export async function getSubmissionAnalysis(assignmentId: string, studentId: str
 
     const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId } });
     if (!assignment) throw new Error("Assignment not found");
-    if (assignment.createdBy !== user.id) {
+    if (!(await isAssignmentInstructor(assignmentId, user.id))) {
       throw new Error("Unauthorized: You do not own this assignment");
     }
 

@@ -2,6 +2,7 @@
 
 import { generateText } from "ai";
 import { prisma } from "@/lib/prisma";
+import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { createClient } from "@/lib/supabase/server";
 import { getModelWithFallback } from "@/lib/ai-provider";
 import { buildStatsPrompt } from "@/lib/stats-prompt";
@@ -21,7 +22,7 @@ export async function generateAssignmentReport(assignmentId: string, options: Ge
 
     const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId } });
     if (!assignment) throw new Error("Assignment not found");
-    if (assignment.createdBy !== user.id) {
+    if (!(await isAssignmentInstructor(assignmentId, user.id))) {
       throw new Error("Unauthorized: You do not own this assignment");
     }
 

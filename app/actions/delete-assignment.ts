@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { createClient } from "@/lib/supabase/server";
 
 export async function deleteAssignment(assignmentId: string) {
@@ -13,8 +14,8 @@ export async function deleteAssignment(assignmentId: string) {
 
     const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId } });
     if (!assignment) throw new Error("Assignment not found");
-    if (assignment.createdBy !== user.id) {
-      throw new Error("Unauthorized: Only the assignment's creator can delete it");
+    if (!(await isAssignmentInstructor(assignmentId, user.id))) {
+      throw new Error("Unauthorized: Only the class's instructor can delete this assignment");
     }
 
     await prisma.$transaction(async (tx) => {

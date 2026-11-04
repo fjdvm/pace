@@ -20,20 +20,16 @@ export async function joinClass(joinCode: string) {
       throw new Error("Unauthorized: You must be logged in");
     }
 
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-    });
-
-    if (!dbUser || dbUser.role !== "student") {
-      throw new Error("Unauthorized: Only students can join classes");
-    }
-
     const targetClass = await prisma.class.findUnique({
       where: { joinCode: cleanCode },
     });
 
     if (!targetClass) {
       throw new Error("Invalid join code. Class not found.");
+    }
+
+    if (targetClass.instructorId === user.id) {
+      throw new Error("You already own this class");
     }
 
     const existingEnrollment = await prisma.enrollment.findUnique({

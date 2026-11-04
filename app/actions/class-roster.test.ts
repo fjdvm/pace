@@ -55,13 +55,13 @@ describe("getClassRoster", () => {
     expect(result.instructor?.name).toBe("Ivy Instructor");
   });
 
-  it("lets an enrolled student fetch the roster", async () => {
+  it("rejects an enrolled Student who is not the Class's Instructor", async () => {
     mockAuthenticatedUser(studentId);
     const { getClassRoster } = await import("@/app/actions/class-roster");
 
     const result = await getClassRoster(classId);
 
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 
   it("rejects a student who is not enrolled in the class", async () => {

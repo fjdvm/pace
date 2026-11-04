@@ -17,14 +17,8 @@ export async function getClassRoster(classId: string) {
     });
     if (!cls) throw new Error("Class not found");
 
-    const isInstructor = cls.instructorId === user.id;
-    if (!isInstructor) {
-      const enrollment = await prisma.enrollment.findUnique({
-        where: { studentId_classId: { studentId: user.id, classId } },
-      });
-      if (!enrollment) {
-        throw new Error("Unauthorized: You are not a member of this class");
-      }
+    if (cls.instructorId !== user.id) {
+      throw new Error("Unauthorized: Only the class's instructor can view the roster");
     }
 
     const enrollments = await prisma.enrollment.findMany({

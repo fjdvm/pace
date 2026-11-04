@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { createClient } from "@/lib/supabase/server";
 
 export async function getAssignmentScoreTable(assignmentId: string) {
@@ -25,7 +26,7 @@ export async function getAssignmentScoreTable(assignmentId: string) {
     });
 
     if (!assignment) throw new Error("Assignment not found");
-    if (assignment.createdBy !== user.id) throw new Error("Unauthorized: You do not own this assignment");
+    if (!(await isAssignmentInstructor(assignmentId, user.id))) throw new Error("Unauthorized: You do not own this assignment");
 
     const activeClassLinks = assignment.classes.filter((c) => !c.class.archived);
 

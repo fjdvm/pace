@@ -27,14 +27,6 @@ export async function createClass(name: string) {
       throw new Error("Unauthorized: You must be logged in");
     }
 
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-    });
-
-    if (!dbUser || dbUser.role !== "instructor" || dbUser.approvalStatus !== "approved") {
-      throw new Error("Unauthorized: Only approved instructors can create classes");
-    }
-
     let joinCode = "";
     let isUnique = false;
     let attempts = 0;

@@ -68,14 +68,6 @@ export async function createAssignment(params: CreateAssignmentParams) {
       throw new Error("Unauthorized: You must be logged in");
     }
 
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-    });
-
-    if (!dbUser || dbUser.role !== "instructor" || dbUser.approvalStatus !== "approved") {
-      throw new Error("Unauthorized: Only approved instructors can create assignments");
-    }
-
     const newAssignment = await prisma.$transaction(async (tx) => {
       const ownedClasses = await tx.class.count({ where: { id: { in: classIds }, instructorId: user.id } });
       if (ownedClasses !== classIds.length) {
