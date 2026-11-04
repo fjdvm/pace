@@ -26,8 +26,7 @@ export function ClassLeaderboardTab({ leaderboard, myRank }: ClassLeaderboardTab
     return (
       <div className="max-w-3xl w-full bg-white border border-surface-container rounded-3xl p-12 text-center flex flex-col items-center">
         <Trophy className="h-12 w-12 text-secondary/30 mb-4" />
-        <h3 className="font-bold text-lg text-on-surface">No leaderboard yet</h3>
-        <p className="text-xs text-secondary mt-1">Once students earn XP, rankings will appear here.</p>
+        <h3 className="font-bold text-lg text-on-surface">No enrolled yet</h3>
       </div>
     );
   }
