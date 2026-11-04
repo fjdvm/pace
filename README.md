@@ -67,7 +67,7 @@ PACE puts the editor, the test runner, and the AI tutor in one place, and limits
 |------|------------------|
 | **Student** | Join classes with a code, see a to-do list, write code in a Monaco editor, run visible tests, ask the AI tutor, submit, earn XP and badges, view the class leaderboard |
 | **Instructor** | Create classes, build assignments with test cases and tutor settings, review submissions and flags, compare similar submissions, export scores, archive classes |
-| **Admin** | Approve or decline instructor requests, manage AI provider keys, check system status, view the research study results |
+| **Admin** | Manage AI provider keys, check system status, view the research study results |
 
 ### Key routes
 
@@ -81,8 +81,7 @@ PACE puts the editor, the test runner, and the AI tutor in one place, and limits
 | `/dashboard/instructor` | Home with stats, assignments table, and class join codes |
 | `/dashboard/instructor/assignments/new` and `.../[id]/edit` | Assignment form with live checklist and local drafts |
 | `/dashboard/instructor/submissions` | Assignment list, per-assignment overview, per-student review, side-by-side compare |
-| `/dashboard/admin` | Platform overview, instructor requests, system status |
-| `/dashboard/admin/approvals` | Pending and reviewed instructors |
+| `/dashboard/admin` | Platform overview and system status |
 | `/dashboard/admin/study-results` | Overview, Items, Comments, and Respondents tabs, with `.xlsx` export |
 | `/dashboard/admin/settings` | AI provider keys and system status |
 
@@ -110,9 +109,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[Instructor signs up] --> B{Approved by admin?}
-    B -->|No| C[Pending approval page]
-    B -->|Yes| D[Instructor home]
+    A[User signs in] --> D[Dashboard]
     D --> E[Create a class and share the join code]
     D --> F[Create an assignment]
     F --> G[Instructions, language, due date]
@@ -330,7 +327,7 @@ If none are available, the request fails with a clear error.
 | AI | Vercel AI SDK with Groq, Google, OpenAI, and Anthropic providers |
 | Database | PostgreSQL on Supabase |
 | ORM | Prisma 7 with `@prisma/adapter-pg` |
-| Auth | Supabase Auth with role and approval metadata |
+| Auth | Supabase Auth with Google sign-in |
 | Code execution | Judge0 cloud (Python, C, JavaScript, C#) |
 | Similarity | `web-tree-sitter` and winnowing |
 | Reports | `exceljs` for the study workbook |
@@ -361,7 +358,6 @@ Copy `.env.example` to `.env.local` and fill in the values.
 | `GROQ_API_KEY` | Default AI provider |
 | `GOOGLE_GENERATIVE_AI_API_KEY` | Backup AI provider |
 | `GITHUB_TOKEN` | Creates issues from the in-app report-an-issue button |
-| `NEXT_PUBLIC_ADMIN_CONTACT_EMAIL` | Shown to instructors waiting for approval |
 
 Judge0 runs on the public cloud endpoint and needs no key.
 
@@ -382,7 +378,7 @@ Row level security is enabled on every table in the Supabase project. If you add
 
 ### Seed demo classes
 
-With an approved instructor and a student account already created:
+With two signed-in Users, one teaching a Class and one enrolled:
 
 ```bash
 node scripts/seed-classes.js instructor@example.com student@example.com
@@ -439,7 +435,7 @@ fr-gaits/
 │   ├── dashboard/
 │   │   ├── student/          Home, to-do, archive, classes, workspace
 │   │   ├── instructor/       Home, assignments, submissions, classes, archive
-│   │   └── admin/            Overview, approvals, study results, settings
+│   │   └── admin/            Overview, study results, settings
 │   ├── research/questionnaire/   Public evaluation questionnaire
 │   ├── login/ signup/ ...    Auth and legal pages
 │   └── page.tsx              Landing page

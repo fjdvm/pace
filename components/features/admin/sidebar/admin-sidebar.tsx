@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { BarChart3, Settings, UserCheck } from "lucide-react";
+import { BarChart3, Settings } from "lucide-react";
 import { SidebarFrame } from "@/components/features/dashboard/sidebar/sidebar-frame";
 import { SidebarNavItem } from "@/components/features/student/sidebar/sidebar-nav-item";
 import { SidebarProfile } from "@/components/features/student/sidebar/sidebar-profile";
@@ -9,12 +9,11 @@ import { SidebarProfile } from "@/components/features/student/sidebar/sidebar-pr
 type AdminSidebarProps = {
   userEmail: string;
   userName?: string | null;
-  pendingCount: number;
   forceExpanded?: boolean;
   onNavigate?: () => void;
 };
 
-export function AdminSidebar({ userEmail, userName, pendingCount, forceExpanded, onNavigate }: AdminSidebarProps) {
+export function AdminSidebar({ userEmail, userName, forceExpanded, onNavigate }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -40,15 +39,6 @@ export function AdminSidebar({ userEmail, userName, pendingCount, forceExpanded,
               icon="grid-gray"
               activeIcon="grid"
               active={pathname === "/dashboard/admin"}
-            />
-            <SidebarNavItem
-              {...nav}
-              href="/dashboard/admin/approvals"
-              label="Approvals"
-              LucideIcon={UserCheck}
-              active={pathname === "/dashboard/admin/approvals"}
-              badge={pendingCount}
-              badgeTone="amber"
             />
             <SidebarNavItem
               {...nav}

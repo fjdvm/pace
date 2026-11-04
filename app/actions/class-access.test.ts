@@ -18,8 +18,11 @@ afterEach(() => {
 });
 
 describe("per-Class access", () => {
-  it("lets a User with no teaching history create a Class and receive a join code", async () => {
-    db.user.findUnique.mockResolvedValue({ id: "new-user", role: "student" });
+  it.each([
+    { role: "student" },
+    { role: "instructor", approvalStatus: "pending" },
+  ])("lets a signed-in User with legacy metadata %j create a Class and receive a join code", async (metadata) => {
+    db.user.findUnique.mockResolvedValue({ id: "new-user", ...metadata });
     db.class.findUnique.mockResolvedValue(null);
     db.class.create.mockImplementation(async ({ data }) => ({ id: "class", ...data }));
     const { createClass } = await import("./create-class");
