@@ -7,6 +7,8 @@ export interface InstructorAssignment {
   language: string;
   dueDate: string;
   testCaseCount: number;
+  turnedIn: number;
+  assigned: number;
   isSharedWithOtherClasses: boolean;
 }
 
