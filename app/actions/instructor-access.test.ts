@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { mockAuthenticatedUser, mockUnauthenticated } from "../../test/mock-auth";
+
+const auth = vi.hoisted(() => ({ getUser: vi.fn() }));
+vi.mock("@/lib/supabase/server", () => ({ createClient: async () => ({ auth }) }));
 
 const db = vi.hoisted(() => ({
   class: { findUnique: vi.fn() },
@@ -13,7 +15,7 @@ vi.mock("@/lib/ai-provider", () => ({ getModelWithFallback: vi.fn() }));
 
 beforeEach(() => {
   vi.resetAllMocks();
-  mockAuthenticatedUser("caller");
+  auth.getUser.mockResolvedValue({ data: { user: { id: "caller" } } });
   db.class.findUnique.mockResolvedValue({ id: "class", instructorId: "other" });
   db.assignment.findUnique.mockResolvedValue({
     id: "assignment", createdBy: "caller", classes: [], language: "Python",
@@ -26,7 +28,6 @@ beforeEach(() => {
 });
 afterEach(() => {
   vi.resetModules();
-  vi.doUnmock("@/lib/supabase/server");
 });
 
 const assignmentActions = [
@@ -52,7 +53,7 @@ it.each([
 });
 
 it.each(assignmentActions)("requires sign-in for %s", async (_name, action) => {
-  mockUnauthenticated();
+  auth.getUser.mockResolvedValue({ data: { user: null } });
   expect(await action()).toMatchObject({ success: false, error: expect.stringContaining("logged in") });
 });
 
