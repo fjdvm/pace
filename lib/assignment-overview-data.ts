@@ -73,6 +73,7 @@ export async function getAssignmentOverview(
             pasteDominance: signals?.riskScore?.components.pasteDominance ?? 0,
           })
         : [],
+      activity: submission ? (signals?.riskScore?.flag ?? null) : null,
       submittedAt: submission?.submittedAt.toISOString() ?? null,
     };
   });
