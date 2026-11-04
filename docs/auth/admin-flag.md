@@ -20,7 +20,8 @@ the backfill or privilege changes. The role and approval columns remain until
 all callers are migrated by the other tickets under #47.
 
 The migration also replaces table-wide INSERT/UPDATE grants for public clients
-with grants for the existing columns, excluding `is_admin`. The existing Auth
+with grants for the existing columns, excluding `is_admin` and excluding updates
+to `id`. Clients cannot reassign an Admin row to another Auth identity. The existing Auth
 trigger inserts only the old profile columns, so new sign-ins receive false.
 The Google callback writes only name/email and a temporary student role on
 creation; it never copies admin metadata or overwrites the flag on an existing
