@@ -15,15 +15,17 @@ type CreateClassDialogProps = {
 export function CreateClassDialog({ open, onOpenChange }: CreateClassDialogProps) {
   const [code, setCode] = useState("");
   const [description, setDescription] = useState("");
+  const [section, setSection] = useState("");
   const { isCreatingClass, handleCreateClass } = useClassActions();
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!code.trim()) return;
-    const created = await handleCreateClass(composeClassName(code, description));
+    const created = await handleCreateClass(composeClassName(code, description, section));
     if (created) {
       setCode("");
       setDescription("");
+      setSection("");
       onOpenChange(false);
     }
   };
@@ -40,10 +42,17 @@ export function CreateClassDialog({ open, onOpenChange }: CreateClassDialogProps
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <PaceTextField label="Course code" placeholder="CS 101" value={code} onChange={(e) => setCode(e.target.value)} autoFocus />
           <PaceTextField
-            label="Course name and section"
-            placeholder="Programming 1 · BSIT 1–1"
+            label="Course name"
+            placeholder="Programming 1"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+          />
+          <PaceTextField
+            label="Section"
+            placeholder="BSIT 1–1"
+            value={section}
+            onChange={(e) => setSection(e.target.value)}
+            disabled={!description.trim()}
           />
           <div className="flex justify-end gap-3 pt-2">
             <PaceActionButton variant="secondary" onClick={() => onOpenChange(false)} disabled={isCreatingClass}>

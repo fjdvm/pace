@@ -16,7 +16,7 @@ type DashboardShellProps = DashboardClasses & {
 export function DashboardShell({ children, teaching, enrolled, isAdmin, userEmail, userName, studentXp }: DashboardShellProps) {
   return (
     <SidebarProvider className="h-svh min-h-0 flex-col overflow-hidden bg-pace-canvas">
-      <TopBar userEmail={userEmail} userName={userName} studentXp={studentXp} />
+      <TopBar classes={[...teaching, ...enrolled]} userEmail={userEmail} userName={userName} studentXp={studentXp} />
       <div className="flex min-h-0 flex-1">
         <AppSidebar teaching={teaching} enrolled={enrolled} isAdmin={isAdmin} />
         <SidebarInset className="min-w-0 overflow-y-auto bg-pace-canvas">{children}</SidebarInset>
