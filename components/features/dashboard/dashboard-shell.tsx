@@ -1,19 +1,26 @@
 "use client";
 
-import { RoleSidebar, type RoleSidebarProps } from "./role-sidebar";
-import { MobileSidebarDrawer } from "./mobile-sidebar-drawer";
-import { SidebarCollapseProvider } from "./sidebar-collapse-provider";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import type { DashboardClasses } from "@/lib/dashboard-classes";
+import { AppSidebar } from "./sidebar/app-sidebar";
+import { TopBar } from "./top-bar/top-bar";
 
-type DashboardShellProps = RoleSidebarProps & { children: React.ReactNode };
+type DashboardShellProps = DashboardClasses & {
+  isAdmin: boolean;
+  userEmail: string;
+  userName?: string | null;
+  studentXp: { level: number; currentXp: number; nextThreshold: number };
+  children: React.ReactNode;
+};
 
-export function DashboardShell({ children, ...sidebar }: DashboardShellProps) {
+export function DashboardShell({ children, teaching, enrolled, isAdmin, userEmail, userName, studentXp }: DashboardShellProps) {
   return (
-    <SidebarCollapseProvider>
-      <div className="flex h-screen w-full overflow-hidden bg-pace-canvas text-on-surface">
-        <div className="hidden h-full shrink-0 md:block"><RoleSidebar {...sidebar} /></div>
-        <MobileSidebarDrawer {...sidebar} />
-        <div className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto bg-pace-canvas">{children}</div>
+    <SidebarProvider className="h-svh min-h-0 flex-col overflow-hidden bg-pace-canvas">
+      <TopBar userEmail={userEmail} userName={userName} studentXp={studentXp} />
+      <div className="flex min-h-0 flex-1">
+        <AppSidebar teaching={teaching} enrolled={enrolled} isAdmin={isAdmin} />
+        <SidebarInset className="min-w-0 overflow-y-auto bg-pace-canvas">{children}</SidebarInset>
       </div>
-    </SidebarCollapseProvider>
+    </SidebarProvider>
   );
 }
