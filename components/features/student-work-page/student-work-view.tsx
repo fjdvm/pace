@@ -1,3 +1,4 @@
+import { SetClassTitle } from "@/components/features/dashboard/top-bar/class-title-context";
 import { ClassInsightsCard } from "@/components/features/instructor/submissions/class-insights-card";
 import { SimilarityCard } from "@/components/features/instructor/submissions/similarity-card";
 import type { AssignmentOverview } from "@/components/features/instructor/submissions/types";
@@ -10,6 +11,7 @@ export function StudentWorkView({ overview }: { overview: AssignmentOverview }) 
   const { assignment, stats, students } = overview;
   return (
     <>
+      {assignment.primaryClass && <SetClassTitle id={assignment.primaryClass.id} name={assignment.primaryClass.name} />}
       <WorkTabs assignmentId={assignment.id} />
       <div className="mx-auto flex w-full max-w-[860px] flex-col gap-3 p-4 md:gap-4 md:px-0 md:py-6">
         <WorkHeader overview={overview} />
