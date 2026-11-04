@@ -12,8 +12,8 @@ const project: FooterLink[] = [
 
 const prototype: FooterLink[] = [
   { label: "Sign in", href: "/login" },
-  { label: "Create a student account", href: "/signup" },
-  { label: "Request instructor access", href: "/signup" },
+  { label: "Start learning", href: "/login" },
+  { label: "Start teaching", href: "/login" },
 ];
 
 const research: FooterLink[] = [

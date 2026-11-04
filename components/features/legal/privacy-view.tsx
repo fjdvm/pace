@@ -3,9 +3,9 @@ import { LegalSection } from "./legal-section";
 
 export function PrivacyView() {
   return (
-    <LegalPageLayout title="Privacy Policy" updatedAt="August 19, 2026">
+    <LegalPageLayout title="Privacy Policy" updatedAt="November 4, 2026">
       <LegalSection title="1. Information We Collect">
-        We collect the information you provide when creating an account (name, email, role), the code and answers you submit for assignments, and behavioral signals such as paste frequency and typing activity used to support academic integrity checks.
+        When you sign in with Google through Supabase Auth, we receive your Google name and email address to create or update your PACE account. PACE does not collect or store your Google password. We also collect your Class memberships, the code and answers you submit for assignments, and behavioral signals such as paste frequency and typing activity used to support academic integrity checks.
       </LegalSection>
       <LegalSection title="2. How We Use Information">
         We use this information to operate the Service: authenticating you, grading submissions, powering the AI tutor, gamification features, and class leaderboards, and improving the platform.

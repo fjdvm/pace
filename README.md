@@ -74,7 +74,7 @@ PACE puts the editor, the test runner, and the AI tutor in one place, and limits
 | Route | Purpose |
 |-------|---------|
 | `/` | Public landing page |
-| `/login`, `/signup` | Authentication with role selection |
+| `/login` | Google-only sign-in |
 | `/research/questionnaire` | Public, anonymous evaluation questionnaire |
 | `/dashboard/student` | Home, to-do, archive, class pages, assignment workspace |
 | `/dashboard/student/assignments/[id]` | Workspace with resizable instructions, editor, console, and tutor panels |
@@ -437,7 +437,7 @@ fr-gaits/
 │   │   ├── instructor/       Home, assignments, submissions, classes, archive
 │   │   └── admin/            Overview, study results, settings
 │   ├── research/questionnaire/   Public evaluation questionnaire
-│   ├── login/ signup/ ...    Auth and legal pages
+│   ├── login/ ...            Auth and legal pages
 │   └── page.tsx              Landing page
 ├── components/
 │   ├── ui/                   shadcn/ui primitives

@@ -33,6 +33,20 @@ The Supabase MCP currently available to this workspace can inspect the database
 but does not expose Auth provider settings. Google credentials must be configured
 through an authenticated dashboard or the Supabase Management API.
 
+## Google-only access
+
+The signup, forgot-password and reset-password routes and their forms are removed.
+Landing account calls to action lead to `/login`. Terms and Privacy describe
+Google sign-in and per-Class roles.
+
+`auth.email.enable_signup = false` in `supabase/config.toml` maps to the hosted
+Auth setting `external_email_enabled = false`; it disables the email provider,
+including password and magic-link sign-in. Global `auth.enable_signup` stays true
+so new Google users can still sign in. Apply only this provider change to the
+hosted project, preserving its production URLs and other Auth settings.
+Verify `/auth/v1/settings` returns `external.email: false` and
+`external.google: true` after applying it.
+
 ## Identity and profile preservation
 
 Supabase automatically links Google identities to existing Auth users with the

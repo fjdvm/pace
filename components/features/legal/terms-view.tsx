@@ -3,12 +3,12 @@ import { LegalSection } from "./legal-section";
 
 export function TermsView() {
   return (
-    <LegalPageLayout title="Terms of Service" updatedAt="August 19, 2026">
+    <LegalPageLayout title="Terms of Service" updatedAt="November 4, 2026">
       <LegalSection title="1. Acceptance of Terms">
         By creating an account or using PACE (&quot;the Service&quot;), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.
       </LegalSection>
       <LegalSection title="2. Accounts">
-        You are responsible for maintaining the confidentiality of your account credentials and for all activity under your account. Each account is tied to a single email address and role (student, instructor, or admin).
+        You sign in to PACE with your Google account. PACE does not offer email and password sign-in or store your Google password. You are responsible for securing your Google account and for all activity under your PACE account. Any signed-in User can create or join a Class without instructor approval. You are the Instructor of Classes you create and a Student in Classes you join.
       </LegalSection>
       <LegalSection title="3. Acceptable Use">
         You agree not to misuse the Service, including attempting to bypass academic integrity safeguards, sharing another user&apos;s submissions as your own, or interfering with the normal operation of the platform.

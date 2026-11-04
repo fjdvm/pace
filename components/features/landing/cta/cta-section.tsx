@@ -21,10 +21,10 @@ export function CtaSection() {
             <LandingIcon name="icon-arrow-cta" size={18} />
           </Link>
           <Link
-            href="/signup"
+            href="/login"
             className="pace-press pace-body flex items-center justify-center rounded-2xl border-[1.5px] border-pace-line bg-white px-[26px] py-4 font-semibold leading-[1.2] text-pace-ink shadow-[0_4px_0_0_#d9d5cc] transition-transform hover:-translate-y-0.5"
           >
-            Request instructor access
+            Start teaching
           </Link>
         </div>
         <CtaShapes />
