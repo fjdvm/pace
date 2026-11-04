@@ -18,7 +18,7 @@ interface ArchiveViewProps {
 }
 
 export function ArchiveView({ role, classes }: ArchiveViewProps) {
-  const basePath = role === "instructor" ? "/dashboard/classes" : "/dashboard/classes";
+  const basePath = "/dashboard/classes";
   const { handleArchiveToggle, handleLeave, handleDelete } = useClassMembershipActions();
 
   return (

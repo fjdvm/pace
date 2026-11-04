@@ -27,7 +27,7 @@ export function SidebarClassList({ role, classes, collapsed, onNavigate }: Sideb
 
   if (role === "admin" || collapsed) return null;
 
-  const basePath = role === "instructor" ? "/dashboard/classes" : "/dashboard/classes";
+  const basePath = "/dashboard/classes";
   const sectionLabel = role === "instructor" ? "Teaching" : "Enrolled";
   const active = classes.filter((c) => !c.archived);
 
