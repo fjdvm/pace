@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, Plus, Layers, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { BookOpen, Plus, Layers, Trash2, Pencil } from "lucide-react";
 import { PaceButton } from "@/components/features/student/shared/pace-button";
 import { useAssignmentActions } from "@/components/features/dashboard/instructor/components/use-assignment-actions";
 import { DeleteAssignmentDialog } from "@/components/features/submissions/delete-assignment-dialog";
@@ -21,12 +22,13 @@ interface ClassworkTabProps {
 }
 
 export function ClassworkTab({ classId, assignments }: ClassworkTabProps) {
+  const router = useRouter();
   const { pendingDelete, isDeleting, requestDelete, cancelDelete, confirmDelete } = useAssignmentActions();
 
   return (
     <div className="space-y-4 max-w-3xl w-full">
       <div className="flex justify-end">
-        <PaceButton href={`/dashboard/instructor/assignments/new?classId=${classId}`} variant="primary">
+        <PaceButton href={`/dashboard/assignments/new?classId=${classId}`} variant="primary">
           <Plus className="mr-1.5 size-4" /> New assignment
         </PaceButton>
       </div>
@@ -38,7 +40,7 @@ export function ClassworkTab({ classId, assignments }: ClassworkTabProps) {
           {assignments.map((asm) => (
             <Link
               key={asm.id}
-              href={`/dashboard/instructor/submissions/${asm.id}`}
+              href={`/dashboard/submissions/${asm.id}`}
               className="flex items-center justify-between p-4 bg-white border border-surface-container rounded-2xl hover:shadow-md transition-shadow"
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -59,6 +61,17 @@ export function ClassworkTab({ classId, assignments }: ClassworkTabProps) {
                   </p>
                 </div>
               </div>
+              <button
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  router.push(`/dashboard/assignments/${asm.id}/edit`);
+                }}
+                title="Edit assignment"
+                className="ml-auto p-2 rounded-xl text-secondary hover:text-primary shrink-0"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
               <button
                 onClick={(e) => {
                   e.preventDefault();

@@ -1,3 +1,4 @@
+import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { prisma } from "@/lib/prisma";
 import { getDisplayName } from "@/lib/display-name";
 import { splitClassName } from "@/lib/class-name";
@@ -18,6 +19,7 @@ export async function getAssignmentOverview(
   instructorId: string,
   assignmentId: string,
 ): Promise<AssignmentOverview | null> {
+  if (!(await isAssignmentInstructor(assignmentId, instructorId))) return null;
   const assignment = await prisma.assignment.findUnique({
     where: { id: assignmentId },
     include: {
@@ -29,7 +31,7 @@ export async function getAssignmentOverview(
       },
     },
   });
-  if (!assignment || assignment.createdBy !== instructorId) return null;
+  if (!assignment) return null;
 
   const activeClasses = assignment.classes.map((l) => l.class).filter((c) => !c.archived);
   const [submissions, heartsStates, drafts] = await Promise.all([

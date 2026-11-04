@@ -43,7 +43,7 @@ export function SimilarSubmissionsCard({ assignmentId, similarSubmissions }: Sim
               >
                 <div className="flex items-center justify-between mb-2">
                   <Link
-                    href={`/dashboard/instructor/submissions/${assignmentId}/${s.studentId}`}
+                    href={`/dashboard/submissions/${assignmentId}/${s.studentId}`}
                     className="text-xs font-semibold text-on-surface hover:text-primary"
                   >
                     {s.displayName}

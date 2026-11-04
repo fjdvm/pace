@@ -44,27 +44,27 @@ export function InstructorSidebar({
           <>
             <SidebarNavItem
               {...nav}
-              href="/dashboard/instructor"
+              href="/dashboard"
               label="Home"
               icon="grid-gray"
               activeIcon="grid"
-              active={pathname === "/dashboard/instructor"}
+              active={pathname === "/dashboard"}
             />
             <SidebarNavItem
               {...nav}
-              href="/dashboard/instructor/submissions"
+              href="/dashboard/submissions"
               label="Submissions"
               LucideIcon={GraduationCap}
-              active={pathname.startsWith("/dashboard/instructor/submissions")}
+              active={pathname.startsWith("/dashboard/submissions")}
               badge={submissionCount}
               badgeTone="green"
             />
             <SidebarNavItem
               {...nav}
-              href="/dashboard/instructor/archive"
+              href="/dashboard/teaching/archive"
               label="Archive"
               icon="archive"
-              active={pathname === "/dashboard/instructor/archive"}
+              active={pathname === "/dashboard/teaching/archive"}
             />
             <TeachingClasses classes={classes} {...nav} />
             {isAdmin && <AdminSection {...nav} />}

@@ -32,7 +32,7 @@ export function SimilarityCard({ assignmentId, pairs }: SimilarityCardProps) {
               <span className="ml-1 font-bold">{Math.round(pair.similarity * 100)}%</span>
             </span>
             <PaceButton
-              href={`/dashboard/instructor/submissions/${assignmentId}/compare?a=${pair.aId}&b=${pair.bId}`}
+              href={`/dashboard/submissions/${assignmentId}/compare?a=${pair.aId}&b=${pair.bId}`}
               variant="secondary"
               className="h-8 px-3.5 text-xs"
             >

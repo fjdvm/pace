@@ -15,11 +15,11 @@ export function AssignmentOverviewView({ overview }: { overview: AssignmentOverv
       <StudentTopBar
         title={assignment.title}
         subtitle={`${assignment.classCodes} · ${assignment.language} · ${formatDueSentence(assignment.dueDate)}`}
-        backHref="/dashboard/instructor/submissions"
+        backHref="/dashboard/submissions"
         actions={
           <div className="flex items-center gap-3">
             <Link
-              href={`/dashboard/instructor/assignments/${assignment.id}/edit`}
+              href={`/dashboard/assignments/${assignment.id}/edit`}
               className="hidden px-2 text-[13px] font-semibold text-pace-ink sm:block"
             >
               Edit assignment

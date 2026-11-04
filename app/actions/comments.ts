@@ -71,7 +71,7 @@ export async function createComment(
           type: "private_comment",
           title: "New private comment",
           message: body.trim(),
-          link: `/dashboard/instructor/classes/${post.classId}`,
+          link: `/dashboard/classes/${post.classId}`,
         });
       }
     }

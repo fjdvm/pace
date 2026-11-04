@@ -14,7 +14,7 @@ export function CompareView({ data }: { data: CompareData }) {
       <StudentTopBar
         title={`${data.left.name} ↔ ${data.right.name}`}
         subtitle={`${data.assignment.title} · ${similarity}`}
-        backHref={`/dashboard/instructor/submissions/${data.assignment.id}`}
+        backHref={`/dashboard/submissions/${data.assignment.id}`}
       />
       <main className="flex flex-1 flex-col gap-5 p-4 md:px-8 md:py-6">
         <p className="rounded-2xl bg-pace-amber-tint px-5 py-3 text-[13px] text-pace-ink">

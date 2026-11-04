@@ -1,3 +1,4 @@
+import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { prisma } from "@/lib/prisma";
 import { getDisplayName } from "@/lib/display-name";
 import type { SupportedLanguage } from "@/lib/similarity/tokenizer";
@@ -10,8 +11,9 @@ import type {
 } from "@/components/features/instructor/submissions/detail/types";
 
 async function loadOwnedAssignment(instructorId: string, assignmentId: string) {
+  if (!(await isAssignmentInstructor(assignmentId, instructorId))) return null;
   const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId } });
-  return assignment && assignment.createdBy === instructorId ? assignment : null;
+  return assignment;
 }
 
 export async function getSubmissionDetail(

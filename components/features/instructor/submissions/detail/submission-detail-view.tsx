@@ -12,7 +12,7 @@ const FILE_NAMES: Record<string, string> = { Python: "main.py", C: "main.c", Jav
 const submittedAt = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 
 export function SubmissionDetailView({ detail }: { detail: SubmissionDetail }) {
-  const base = `/dashboard/instructor/submissions/${detail.assignment.id}`;
+  const base = `/dashboard/submissions/${detail.assignment.id}`;
   const { previousId, nextId } = detail.neighbors;
 
   return (

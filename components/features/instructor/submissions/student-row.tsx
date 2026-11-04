@@ -49,7 +49,7 @@ export function StudentRow({ assignmentId, student }: StudentRowProps) {
   if (student.status !== "submitted") return <div className={className}>{body}</div>;
   return (
     <Link
-      href={`/dashboard/instructor/submissions/${assignmentId}/${student.studentId}`}
+      href={`/dashboard/submissions/${assignmentId}/${student.studentId}`}
       className={cn(className, "hover:bg-pace-canvas")}
     >
       {body}

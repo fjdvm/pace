@@ -89,7 +89,7 @@ export function useAssignmentForm({ initial, assignmentId, onlyClassId }: Option
     }
     draft.clear();
     toast.success(assignmentId ? "Assignment updated" : "Assignment published");
-    router.push("/dashboard/instructor");
+    router.push(values.classIds[0] ? `/dashboard/classes/${values.classIds[0]}` : "/dashboard");
     router.refresh();
   };
 

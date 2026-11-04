@@ -65,7 +65,7 @@ export function InstructorClassView({
       <StudentTopBar
         title={code}
         subtitle={description ? `${description} · ${roster.length} students` : `${roster.length} students`}
-        backHref="/dashboard/instructor"
+        backHref="/dashboard"
         actions={
           <div className="flex items-center gap-2">
             <PaceActionButton variant="secondary" onClick={() => copyToClipboard(joinCode)}>

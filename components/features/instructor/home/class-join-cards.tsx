@@ -29,7 +29,7 @@ export function ClassJoinCards({ classes }: { classes: InstructorClassSummary[] 
             key={cls.id}
             className="flex items-center gap-3.5 rounded-[20px] border-[1.5px] border-pace-line bg-white p-4 shadow-[0_3px_0_0_var(--color-pace-line)]"
           >
-            <Link href={`/dashboard/instructor/classes/${cls.id}`} className="flex min-w-0 flex-1 items-center gap-3.5">
+            <Link href={`/dashboard/classes/${cls.id}`} className="flex min-w-0 flex-1 items-center gap-3.5">
               <span
                 className={cn(
                   "flex size-11 shrink-0 items-center justify-center rounded-[14px]",
