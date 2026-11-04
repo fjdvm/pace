@@ -64,6 +64,7 @@ export async function loadClassPageData(classId: string, userId: string): Promis
     assignments: links.map(({ assignment: a }) => ({
       id: a.id,
       title: a.title,
+      isDraft: a.isDraft,
       language: a.language,
       dueDate: a.dueDate.toISOString(),
       testCaseCount: a._count.testCases,

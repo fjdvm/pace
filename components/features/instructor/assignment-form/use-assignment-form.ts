@@ -1,109 +1,134 @@
-import { useCallback, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { createAssignment } from "@/app/actions/create-assignment";
 import { updateAssignment } from "@/app/actions/update-assignment";
-import { decodeLineBreaks, validateAssignment, type AssignmentFormValues, type TestCaseForm } from "@/lib/assignment-form";
-import { emptyAssignment, sampleAssignment } from "@/lib/sample-assignment";
-import { useAssignmentDraft } from "./use-assignment-draft";
+import {
+  decodeLineBreaks,
+  validateAssignment,
+  type AssignmentFormValues,
+  type TestCaseForm,
+} from "@/lib/assignment-form";
+import { emptyAssignment } from "@/lib/sample-assignment";
 
 type Options = {
   initial?: AssignmentFormValues;
   assignmentId?: string;
+  initialSavedAt?: string;
   onlyClassId?: string;
 };
 
-export function useAssignmentForm({ initial, assignmentId, onlyClassId }: Options) {
+export function useAssignmentForm({
+  initial,
+  initialSavedAt,
+  assignmentId,
+  onlyClassId,
+}: Options) {
   const router = useRouter();
-  const draft = useAssignmentDraft(assignmentId);
+  const busy = useRef(false);
+  const revision = useRef(0);
+  const [id, setId] = useState(assignmentId);
   const [isSaving, setIsSaving] = useState(false);
-  const [values, setValues] = useState<AssignmentFormValues>(() => {
-    if (initial) return initial;
-    const blank = emptyAssignment();
-    return onlyClassId ? { ...blank, classIds: [onlyClassId] } : blank;
-  });
-
-  const patch = (change: Partial<AssignmentFormValues>) => setValues((prev) => ({ ...prev, ...change }));
-
-  const toggleClass = (classId: string) =>
-    patch({
-      classIds: values.classIds.includes(classId)
-        ? values.classIds.filter((id) => id !== classId)
-        : [...values.classIds, classId],
-    });
-
+  const [savedAt, setSavedAt] = useState<string | undefined>(initialSavedAt);
+  const [dirty, setDirty] = useState(false);
+  const [values, setValues] = useState<AssignmentFormValues>(
+    () =>
+      initial ?? {
+        ...emptyAssignment(),
+        isDraft: true,
+        label: "Activity",
+        points: 100,
+        starterCode: "",
+        classIds: onlyClassId ? [onlyClassId] : [],
+      },
+  );
+  const patch = (change: Partial<AssignmentFormValues>) => {
+    revision.current += 1;
+    setDirty(true);
+    setValues((prev) => ({ ...prev, ...change }));
+  };
   const changeTestCase = (index: number, change: Partial<TestCaseForm>) =>
-    patch({ testCases: values.testCases.map((tc, i) => (i === index ? { ...tc, ...change } : tc)) });
-
+    patch({
+      testCases: values.testCases.map((tc, i) =>
+        i === index ? { ...tc, ...change } : tc,
+      ),
+    });
   const addTestCase = () =>
-    patch({ testCases: [...values.testCases, { input: "", expectedOutput: "", visible: true }] });
-
+    patch({
+      testCases: [
+        ...values.testCases,
+        { input: "", expectedOutput: "", visible: true },
+      ],
+    });
   const removeTestCase = (index: number) => {
-    if (values.testCases.length === 1) {
-      toast.error("At least one test case is required");
-      return;
-    }
+    if (values.testCases.length === 1)
+      return toast.error("A coding Item needs at least one test case");
     patch({ testCases: values.testCases.filter((_, i) => i !== index) });
   };
-
-  const fillSample = () => {
-    patch(sampleAssignment());
-    toast.success("Sample assignment filled in");
-  };
-
-  const loadDraft = draft.load;
-  const restoreDraft = useCallback(() => {
-    const saved = loadDraft();
-    if (!saved) return;
-    setValues(saved);
-    toast.success("Draft restored");
-  }, [loadDraft]);
-
-  const saveDraft = () => {
-    if (draft.save(values)) toast.success("Draft saved on this device");
-    else toast.error("Could not save the draft");
-  };
-
-  const submit = async () => {
-    const problem = validateAssignment(values);
-    if (problem) {
-      toast.error(problem);
-      return;
-    }
-    setIsSaving(true);
+  const persist = async (isDraft: boolean) => {
+    if (busy.current) return;
     const payload = {
       ...values,
+      isDraft,
       testCases: values.testCases.map((tc) => ({
         ...tc,
         input: decodeLineBreaks(tc.input),
         expectedOutput: decodeLineBreaks(tc.expectedOutput),
       })),
     };
-    const result = assignmentId
-      ? await updateAssignment(assignmentId, payload)
-      : await createAssignment(payload);
-    setIsSaving(false);
-    if (!result.success) {
-      toast.error(result.error || "Could not save the assignment");
-      return;
+    const problem = validateAssignment(payload);
+    if (problem) return toast.error(problem);
+    const savingRevision = revision.current;
+    busy.current = true;
+    setIsSaving(true);
+    try {
+      const result = id
+        ? await updateAssignment(id, payload)
+        : await createAssignment(payload);
+      if (!result.success)
+        return toast.error(result.error || "Could not save Post");
+      const savedId = "assignment" in result ? result.assignment?.id : id;
+      setId(savedId);
+      setDirty(revision.current !== savingRevision);
+      setSavedAt(new Date().toISOString());
+      setValues((prev) => ({ ...prev, isDraft }));
+      if (isDraft) {
+        if (!id && savedId)
+          window.history.replaceState(
+            null,
+            "",
+            `/dashboard/assignments/${savedId}/edit`,
+          );
+        toast.success("Draft saved");
+      } else if (revision.current !== savingRevision) {
+        toast.success("Post saved. You have additional unsaved changes.");
+      } else {
+        toast.success(values.isDraft ? "Post assigned" : "Post updated");
+        router.push(
+          values.classIds[0]
+            ? `/dashboard/classes/${values.classIds[0]}?tab=classwork`
+            : "/dashboard",
+        );
+        router.refresh();
+      }
+    } catch {
+      toast.error("Could not save Post. Please try again.");
+    } finally {
+      busy.current = false;
+      setIsSaving(false);
     }
-    draft.clear();
-    toast.success(assignmentId ? "Assignment updated" : "Assignment published");
-    router.push(values.classIds[0] ? `/dashboard/classes/${values.classIds[0]}` : "/dashboard");
-    router.refresh();
   };
-
   return {
     values,
+    id,
+    dirty,
+    savedAt,
     isSaving,
     patch,
-    toggleClass,
     changeTestCase,
     addTestCase,
     removeTestCase,
-    fillSample,
-    restoreDraft,
-    saveDraft,
-    submit,
+    saveDraft: () => persist(true),
+    submit: () => persist(false),
   };
 }

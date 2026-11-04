@@ -66,3 +66,25 @@ describe("buildChecklist", () => {
     expect(items[3]).toEqual({ label: "Choose a class", done: false });
   });
 });
+
+describe("coding Post validation", () => {
+  it("allows an incomplete Draft while keeping publication requirements", () => {
+    expect(validateAssignment({ ...valid, isDraft: true, instructions: "", testCases: [] })).toBeNull();
+    expect(validateAssignment({ ...valid, isDraft: false, instructions: "", testCases: [] })).toBe("Please enter instructions");
+  });
+  it.each([NaN, Infinity, -1])("rejects invalid Item points: %s", (points) => {
+    expect(validateAssignment({ ...valid, points })).toBe("Points must be a non-negative number");
+  });
+  it("allows a zero-point Item", () => {
+    expect(validateAssignment({ ...valid, points: 0 })).toBeNull();
+  });
+  it("rejects duplicate Class links", () => {
+    expect(validateAssignment({ ...valid, classIds: ["c1", "c1"] })).toBe("Choose each Class once");
+  });
+  it("rejects an unknown Label", () => {
+    expect(validateAssignment({ ...valid, ...JSON.parse('{"label":"Exam"}') })).toBe("Invalid Label");
+  });
+  it("rejects a missing Item title when supplied", () => {
+    expect(validateAssignment({ ...valid, itemTitle: " " })).toBe("Item title is required");
+  });
+});

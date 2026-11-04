@@ -1,4 +1,4 @@
-import { PaceButton } from "@/components/features/student/shared/pace-button";
+import { CreatePostMenu } from "./create-post-menu";
 
 type ClassworkHeaderProps = {
   classId: string;
@@ -12,9 +12,7 @@ export function ClassworkHeader({ classId, joinCode, archived }: ClassworkHeader
       {archived ? (
         <span />
       ) : (
-        <PaceButton href={`/dashboard/assignments/new?classId=${classId}`} variant="green">
-          {"+  Create"}
-        </PaceButton>
+        <CreatePostMenu classId={classId} />
       )}
       <p className="whitespace-pre text-[13px] font-bold text-pace-ink-2">{`Class code  ${joinCode}`}</p>
     </div>

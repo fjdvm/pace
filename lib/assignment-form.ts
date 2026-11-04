@@ -5,6 +5,12 @@ export type TestCaseForm = {
 };
 
 export type AssignmentFormValues = {
+  label?: "Assignment" | "Activity" | "Quiz";
+  isDraft?: boolean;
+  itemTitle?: string;
+  itemInstructions?: string;
+  starterCode?: string;
+  points?: number;
   title: string;
   instructions: string;
   language: string;
@@ -27,14 +33,22 @@ export function decodeLineBreaks(value: string) {
 
 export function validateAssignment(values: AssignmentFormValues) {
   if (!values.title.trim()) return "Please enter a title";
-  if (!values.instructions.trim()) return "Please enter instructions";
+  if (values.itemTitle !== undefined && !values.itemTitle.trim()) return "Item title is required";
+  if (!values.isDraft && values.itemInstructions !== undefined && !values.itemInstructions.trim()) return "Item instructions are required";
+  if (values.label !== undefined && !["Assignment", "Activity", "Quiz"].includes(values.label)) return "Invalid Label";
+  if (values.isDraft !== undefined && typeof values.isDraft !== "boolean") return "Invalid Draft flag";
+  if (values.starterCode !== undefined && typeof values.starterCode !== "string") return "Invalid starter code";
+  if (values.points !== undefined && (!Number.isFinite(values.points) || values.points < 0)) return "Points must be a non-negative number";
+  if (!values.isDraft && !values.instructions.trim()) return "Please enter instructions";
   if (!values.dueDate || Number.isNaN(new Date(values.dueDate).getTime())) return "Please set a valid due date";
   if (!LANGUAGES.includes(values.language)) return "Choose a supported language";
-  if (values.heartsCount < 1) return "Hearts per student must be at least 1";
-  if (values.heartsRegenMinutes < 1) return "Cooldown must be at least 1 minute";
+  if (!Number.isInteger(values.heartsCount) || values.heartsCount < 1) return "Hearts per student must be at least 1";
+  if (!Number.isInteger(values.heartsRegenMinutes) || values.heartsRegenMinutes < 1) return "Cooldown must be at least 1 minute";
   if (values.classIds.length === 0) return "Please assign to at least one class";
-  if (values.testCases.length === 0) return "Add at least one test case";
-  if (values.testCases.some((tc) => !tc.expectedOutput.trim())) return "Every test case needs an expected output";
+  if (new Set(values.classIds).size !== values.classIds.length) return "Choose each Class once";
+  if (values.testCases.some((tc) => typeof tc.input !== "string" || typeof tc.expectedOutput !== "string" || typeof tc.visible !== "boolean")) return "Invalid test cases";
+  if (!values.isDraft && values.testCases.length === 0) return "Add at least one test case";
+  if (!values.isDraft && values.testCases.some((tc) => !tc.expectedOutput.trim())) return "Every test case needs an expected output";
   return null;
 }
 

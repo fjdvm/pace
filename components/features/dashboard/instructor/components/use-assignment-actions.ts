@@ -31,10 +31,13 @@ export function useAssignmentActions() {
       toast.success("Assignment deleted");
       setPendingDelete(null);
       router.refresh();
+      setIsDeleting(false);
+      return true;
     } else {
       toast.error(result.error || "Failed to delete assignment");
     }
     setIsDeleting(false);
+    return false;
   };
 
   return { pendingDelete, isDeleting, requestDelete, cancelDelete, confirmDelete };

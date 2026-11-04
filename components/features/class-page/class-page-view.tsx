@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { ClassBottomNav } from "./class-bottom-nav";
@@ -10,7 +11,9 @@ import { tabsFor } from "./tab-config";
 import type { ClassPageData, ClassPageTab } from "./types";
 
 export function ClassPageView({ data }: { data: ClassPageData }) {
-  const [tab, setTab] = useState<ClassPageTab>("stream");
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab");
+  const [tab, setTab] = useState<ClassPageTab>(initialTab === "classwork" ? "classwork" : "stream");
   const isInstructor = data.role === "instructor";
   const others = tabsFor(isInstructor).filter((t) => t.id !== "stream");
 
