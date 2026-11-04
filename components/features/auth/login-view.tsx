@@ -28,7 +28,7 @@ export function LoginView() {
           <GoogleSignInButton />
           <div className="flex w-full items-start gap-[10px] rounded-[12px] bg-pace-canvas px-3 py-[10px]">
             <Image src="/auth/google-sign-in/recording.svg" alt="" width={16} height={16} className="shrink-0" />
-            <p className="text-[11.5px] leading-[17px] text-pace-ink-2 md:text-xs">
+            <p className="text-xs leading-[17px] tracking-[-0.3px] text-pace-ink-2 md:tracking-normal">
               While you work on an activity, PACE records typing, pasting, and tab switches so your instructor can see how your code was made.
             </p>
           </div>

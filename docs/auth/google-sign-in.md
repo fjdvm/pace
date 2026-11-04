@@ -4,6 +4,14 @@ PACE uses Supabase's Google OAuth flow with a PKCE callback at `/auth/callback`.
 The login layout follows Figma's Auth desktop frame `128:184` and mobile frame
 `128:337` in file `DkEUeJcwgYA7jklHsH6HpT`.
 
+The existing shadcn Card and Button were retained using the CLI, and the Funnel
+Display wordmark font was added through a CLI font registry item. The official
+shadcn registry has no standalone header or footer component matching this frame;
+its header search yields a sidebar block and its footer search only font items.
+The simple header and footer therefore use semantic landmarks to preserve Figma.
+Mobile recording text retains the 12px font and 17px line height with a small
+letter-spacing correction for browser font metrics to keep the three-line notice.
+
 ## Hosted provider setup
 
 1. In Google Cloud, create a Web application OAuth client for PACE.
