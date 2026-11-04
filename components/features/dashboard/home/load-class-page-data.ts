@@ -6,7 +6,10 @@ import { getStudentClasses } from "@/lib/student-home-data";
 import type { ClassPageData } from "@/components/features/class-page/types";
 
 export async function loadClassPageData(classId: string, userId: string): Promise<ClassPageData | null> {
-  const cls = await prisma.class.findUnique({ where: { id: classId } });
+  const cls = await prisma.class.findUnique({
+    where: { id: classId },
+    include: { instructor: { select: { id: true, email: true, name: true } } },
+  });
   if (!cls) return null;
   const isInstructor = cls.instructorId === userId;
   if (!isInstructor) {
@@ -31,7 +34,7 @@ export async function loadClassPageData(classId: string, userId: string): Promis
     roster: roster.success ? roster.students! : [],
     leaderboard: board.success ? board.leaderboard! : [],
     myRank: board.success ? board.myRank : 0,
-    instructor: roster.success ? roster.instructor! : { id: cls.instructorId, email: "", name: null },
+    instructor: cls.instructor,
   };
 
   if (!isInstructor) {
