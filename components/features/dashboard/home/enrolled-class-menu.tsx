@@ -19,7 +19,7 @@ export function EnrolledClassMenu({ id, name }: EnrolledClassMenuProps) {
       <DropdownMenu>
         <DropdownMenuTrigger
           aria-label={`Actions for ${name}`}
-          className="absolute right-1 top-1 flex size-10 cursor-pointer items-center justify-center rounded-full text-white outline-none hover:bg-black/15 focus-visible:ring-2 focus-visible:ring-white"
+          className="absolute right-1 top-1 flex size-10 cursor-pointer items-center justify-center rounded-full text-white outline-none hover:bg-black/15 focus-visible:ring-2 focus-visible:ring-white sm:bottom-1 sm:top-auto sm:text-pace-ink-2 sm:hover:bg-pace-sunken sm:focus-visible:ring-pace-purple"
         >
           <MoreVertical className="size-6" strokeWidth={1.5} />
         </DropdownMenuTrigger>
