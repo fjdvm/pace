@@ -49,5 +49,15 @@ UPDATE items SET instructions = 'Changed through Item' WHERE id = 'new-assignmen
 DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM assignments WHERE id = 'new-assignment' AND instructions = 'Changed through Item') THEN RAISE EXCEPTION 'Legacy read not synchronized'; END IF;
 END $$;
+UPDATE assignments SET title = 'Renamed Post' WHERE id = 'new-assignment';
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM items WHERE id = 'new-assignment' AND title = 'Renamed Post') THEN RAISE EXCEPTION 'Following Item title did not rename'; END IF;
+END $$;
+UPDATE items SET title = 'Independent Item title' WHERE id = 'new-assignment';
+UPDATE assignments SET title = title, instructions = instructions, language = language, due_date = '2099-02-01' WHERE id = 'new-assignment';
+UPDATE assignments SET title = 'Another Post title' WHERE id = 'new-assignment';
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM items WHERE id = 'new-assignment' AND title = 'Independent Item title') THEN RAISE EXCEPTION 'Post edit erased Item title'; END IF;
+END $$;
 ROLLBACK;
 SELECT 'Migration: all legacy fields preserved; exactly one coding Item; legacy writes and Item updates work' AS result;

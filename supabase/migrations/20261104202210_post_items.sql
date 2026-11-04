@@ -93,7 +93,8 @@ BEGIN
     INSERT INTO items (id, assignment_id, position, title, instructions, language)
     VALUES (NEW.id, NEW.id, 0, NEW.title, NEW.instructions, NEW.language);
   ELSE
-    UPDATE items SET title = NEW.title, instructions = NEW.instructions, language = NEW.language
+    UPDATE items SET title = CASE WHEN NEW.title IS DISTINCT FROM OLD.title AND title = OLD.title THEN NEW.title ELSE title END,
+      instructions = NEW.instructions, language = NEW.language
     WHERE id = (SELECT id FROM items WHERE assignment_id = NEW.id ORDER BY position LIMIT 1);
   END IF;
   RETURN NEW;

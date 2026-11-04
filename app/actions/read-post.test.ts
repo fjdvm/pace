@@ -36,3 +36,14 @@ it("allows the Class's Instructor to read a Draft and its hidden tests", async (
   const { readPost } = await import("./read-post");
   expect(await readPost("draft")).toMatchObject({ success: true, post: { isDraft: true, items: [{ testCases: [{ visible: false }] }] } });
 });
+
+it("keeps Instructor analytics out of the Student Post response", async () => {
+  db.assignment.findFirst.mockResolvedValue({ id: "post", classes: [], items: [],
+    statsReportNarrative: "Private integrity report", statsReportGeneratedAt: new Date(),
+  });
+  const { readPost } = await import("./read-post");
+  const result = await readPost("post");
+  expect(result).toMatchObject({ success: true });
+  expect(result.post).not.toHaveProperty("statsReportNarrative");
+  expect(result.post).not.toHaveProperty("statsReportGeneratedAt");
+});

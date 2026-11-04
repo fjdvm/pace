@@ -63,3 +63,12 @@ it("keeps at least one Item in every Post", async () => {
   const { deleteItem } = await import("./delete-item");
   expect(await deleteItem("post", "item")).toMatchObject({ success: false, error: "A Post must have at least one Item" });
 });
+
+it.each([0, 1])("preserves omitted starter code when editing text (started=%s)", async (started) => {
+  db.assignment.findUnique.mockResolvedValue({ id: "post", _count: { ...counts, codeDrafts: started }, classes: [{ class: { instructorId: "instructor" } }] });
+  db.item.findUnique.mockResolvedValue({ id: "item", assignmentId: "post", ...input, starterCode: "print('start')" });
+  const { updateItem } = await import("./update-item");
+  expect(await updateItem("post", "item", { ...input, starterCode: undefined, points: 30 })).toMatchObject({
+    success: true, item: { starterCode: "print('start')", points: 30 },
+  });
+});
