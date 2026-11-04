@@ -13,7 +13,8 @@ export function useLogout() {
   const confirmLogout = async () => {
     setIsLoggingOut(true);
     try {
-      await createClient().auth.signOut();
+      const { error } = await createClient().auth.signOut();
+      if (error) throw error;
       toast.success("Logged out successfully");
       router.push("/login");
       router.refresh();

@@ -11,7 +11,7 @@ export function FeedbackButton({ inline = false }: { inline?: boolean }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  if (!inline && pathname.startsWith(WORKSPACE_PATH)) return null;
+  if (!inline && (pathname === "/login" || pathname.startsWith(WORKSPACE_PATH))) return null;
 
   return (
     <>

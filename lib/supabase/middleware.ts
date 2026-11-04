@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -36,6 +37,11 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const url = request.nextUrl.clone();
+  const redirect = () => {
+    const result = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((cookie) => result.cookies.set(cookie));
+    return result;
+  };
   const isProtectedRoute = url.pathname.startsWith("/dashboard") || url.pathname === "/pending-approval";
   const isAuthRoute = url.pathname === "/login" || url.pathname === "/signup" || url.pathname === "/forgot-password";
   const isResetPasswordRoute = url.pathname === "/reset-password";
@@ -43,7 +49,7 @@ export async function updateSession(request: NextRequest) {
   if (!user) {
     if (isProtectedRoute) {
       url.pathname = "/login";
-      return NextResponse.redirect(url);
+      return redirect();
     }
     return response;
   }
@@ -60,25 +66,36 @@ export async function updateSession(request: NextRequest) {
     return redirectResponse;
   }
 
-  const role = user.user_metadata?.role || "student";
-  const approvalStatus = user.user_metadata?.approval_status || "approved";
+  if (!isProtectedRoute && !isAuthRoute) return response;
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { role: true, approvalStatus: true },
+  });
+  if (!dbUser) {
+    await supabase.auth.signOut();
+    url.pathname = "/login";
+    url.search = "?error=google_sign_in";
+    return redirect();
+  }
+  const { role, approvalStatus } = dbUser;
 
   if (role === "instructor" && approvalStatus !== "approved") {
     if (url.pathname !== "/pending-approval") {
       url.pathname = "/pending-approval";
-      return NextResponse.redirect(url);
+      return redirect();
     }
   } else {
     if (url.pathname === "/pending-approval") {
       url.pathname = `/dashboard/${role}`;
-      return NextResponse.redirect(url);
+      return redirect();
     }
 
-    if (url.pathname.startsWith("/dashboard/")) {
+    if (url.pathname === "/dashboard" || url.pathname.startsWith("/dashboard/")) {
       const expectedPrefix = `/dashboard/${role}`;
-      if (!url.pathname.startsWith(expectedPrefix)) {
+      if (url.pathname !== expectedPrefix && !url.pathname.startsWith(`${expectedPrefix}/`)) {
         url.pathname = expectedPrefix;
-        return NextResponse.redirect(url);
+        return redirect();
       }
     }
   }
@@ -89,7 +106,7 @@ export async function updateSession(request: NextRequest) {
     } else {
       url.pathname = `/dashboard/${role}`;
     }
-    return NextResponse.redirect(url);
+    return redirect();
   }
 
   return response;

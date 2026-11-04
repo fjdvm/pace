@@ -1,104 +1,46 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import { isEmailUnconfirmed } from "@/lib/auth-response";
-import { toast } from "sonner";
+import Image from "next/image";
 import Link from "next/link";
-import { AuthSplitLayout } from "./auth-split-layout";
-import { AuthFormHeading } from "./auth-form-heading";
-import { AuthField } from "./auth-field";
-import { PasswordInput } from "./password-input";
-import { AuthSubmitButton } from "./auth-submit-button";
-import { AuthSwitchLink } from "./auth-switch-link";
-import { ResendConfirmation } from "./resend-confirmation";
+import { Card } from "@/components/ui/card";
+import { GoogleSignInButton } from "./google-sign-in-button";
+import { LoginError } from "./login-error";
+import { Suspense } from "react";
 
 export function LoginView() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [needsConfirmation, setNeedsConfirmation] = useState(false);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
-    setIsLoading(true);
-    setNeedsConfirmation(false);
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        toast.error(error.message);
-        setNeedsConfirmation(error.code === "email_not_confirmed");
-      } else if (data?.user && isEmailUnconfirmed(data.user)) {
-        await supabase.auth.signOut();
-        setNeedsConfirmation(true);
-        toast.error("Please confirm your email before logging in. Check your inbox for the confirmation link.");
-      } else if (data?.user) {
-        const role = data.user.user_metadata?.role || "student";
-        const approvalStatus =
-          data.user.user_metadata?.approval_status || "approved";
-
-        toast.success("Welcome back!");
-
-        if (role === "instructor" && approvalStatus !== "approved") {
-          router.push("/pending-approval");
-        } else {
-          router.push(`/dashboard/${role}`);
-        }
-        router.refresh();
-      }
-    } catch (err) {
-      toast.error("An unexpected error occurred during login");
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <AuthSplitLayout
-      headline="Pick up where you left off."
-      description="Your assignments, your code, and your tutor are waiting."
-    >
-      <AuthFormHeading title="Log in to PACE" subtitle="Use the email you signed up with." />
-      <form onSubmit={handleLogin} className="flex flex-col gap-6">
-        <AuthField
-          label="Email"
-          type="email"
-          value={email}
-          onValueChange={setEmail}
-          disabled={isLoading}
-          required
-          autoComplete="email"
-          placeholder="you@university.edu"
-        />
-        <PasswordInput
-          value={password}
-          onChange={setPassword}
-          disabled={isLoading}
-          required
-          showToggle
-          aside={
-            <Link href="/forgot-password" className="text-[13px] font-semibold text-pace-green-deep hover:underline">
-              Forgot password?
-            </Link>
-          }
-        />
-        <AuthSubmitButton isLoading={isLoading} label="Log in" loadingLabel="Logging in..." />
-      </form>
-      {needsConfirmation && <ResendConfirmation email={email} />}
-      <AuthSwitchLink prompt="New to PACE?" label="Create an account" href="/signup" />
-    </AuthSplitLayout>
+    <div className="relative flex min-h-svh flex-1 flex-col bg-pace-canvas text-pace-ink">
+      <header className="absolute left-5 top-6 md:left-10 md:top-8">
+        <Link href="/" aria-label="PACE home"
+          className="font-wordmark text-[28px] leading-none font-medium tracking-[-0.84px]">
+          Pace
+        </Link>
+      </header>
+      <main className="flex flex-1 items-center justify-center px-5 py-24">
+        <Card className="w-full max-w-[350px] items-center gap-[18px] rounded-[20px] border border-pace-line bg-white px-[22px] pt-9 pb-[30px] text-pace-ink shadow-[0_4px_0_0_var(--color-pace-line)] ring-0 md:max-w-[440px] md:px-8">
+          <div className="flex size-[52px] shrink-0 items-center justify-center rounded-[14px] bg-pace-canvas">
+            <Image src="/auth/google-sign-in/sign-in.svg" alt="" width={22} height={22} />
+          </div>
+          <div className="flex w-full flex-col gap-2 text-center">
+            <h1 className="text-[22px] leading-[28px] font-bold">Sign in to PACE</h1>
+            <p className="text-[14px] leading-[21px] text-pace-ink-2">
+              Use your school Google account. First time here? We set up your account right after you sign in.
+            </p>
+          </div>
+          <GoogleSignInButton />
+          <div className="flex w-full items-start gap-[10px] rounded-[12px] bg-pace-canvas px-3 py-[10px]">
+            <Image src="/auth/google-sign-in/recording.svg" alt="" width={16} height={16} className="shrink-0" />
+            <p className="text-[11.5px] leading-[17px] text-pace-ink-2 md:text-xs">
+              While you work on an activity, PACE records typing, pasting, and tab switches so your instructor can see how your code was made.
+            </p>
+          </div>
+          <p className="w-full text-center text-[11.5px] leading-4 text-pace-muted">
+            By continuing, you agree to the <Link href="/terms" className="hover:underline">Terms of Use</Link> and <Link href="/privacy" className="hover:underline">Privacy Policy</Link>.
+          </p>
+          <Suspense><LoginError /></Suspense>
+        </Card>
+      </main>
+      <footer className="absolute inset-x-0 bottom-6 text-center text-xs leading-[15px] text-pace-ink-2 md:bottom-[29px]">
+        Undergraduate research prototype · PUP Quezon City
+      </footer>
+    </div>
   );
 }

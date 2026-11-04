@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Fredoka, Space_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Fredoka, Space_Mono, Funnel_Display } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { FeedbackButton } from "@/components/features/feedback/feedback-button";
 import { NavigationLoader } from "@/components/features/navigation/navigation-loader";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const funnelDisplayWordmark = Funnel_Display({
+  subsets: ["latin"],
+  variable: "--font-wordmark",
+});
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -30,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${plusJakartaSans.variable} ${fredoka.variable} ${spaceMono.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", plusJakartaSans.variable, fredoka.variable, spaceMono.variable, funnelDisplayWordmark.variable)}
     >
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
