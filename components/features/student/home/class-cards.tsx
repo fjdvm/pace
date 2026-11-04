@@ -19,7 +19,7 @@ export function ClassCards({ classes }: ClassCardsProps) {
         return (
           <Link
             key={cls.id}
-            href={`/dashboard/student/classes/${cls.id}`}
+            href={`/dashboard/classes/${cls.id}`}
             className="flex items-center gap-3.5 rounded-[20px] border-[1.5px] border-pace-line bg-white p-5"
           >
             <span

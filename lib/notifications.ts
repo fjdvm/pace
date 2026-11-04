@@ -51,7 +51,7 @@ export async function notifyAssignmentPublished(
       type: "assignment_published" as const,
       title: "New assignment",
       message: `${assignment.title} is ready in your workspace.`,
-      link: `/dashboard/student/assignments/${assignment.id}`,
+      link: `/dashboard/assignments/${assignment.id}`,
     })),
   );
 }

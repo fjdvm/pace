@@ -29,8 +29,8 @@ export function RoleSidebar({ teaching, enrolled, studentXp, isAdmin, userEmail,
         const nav = { collapsed, onNavigate };
         return <>
           <SidebarNavItem {...nav} href="/dashboard" label="Home" icon="grid-gray" activeIcon="grid" active={pathname === "/dashboard"} />
-          <SidebarNavItem {...nav} href="/dashboard/student/todo" label="To-do" icon="grid-gray" active={pathname === "/dashboard/student/todo"} />
-          <SidebarNavItem {...nav} href="/dashboard/student/archive" label="Enrolled archive" icon="archive" active={pathname === "/dashboard/student/archive"} />
+          <SidebarNavItem {...nav} href="/dashboard/todo" label="To-do" icon="grid-gray" active={pathname === "/dashboard/todo"} />
+          <SidebarNavItem {...nav} href="/dashboard/enrolled/archive" label="Enrolled archive" icon="archive" active={pathname === "/dashboard/enrolled/archive"} />
           {teaching.length > 0 && <>
             <SidebarNavItem {...nav} href="/dashboard/submissions" label="Submissions" LucideIcon={GraduationCap} active={pathname.startsWith("/dashboard/submissions")} />
             <SidebarNavItem {...nav} href="/dashboard/teaching/archive" label="Teaching archive" icon="archive" active={pathname === "/dashboard/teaching/archive"} />

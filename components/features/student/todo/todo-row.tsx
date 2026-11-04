@@ -6,7 +6,7 @@ import { formatDueLong, formatSubmitted, isUrgent } from "@/lib/student-dates";
 import type { StudentAssignment } from "@/components/features/student/types";
 
 export function TodoRow({ assignment: a }: { assignment: StudentAssignment }) {
-  const href = `/dashboard/student/assignments/${a.id}`;
+  const href = `/dashboard/assignments/${a.id}`;
   const purple = a.classIndex % 2 === 1;
   const started = a.status === "in progress";
   const urgent = isUrgent(a.dueDate);
@@ -40,7 +40,7 @@ export function TodoRow({ assignment: a }: { assignment: StudentAssignment }) {
 export function SubmittedRow({ assignment: a }: { assignment: StudentAssignment }) {
   return (
     <AssignmentRow
-      href={`/dashboard/student/assignments/${a.id}`}
+      href={`/dashboard/assignments/${a.id}`}
       icon="check-18"
       iconTone="green"
       title={a.title}
@@ -53,7 +53,7 @@ export function SubmittedRow({ assignment: a }: { assignment: StudentAssignment 
           {formatSubmitted(a.submittedAt)}
         </span>
       )}
-      <PaceButton href={`/dashboard/student/assignments/${a.id}`} variant="ghost">
+      <PaceButton href={`/dashboard/assignments/${a.id}`} variant="ghost">
         View
       </PaceButton>
     </AssignmentRow>

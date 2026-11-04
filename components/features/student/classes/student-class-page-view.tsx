@@ -36,7 +36,7 @@ export function StudentClassPageView(props: StudentClassPageViewProps) {
       <StudentTopBar
         title={props.className}
         subtitle={`Prof. ${owner} · ${roster.length} ${roster.length === 1 ? "student" : "students"}`}
-        backHref="/dashboard/student"
+        backHref="/dashboard"
         leadingIcon={
           <span className="hidden size-10 shrink-0 items-center justify-center rounded-xl bg-pace-green-tint sm:flex">
             <PaceIcon name="cap-header" size={18} />

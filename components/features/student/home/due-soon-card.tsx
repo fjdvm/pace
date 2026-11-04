@@ -14,7 +14,7 @@ export function DueSoonCard({ assignments }: DueSoonCardProps) {
     <section className="flex flex-col rounded-[20px] border-[1.5px] border-pace-line bg-white px-2 pb-2 pt-5">
       <div className="flex items-center justify-between px-4 pb-2">
         <h2 className="text-[22px] font-bold leading-tight tracking-[-0.01em] text-pace-ink">Due soon</h2>
-        <Link href="/dashboard/student/todo" className="text-[13px] font-semibold text-pace-green-deep">
+        <Link href="/dashboard/todo" className="text-[13px] font-semibold text-pace-green-deep">
           See all to-dos
         </Link>
       </div>
@@ -24,7 +24,7 @@ export function DueSoonCard({ assignments }: DueSoonCardProps) {
       {assignments.map((a) => (
         <AssignmentRow
           key={a.id}
-          href={`/dashboard/student/assignments/${a.id}`}
+          href={`/dashboard/assignments/${a.id}`}
           icon={a.classIndex % 2 === 1 ? "code-purple" : "code-green"}
           iconTone={a.classIndex % 2 === 1 ? "purple" : "green"}
           title={a.title}

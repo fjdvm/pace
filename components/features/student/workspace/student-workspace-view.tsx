@@ -14,7 +14,7 @@ export function StudentWorkspaceView(props: WorkspaceViewProps) {
   const { assignment } = props;
   const ws = useWorkspace(props);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const backHref = `/dashboard/student/classes/${props.classId}`;
+  const backHref = `/dashboard/classes/${props.classId}`;
   const results = ws.runResults ?? [];
   const passed = results.filter((r) => r.passed).length;
 

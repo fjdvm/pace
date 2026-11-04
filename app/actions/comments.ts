@@ -63,7 +63,7 @@ export async function createComment(
           type: "private_comment",
           title: "Your instructor replied",
           message: body.trim(),
-          link: `/dashboard/student/classes/${post.classId}`,
+          link: `/dashboard/classes/${post.classId}`,
         });
       } else {
         await createNotification({
