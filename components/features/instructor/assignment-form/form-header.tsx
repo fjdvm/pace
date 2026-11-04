@@ -34,7 +34,7 @@ export function FormHeader({
   onDelete,
 }: Props) {
   return (
-    <header className="flex h-[52px] shrink-0 items-center gap-2 border-b border-pace-line bg-white pl-2 pr-4 md:h-16 md:gap-4 md:pl-3 md:pr-5">
+    <header className="flex h-[54px] shrink-0 items-center gap-2 border-b border-pace-line bg-white pl-2 pr-4 md:h-16 md:gap-4 md:pl-3 md:pr-5">
       <Link
         href={backHref}
         aria-label="Close Post editor"

@@ -47,7 +47,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
           value={values.itemInstructions ?? values.instructions}
           onChange={(event) => form.changeInstructions(event.target.value)}
           placeholder="Read two integers and print their sum."
-          className={`${formControl} min-h-12 resize-y py-3`}
+          className={`${formControl} h-auto min-h-12 resize-y py-3`}
         />
       </FormField>
       <FormField label="Due" htmlFor="mobile-due">
@@ -59,7 +59,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
           className={formControl}
         />
       </FormField>
-      <div className="flex items-center justify-between rounded-lg border border-pace-line px-3.5 py-3">
+      <div className="flex items-center justify-between rounded-[8px] border border-pace-line px-3.5 py-3">
         <div>
           <h2 className="text-[15px] font-bold leading-[1.55]">Test cases</h2>
           <p className="text-[13px] text-pace-muted">
@@ -77,7 +77,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
       <Button
         variant="ghost"
         onClick={() => setPanel("settings")}
-        className="h-auto justify-between rounded-lg border border-pace-line px-3.5 py-3 text-left font-normal"
+        className="h-auto justify-between rounded-[8px] border border-pace-line px-3.5 py-3 text-left font-normal"
       >
         <div>
           <h2 className="text-[15px] font-bold leading-[1.55]">Hearts</h2>

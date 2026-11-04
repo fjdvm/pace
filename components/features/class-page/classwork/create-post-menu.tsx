@@ -32,7 +32,7 @@ export function CreatePostMenu({ classId }: { classId: string }) {
         <DropdownMenuContent
           align="start"
           sideOffset={8}
-          className="w-[300px] max-w-[calc(100vw-32px)] rounded-lg border-0 bg-white px-0 py-2 shadow-[0_4px_16px_0_rgba(0,0,0,.16)]"
+          className="w-[300px] max-w-[calc(100vw-32px)] rounded-[8px] border-0 bg-white px-0 py-2 shadow-[0_4px_16px_0_rgba(0,0,0,.16)]"
         >
           <DropdownMenuItem
             disabled

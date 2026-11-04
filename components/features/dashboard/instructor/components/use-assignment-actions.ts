@@ -28,13 +28,13 @@ export function useAssignmentActions() {
     setIsDeleting(true);
     const result = await deleteAssignment(pendingDelete.id);
     if (result.success) {
-      toast.success("Assignment deleted");
+      toast.success("Post deleted");
       setPendingDelete(null);
       router.refresh();
       setIsDeleting(false);
       return true;
     } else {
-      toast.error(result.error || "Failed to delete assignment");
+      toast.error(result.error || "Failed to delete Post");
     }
     setIsDeleting(false);
     return false;

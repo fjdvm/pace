@@ -42,7 +42,7 @@ export function ClassFilter({ classes, value, onChange }: ClassFilterProps) {
           <SelectItem
             key={item.value}
             value={item.value}
-            className="items-start rounded-md px-3 py-2 [&>span:first-child]:min-w-0 [&>span:first-child]:shrink [&>span:first-child]:whitespace-normal"
+            className="items-start rounded-md py-2 pl-3 pr-8 [&>span:first-child]:min-w-0 [&>span:first-child]:shrink [&>span:first-child]:whitespace-normal"
           >
             <span className="min-w-0 whitespace-normal break-words">
               {item.label}

@@ -26,15 +26,27 @@ export function StarterCodeSection({ values, locked, onChange }: Props) {
           {filenames[values.language]}
         </Badge>
       </div>
-      <Textarea
-        id="starter-code"
-        aria-label="Starter code"
-        disabled={locked}
-        value={values.starterCode ?? ""}
-        onChange={(event) => onChange({ starterCode: event.target.value })}
-        placeholder="# Your code here"
-        className="min-h-32 resize-y rounded-lg border-pace-line bg-pace-canvas p-3 font-mono text-[13px] leading-[1.65] shadow-none"
-      />
+      <div className="flex overflow-hidden rounded-[8px] border border-pace-line bg-pace-canvas font-mono text-[13px] leading-[1.65]">
+        <div
+          aria-hidden="true"
+          className="select-none py-3 pl-3 text-right text-pace-muted"
+        >
+          {(values.starterCode ?? "").split("\n").map((_, index) => (
+            <div key={index}>{index + 1}</div>
+          ))}
+        </div>
+        <Textarea
+          id="starter-code"
+          aria-label="Starter code"
+          disabled={locked}
+          spellCheck={false}
+          wrap="off"
+          value={values.starterCode ?? ""}
+          onChange={(event) => onChange({ starterCode: event.target.value })}
+          placeholder="# Your code here"
+          className="min-h-32 min-w-0 flex-1 resize-y rounded-none border-0 bg-transparent p-3 font-mono text-[13px] leading-[1.65] shadow-none md:text-[13px]"
+        />
+      </div>
       {locked && (
         <p className="text-xs text-pace-muted">
           Coding configuration is locked because a Student has started.

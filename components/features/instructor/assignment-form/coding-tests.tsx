@@ -49,7 +49,7 @@ export function CodingTests({
           Tests are locked because a Student has started.
         </p>
       )}
-      <div className="overflow-hidden rounded-lg border border-pace-line">
+      <div className="overflow-hidden rounded-[8px] border border-pace-line">
         <Table className="min-w-[500px] text-[13px]">
           <TableHeader className="bg-pace-sunken">
             <TableRow className="border-pace-line text-[11px] tracking-[.66px] uppercase">

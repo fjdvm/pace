@@ -3,7 +3,7 @@ import type { AssignmentFormValues } from "@/lib/assignment-form";
 
 export function ItemsSummary({ values }: { values: AssignmentFormValues }) {
   return (
-    <section className="flex flex-col gap-3 rounded-xl border border-pace-line bg-white p-6">
+    <section className="flex flex-col gap-3 rounded-[12px] border border-pace-line bg-white p-6">
       <div className="flex items-center gap-2">
         <h2 className="text-base font-bold">Items</h2>
         <p className="text-[13px] text-pace-muted">

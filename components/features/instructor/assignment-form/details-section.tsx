@@ -32,7 +32,7 @@ export function DetailsSection({
           value={values.itemInstructions ?? values.instructions}
           onChange={(event) => onInstructionsChange(event.target.value)}
           placeholder="Write a program that reads two integers, one per line, and prints their sum."
-          className={`${formControl} min-h-12 resize-y py-3`}
+          className={`${formControl} h-auto min-h-12 resize-y py-3`}
         />
       </FormField>
     </section>
