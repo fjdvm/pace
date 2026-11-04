@@ -36,15 +36,14 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const url = request.nextUrl.clone();
+  const url = new URL(request.url);
   const redirect = () => {
     const result = NextResponse.redirect(url);
     response.cookies.getAll().forEach((cookie) => result.cookies.set(cookie));
     return result;
   };
-  const isProtectedRoute = url.pathname.startsWith("/dashboard") || url.pathname === "/pending-approval";
-  const isAuthRoute = url.pathname === "/login" || url.pathname === "/signup" || url.pathname === "/forgot-password";
-  const isResetPasswordRoute = url.pathname === "/reset-password";
+  const isProtectedRoute = url.pathname.startsWith("/dashboard");
+  const isAuthRoute = url.pathname === "/login";
 
   if (!user) {
     if (isProtectedRoute) {
@@ -52,18 +51,6 @@ export async function updateSession(request: NextRequest) {
       return redirect();
     }
     return response;
-  }
-
-  if (isResetPasswordRoute) {
-    return response;
-  }
-
-  if (!user.email_confirmed_at && isProtectedRoute) {
-    await supabase.auth.signOut();
-    url.pathname = "/login";
-    const redirectResponse = NextResponse.redirect(url);
-    response.cookies.getAll().forEach((cookie) => redirectResponse.cookies.set(cookie));
-    return redirectResponse;
   }
 
   if (!isProtectedRoute && !isAuthRoute) return response;
@@ -85,7 +72,7 @@ export async function updateSession(request: NextRequest) {
     return redirect();
   }
 
-  if (isAuthRoute || ["/pending-approval", "/dashboard/student", "/dashboard/instructor"].includes(url.pathname)) {
+  if (isAuthRoute || ["/dashboard/student", "/dashboard/instructor"].some((path) => url.pathname === path || url.pathname.startsWith(`${path}/`))) {
     url.pathname = "/dashboard";
     return redirect();
   }
