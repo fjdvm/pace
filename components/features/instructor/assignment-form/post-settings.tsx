@@ -14,12 +14,29 @@ type Props = {
   values: AssignmentFormValues;
   classes: InstructorClassSummary[];
   locked: boolean;
+  showPostTitle?: boolean;
   onChange: (patch: Partial<AssignmentFormValues>) => void;
 };
 
-export function PostSettings({ values, classes, locked, onChange }: Props) {
+export function PostSettings({
+  values,
+  classes,
+  locked,
+  onChange,
+  showPostTitle = false,
+}: Props) {
   return (
     <div className="flex flex-col gap-4">
+      {showPostTitle && (
+        <FormField label="Post title" htmlFor="post-settings-title">
+          <Input
+            id="post-settings-title"
+            value={values.title}
+            onChange={(event) => onChange({ title: event.target.value })}
+            className={formControl}
+          />
+        </FormField>
+      )}
       <FormField label="For" htmlFor="post-class">
         <Select
           value={values.classIds[0] ?? ""}

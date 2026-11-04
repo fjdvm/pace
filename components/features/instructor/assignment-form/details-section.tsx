@@ -5,10 +5,15 @@ import { FormField, formCard, formControl } from "./form-field";
 
 type Props = {
   values: AssignmentFormValues;
-  onChange: (patch: Partial<AssignmentFormValues>) => void;
+  onTitleChange: (title: string) => void;
+  onInstructionsChange: (instructions: string) => void;
 };
 
-export function DetailsSection({ values, onChange }: Props) {
+export function DetailsSection({
+  values,
+  onTitleChange,
+  onInstructionsChange,
+}: Props) {
   return (
     <section className={formCard}>
       <h2 className="text-base font-bold">Item 1 · Details</h2>
@@ -16,14 +21,7 @@ export function DetailsSection({ values, onChange }: Props) {
         <Input
           id="post-title"
           value={values.itemTitle ?? values.title}
-          onChange={(event) =>
-            onChange({
-              itemTitle: event.target.value,
-              ...(!values.title || values.title === values.itemTitle
-                ? { title: event.target.value }
-                : {}),
-            })
-          }
+          onChange={(event) => onTitleChange(event.target.value)}
           placeholder="Sum of Two Numbers"
           className={formControl}
         />
@@ -32,12 +30,7 @@ export function DetailsSection({ values, onChange }: Props) {
         <Textarea
           id="post-instructions"
           value={values.itemInstructions ?? values.instructions}
-          onChange={(event) =>
-            onChange({
-              instructions: event.target.value,
-              itemInstructions: event.target.value,
-            })
-          }
+          onChange={(event) => onInstructionsChange(event.target.value)}
           placeholder="Write a program that reads two integers, one per line, and prints their sum."
           className={`${formControl} min-h-12 resize-y py-3`}
         />

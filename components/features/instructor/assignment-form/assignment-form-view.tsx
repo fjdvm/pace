@@ -70,7 +70,11 @@ export function AssignmentFormView({
         <div className="flex flex-1 items-stretch">
           <main className="flex min-w-0 flex-1 flex-col gap-5 px-10 py-8">
             <ItemsSummary values={form.values} />
-            <DetailsSection values={form.values} onChange={form.patch} />
+            <DetailsSection
+              values={form.values}
+              onTitleChange={form.changeTitle}
+              onInstructionsChange={form.changeInstructions}
+            />
             <StarterCodeSection
               values={form.values}
               locked={locked}

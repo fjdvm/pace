@@ -5,6 +5,7 @@ import { createAssignment } from "@/app/actions/create-assignment";
 import { updateAssignment } from "@/app/actions/update-assignment";
 import {
   decodeLineBreaks,
+  codingItemTitlePatch,
   validateAssignment,
   type AssignmentFormValues,
   type TestCaseForm,
@@ -125,6 +126,9 @@ export function useAssignmentForm({
     savedAt,
     isSaving,
     patch,
+    changeTitle: (title: string) => patch(codingItemTitlePatch(values, title)),
+    changeInstructions: (instructions: string) =>
+      patch({ instructions, itemInstructions: instructions }),
     changeTestCase,
     addTestCase,
     removeTestCase,

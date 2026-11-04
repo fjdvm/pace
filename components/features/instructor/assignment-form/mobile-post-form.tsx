@@ -36,14 +36,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
         <Input
           id="mobile-title"
           value={values.itemTitle ?? values.title}
-          onChange={(event) =>
-            update({
-              itemTitle: event.target.value,
-              ...(!values.title || values.title === values.itemTitle
-                ? { title: event.target.value }
-                : {}),
-            })
-          }
+          onChange={(event) => form.changeTitle(event.target.value)}
           placeholder="Sum of Two Numbers"
           className={formControl}
         />
@@ -52,12 +45,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
         <Textarea
           id="mobile-instructions"
           value={values.itemInstructions ?? values.instructions}
-          onChange={(event) =>
-            update({
-              instructions: event.target.value,
-              itemInstructions: event.target.value,
-            })
-          }
+          onChange={(event) => form.changeInstructions(event.target.value)}
           placeholder="Read two integers and print their sum."
           className={`${formControl} min-h-12 resize-y py-3`}
         />
@@ -182,6 +170,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
           ) : (
             <>
               <PostSettings
+                showPostTitle
                 values={values}
                 classes={classes}
                 locked={locked}

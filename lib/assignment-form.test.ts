@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildChecklist,
+  codingItemTitlePatch,
   decodeLineBreaks,
   encodeLineBreaks,
   validateAssignment,
@@ -41,7 +42,10 @@ describe("validateAssignment", () => {
     [{ language: "Cobol" }, "Choose a supported language"],
     [{ classIds: [] }, "Please assign to at least one class"],
     [{ testCases: [] }, "Add at least one test case"],
-    [{ testCases: [{ input: "", expectedOutput: " ", visible: true }] }, "Every test case needs an expected output"],
+    [
+      { testCases: [{ input: "", expectedOutput: " ", visible: true }] },
+      "Every test case needs an expected output",
+    ],
     [{ heartsCount: 0 }, "Hearts per student must be at least 1"],
     [{ heartsRegenMinutes: 0 }, "Cooldown must be at least 1 minute"],
   ])("rejects %j", (patch, message) => {
@@ -69,22 +73,62 @@ describe("buildChecklist", () => {
 
 describe("coding Post validation", () => {
   it("allows an incomplete Draft while keeping publication requirements", () => {
-    expect(validateAssignment({ ...valid, isDraft: true, instructions: "", testCases: [] })).toBeNull();
-    expect(validateAssignment({ ...valid, isDraft: false, instructions: "", testCases: [] })).toBe("Please enter instructions");
+    expect(
+      validateAssignment({
+        ...valid,
+        isDraft: true,
+        instructions: "",
+        testCases: [],
+      }),
+    ).toBeNull();
+    expect(
+      validateAssignment({
+        ...valid,
+        isDraft: false,
+        instructions: "",
+        testCases: [],
+      }),
+    ).toBe("Please enter instructions");
   });
   it.each([NaN, Infinity, -1])("rejects invalid Item points: %s", (points) => {
-    expect(validateAssignment({ ...valid, points })).toBe("Points must be a non-negative number");
+    expect(validateAssignment({ ...valid, points })).toBe(
+      "Points must be a non-negative number",
+    );
   });
   it("allows a zero-point Item", () => {
     expect(validateAssignment({ ...valid, points: 0 })).toBeNull();
   });
   it("rejects duplicate Class links", () => {
-    expect(validateAssignment({ ...valid, classIds: ["c1", "c1"] })).toBe("Choose each Class once");
+    expect(validateAssignment({ ...valid, classIds: ["c1", "c1"] })).toBe(
+      "Choose each Class once",
+    );
   });
   it("rejects an unknown Label", () => {
-    expect(validateAssignment({ ...valid, ...JSON.parse('{"label":"Exam"}') })).toBe("Invalid Label");
+    expect(
+      validateAssignment({ ...valid, ...JSON.parse('{"label":"Exam"}') }),
+    ).toBe("Invalid Label");
   });
   it("rejects a missing Item title when supplied", () => {
-    expect(validateAssignment({ ...valid, itemTitle: " " })).toBe("Item title is required");
+    expect(validateAssignment({ ...valid, itemTitle: " " })).toBe(
+      "Item title is required",
+    );
   });
+});
+
+it("keeps a new Post title in step with its coding Item title", () => {
+  expect(codingItemTitlePatch({ ...valid, title: "" }, "Sum")).toEqual({
+    title: "Sum",
+    itemTitle: "Sum",
+  });
+  expect(
+    codingItemTitlePatch({ ...valid, itemTitle: valid.title }, "Sum"),
+  ).toEqual({ title: "Sum", itemTitle: "Sum" });
+});
+it("preserves an independently named Post when renaming its Item", () => {
+  expect(
+    codingItemTitlePatch(
+      { ...valid, itemTitle: "Independent Item" },
+      "New Item",
+    ),
+  ).toEqual({ itemTitle: "New Item" });
 });
