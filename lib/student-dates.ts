@@ -62,3 +62,7 @@ export function formatDueSentence(dueIso: string, now = new Date()) {
   const text = formatDueLong(dueIso, now);
   return `Due ${/^(Today|Tomorrow)/.test(text) ? text[0].toLowerCase() + text.slice(1) : text}`;
 }
+
+export function formatMonthDay(iso: string) {
+  return shortDate.format(new Date(iso));
+}
