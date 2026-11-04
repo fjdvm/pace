@@ -1,4 +1,5 @@
 import { ClassCard } from "./class-card";
+import { EnrolledClassMenu } from "./enrolled-class-menu";
 
 type ClassGridProps = {
   title: "Teaching" | "Enrolled";
@@ -10,7 +11,7 @@ export function ClassGrid({ title, classes }: ClassGridProps) {
   return (
     <section aria-label={title} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-6">
       {classes.map((cls) => (
-        <ClassCard key={cls.id} {...cls} />
+        <ClassCard key={cls.id} {...cls} menu={title === "Enrolled" ? <EnrolledClassMenu id={cls.id} name={cls.name} /> : undefined} />
       ))}
     </section>
   );

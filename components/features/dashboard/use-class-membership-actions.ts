@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { archiveClass, unarchiveClass } from "@/app/actions/archive-class";
+import { hideClass } from "@/app/actions/hide-class";
 import { leaveClass } from "@/app/actions/leave-class";
 import { deleteClass } from "@/app/actions/delete-class";
 
@@ -36,8 +37,11 @@ export function useClassMembershipActions() {
   const handleLeave = (cls: ClassRef) =>
     runAction(() => leaveClass(cls.id), "You left the class", "Failed to leave class");
 
+  const handleHide = (cls: ClassRef) =>
+    runAction(() => hideClass(cls.id), "Class hidden", "Failed to hide class");
+
   const handleDelete = (cls: ClassRef) =>
     runAction(() => deleteClass(cls.id), "Class deleted", "Failed to delete class");
 
-  return { handleArchiveToggle, handleLeave, handleDelete };
+  return { handleArchiveToggle, handleLeave, handleHide, handleDelete };
 }

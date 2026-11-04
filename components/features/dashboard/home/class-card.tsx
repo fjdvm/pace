@@ -6,14 +6,16 @@ type ClassCardProps = {
   id: string;
   name: string;
   instructorName: string;
+  menu?: React.ReactNode;
 };
 
-export function ClassCard({ id, name, instructorName }: ClassCardProps) {
+export function ClassCard({ id, name, instructorName, menu }: ClassCardProps) {
   const colour = classColour(id);
   return (
+    <div className="relative w-full sm:h-[292px] sm:w-[296px]">
     <Link
       href={`/dashboard/classes/${id}`}
-      className="relative flex w-full flex-col overflow-hidden rounded-lg border border-pace-line bg-white outline-none focus-visible:ring-2 focus-visible:ring-pace-purple sm:h-[292px] sm:w-[296px]"
+      className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-pace-line bg-white outline-none focus-visible:ring-2 focus-visible:ring-pace-purple"
     >
       <div
         style={{ backgroundColor: colour }}
@@ -32,5 +34,7 @@ export function ClassCard({ id, name, instructorName }: ClassCardProps) {
         {getInitials(instructorName)}
       </span>
     </Link>
+    {menu}
+    </div>
   );
 }
