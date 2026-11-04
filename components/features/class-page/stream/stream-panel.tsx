@@ -5,8 +5,9 @@ import { toast } from "sonner";
 import { deletePost } from "@/app/actions/posts";
 import { useClassStreamRealtime } from "@/components/features/classes/use-class-stream-realtime";
 import type { RosterInstructor, RosterStudent, StreamPostData } from "@/components/features/classes/types";
-import { AnnouncementComposer } from "./announcement-composer";
 import { AnnouncementRow } from "./announcement-row";
+import { EmptyStream } from "./empty-stream";
+import { NewAnnouncement } from "./new-announcement";
 
 type StreamPanelProps = {
   classId: string;
@@ -41,7 +42,8 @@ export function StreamPanel({ classId, initialPosts, isInstructor, canPost, curr
 
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-3">
-      {canPost && <AnnouncementComposer classId={classId} />}
+      {canPost && <NewAnnouncement classId={classId} />}
+      {sorted.length === 0 && <EmptyStream />}
       {sorted.map((post) => (
         <AnnouncementRow
           key={post.id}
