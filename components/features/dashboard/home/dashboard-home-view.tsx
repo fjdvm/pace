@@ -1,5 +1,5 @@
 import type { DashboardClasses } from "@/lib/dashboard-classes";
-import { ClassGrid } from "./class-grid";
+import { ClassSwitcher } from "./class-switcher";
 import { WelcomeState } from "./welcome-state";
 
 export function DashboardHomeView({ teaching, enrolled }: DashboardClasses) {
@@ -9,8 +9,7 @@ export function DashboardHomeView({ teaching, enrolled }: DashboardClasses) {
 
   return (
     <main className="flex flex-col gap-3 p-4 sm:gap-6 sm:p-6">
-      <ClassGrid title="Teaching" classes={activeTeaching} />
-      <ClassGrid title="Enrolled" classes={activeEnrolled} />
+      <ClassSwitcher teaching={activeTeaching} enrolled={activeEnrolled} />
     </main>
   );
 }
