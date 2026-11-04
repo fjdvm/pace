@@ -3,29 +3,30 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Check, UserRoundCog } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { resolveHomeView, saveHomeView, type HomeView } from "@/lib/home-view";
 import { ClassGrid } from "./class-grid";
 
 type ClassItem = { id: string; name: string; instructorName: string };
-type View = "Teaching" | "Enrolled";
+type View = HomeView;
 
 type ClassSwitcherProps = {
   teaching: ClassItem[];
   enrolled: ClassItem[];
+  savedView?: string;
 };
 
 const trigger =
   "h-full flex-none gap-2 rounded-none border-0 px-3 text-[13px] font-semibold leading-5 text-pace-ink hover:text-pace-ink data-active:bg-[#c2e7ff] data-active:text-pace-ink after:hidden [&_svg]:size-[18px]";
 
-export function ClassSwitcher({ teaching, enrolled }: ClassSwitcherProps) {
+export function ClassSwitcher({ teaching, enrolled, savedView }: ClassSwitcherProps) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
   const both = teaching.length > 0 && enrolled.length > 0;
-  const fallback: View = teaching.length > 0 ? "Teaching" : "Enrolled";
-  const requested = params.get("tab") === "enrolled" ? "Enrolled" : params.get("tab") === "teaching" ? "Teaching" : fallback;
-  const view: View = both ? requested : fallback;
+  const view = resolveHomeView(params.get("tab"), savedView, teaching.length > 0, enrolled.length > 0);
 
   function select(next: View) {
+    saveHomeView(next);
     router.replace(`${pathname}?tab=${next.toLowerCase()}`, { scroll: false });
   }
 
