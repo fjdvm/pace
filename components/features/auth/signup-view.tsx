@@ -14,7 +14,6 @@ import { RoleSelector, type AuthRole } from "./role-selector";
 import { SignupFormFields } from "./signup-form-fields";
 import { SignupLegalNotice } from "./signup-legal-notice";
 import { SignupConfirmationSent } from "./signup-confirmation-sent";
-import { InstructorReviewNote } from "./instructor-review-note";
 import { SIGNUP_COPY } from "./signup-copy";
 
 export function SignupView() {
@@ -41,7 +40,6 @@ export function SignupView() {
     setIsLoading(true);
     try {
       const supabase = createClient();
-      const approvalStatus = role === "instructor" ? "pending" : "approved";
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -51,7 +49,6 @@ export function SignupView() {
           data: {
             name: name.trim(),
             role,
-            approval_status: approvalStatus,
           },
         },
       });
@@ -65,11 +62,7 @@ export function SignupView() {
       } else if (data?.user) {
         toast.success("Account created successfully!");
         setTimeout(() => {
-          if (role === "instructor") {
-            router.push("/pending-approval");
-          } else {
-            router.push("/dashboard/student");
-          }
+          router.push("/dashboard");
           router.refresh();
         }, 1000);
       }
@@ -101,7 +94,6 @@ export function SignupView() {
               onPasswordChange={setPassword}
               isLoading={isLoading}
             />
-            {role === "instructor" && <InstructorReviewNote />}
             <AuthSubmitButton isLoading={isLoading} label={copy.submit} loadingLabel={copy.loading} />
             <SignupLegalNotice action={copy.legalAction} />
           </form>

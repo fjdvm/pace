@@ -23,10 +23,10 @@ export const SIGNUP_COPY: Record<AuthRole, SignupCopy> = {
   instructor: {
     headline: "Set the assignments. Decide how much help students get.",
     description: "Create classes, add visible and hidden tests, and choose how many hearts each student gets.",
-    title: "Request instructor access",
-    subtitle: "An administrator checks every instructor account first.",
-    submit: "Request access",
-    loading: "Requesting access...",
-    legalAction: "requesting access",
+    title: "Create your account",
+    subtitle: "Create your first Class after signing in.",
+    submit: "Create account",
+    loading: "Creating account...",
+    legalAction: "creating an account",
   },
 };

@@ -14,7 +14,7 @@ const ROLES: { value: AuthRole; label: string; description: string; icon: string
   {
     value: "instructor",
     label: "Instructor",
-    description: "Create classes and assignments. Needs admin approval",
+    description: "Create classes and assignments",
     icon: "book",
   },
 ];

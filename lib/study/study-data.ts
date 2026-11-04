@@ -7,7 +7,7 @@ import { toDataset } from "./to-dataset";
 export async function getStudyBundle() {
   const [rows, instructors, closedAt, themes] = await Promise.all([
     prisma.studyResponse.findMany({ orderBy: { createdAt: "asc" } }),
-    prisma.user.count({ where: { role: "instructor", approvalStatus: "approved" } }),
+    prisma.user.count({ where: { classes: { some: {} } } }),
     getQuestionnaireClosedAt(),
     getThemes(),
   ]);
