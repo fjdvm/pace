@@ -15,6 +15,7 @@ export async function getStudentTodos() {
         class: {
           include: {
             assignments: {
+              where: { assignment: { isDraft: false } },
               include: {
                 assignment: {
                   include: {

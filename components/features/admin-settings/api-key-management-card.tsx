@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useState, useTransition } from "react";
 import { getAdminApiKeyStatus } from "@/app/actions/admin-api-keys";
 import { ApiKeyFormRow } from "./api-key-form-row";
 import { Key } from "lucide-react";
@@ -17,19 +17,16 @@ interface ApiKeyManagementCardProps {
 }
 
 export function ApiKeyManagementCard({ initialKeys }: ApiKeyManagementCardProps) {
-  const [keys, setKeys] = useState<ApiKeyEntry[]>(initialKeys);
+  const [status, setStatus] = useState({ source: initialKeys, keys: initialKeys });
+  const keys = status.source === initialKeys ? status.keys : initialKeys;
   const [, startTransition] = useTransition();
 
   const refresh = useCallback(() => {
     startTransition(async () => {
       const updated = await getAdminApiKeyStatus();
-      setKeys(updated);
+      setStatus({ source: initialKeys, keys: updated });
     });
-  }, [startTransition]);
-
-  useEffect(() => {
-    setKeys(initialKeys);
-  }, [initialKeys]);
+  }, [initialKeys, startTransition]);
 
   return (
     <div className="bg-white p-6 rounded-[24px] border border-surface-container shadow-sm flex flex-col">

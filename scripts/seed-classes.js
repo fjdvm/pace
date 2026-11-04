@@ -1,5 +1,5 @@
-const { Client } = require("pg");
-const { randomUUID } = require("crypto");
+import { Client } from "pg";
+import { randomUUID } from "node:crypto";
 
 const [instructorEmail, studentEmail] = process.argv.slice(2);
 if (!instructorEmail || !studentEmail) {

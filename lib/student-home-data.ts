@@ -20,6 +20,7 @@ export async function getStudentClasses(studentId: string): Promise<StudentClass
         include: {
           instructor: { select: { email: true } },
           assignments: {
+              where: { assignment: { isDraft: false } },
             include: {
               assignment: {
                 include: {

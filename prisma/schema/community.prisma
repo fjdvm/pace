@@ -1,0 +1,45 @@
+model Post {
+  id           String    @id @default(uuid())
+  classId      String    @map("class_id")
+  authorId     String    @map("author_id")
+  type         String
+  body         String?
+  linkUrl      String?   @map("link_url")
+  assignmentId String?   @map("assignment_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  class        Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments     Comment[]
+
+  @@map("posts")
+}
+
+model Comment {
+  id              String   @id @default(uuid())
+  postId          String   @map("post_id")
+  authorId        String   @map("author_id")
+  body            String
+  visibility      String
+  threadStudentId String?  @map("thread_student_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+  post            Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author          User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId, visibility])
+  @@map("comments")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  type      String
+  title     String
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@map("notifications")
+}

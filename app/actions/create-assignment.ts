@@ -1,5 +1,6 @@
 "use server";
 
+import type { PostLabel } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { validateAssignment } from "@/lib/assignment-form";
@@ -12,6 +13,8 @@ interface TestCaseInput {
 }
 
 interface CreateAssignmentParams {
+  label?: PostLabel;
+  isDraft?: boolean;
   title: string;
   instructions: string;
   language: string;
@@ -34,6 +37,9 @@ export async function createAssignment(params: CreateAssignmentParams) {
       classIds,
       testCases,
     } = params;
+
+    if (params.label !== undefined && !["Assignment", "Activity", "Quiz"].includes(params.label)) throw new Error("Invalid Label");
+    if (params.isDraft !== undefined && typeof params.isDraft !== "boolean") throw new Error("Invalid Draft flag");
 
     const invalid = validateAssignment({ title, instructions, language, dueDate, heartsCount, heartsRegenMinutes, classIds, testCases });
     if (invalid) {
@@ -76,6 +82,8 @@ export async function createAssignment(params: CreateAssignmentParams) {
 
       const assignment = await tx.assignment.create({
         data: {
+          label: params.label ?? "Assignment",
+          isDraft: params.isDraft ?? false,
           title: title.trim(),
           instructions: instructions.trim(),
           language,
@@ -102,7 +110,7 @@ export async function createAssignment(params: CreateAssignmentParams) {
         })),
       });
 
-      await tx.post.createMany({
+      if (!params.isDraft) await tx.post.createMany({
         data: classIds.map((classId) => ({
           classId,
           authorId: user.id,
@@ -115,7 +123,7 @@ export async function createAssignment(params: CreateAssignmentParams) {
       return assignment;
     });
 
-    await notifyAssignmentPublished(classIds, newAssignment).catch((err) =>
+    if (!params.isDraft) await notifyAssignmentPublished(classIds, newAssignment).catch((err) =>
       console.error("Failed to notify students:", err),
     );
 

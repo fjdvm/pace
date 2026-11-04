@@ -9,8 +9,8 @@ export async function loadStudentAssignment(
   userId: string,
 ): Promise<StudentAssignmentData | null> {
   const assignment = await prisma.assignment.findUnique({
-    where: { id: assignmentId },
-    include: { instructor: { select: { id: true, email: true, name: true } }, classes: { select: { classId: true } } },
+    where: { id: assignmentId, isDraft: false },
+    include: { items: { orderBy: { position: "asc" }, take: 1 }, instructor: { select: { id: true, email: true, name: true } }, classes: { select: { classId: true } } },
   });
   if (!assignment) return null;
 
@@ -36,6 +36,9 @@ export async function loadStudentAssignment(
     }),
   ]);
 
+  const codingItem = assignment.items[0];
+  if (!codingItem) return null;
+
   const instructorName = getDisplayName(assignment.instructor);
   const toView = (c: { id: string; authorId: string; body: string; createdAt: Date }) => ({
     id: c.id,
@@ -49,8 +52,8 @@ export async function loadStudentAssignment(
     title: assignment.title,
     classId: enrollment.classId,
     className: enrollment.class.name,
-    instructions: assignment.instructions,
-    language: assignment.language,
+    instructions: codingItem.instructions,
+    language: codingItem.language,
     dueDate: assignment.dueDate.toISOString(),
     postedAt: (post?.createdAt ?? assignment.createdAt).toISOString(),
     instructorName,
@@ -58,8 +61,8 @@ export async function loadStudentAssignment(
     heartsMax: assignment.heartsCount,
     items: [
       {
-        id: assignment.id,
-        title: assignment.title,
+        id: codingItem.id,
+        title: codingItem.title,
         kind: "coding",
         status: deriveItemStatus(!!submission, !!draft),
       },

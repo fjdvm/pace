@@ -24,6 +24,10 @@ export async function createComment(
     if (!post) throw new Error("Post not found");
 
     const isInstructor = post.class.instructorId === user.id;
+    if (!isInstructor && post.assignmentId) {
+      const assignment = await prisma.assignment.findUnique({ where: { id: post.assignmentId, isDraft: false }, select: { id: true } });
+      if (!assignment) throw new Error("Post not found");
+    }
     let enrollment = null;
     if (!isInstructor) {
       enrollment = await prisma.enrollment.findUnique({

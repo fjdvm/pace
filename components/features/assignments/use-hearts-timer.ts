@@ -18,7 +18,6 @@ export function useHeartsTimer({ initialHearts, maxHearts, regenMinutes }: UseHe
 
   useEffect(() => {
     if (hearts.currentCount >= maxHearts) {
-      setTimeToRegen("");
       return;
     }
 
@@ -54,5 +53,5 @@ export function useHeartsTimer({ initialHearts, maxHearts, regenMinutes }: UseHe
     }));
   }, []);
 
-  return { hearts, timeToRegen, spendHeart };
+  return { hearts, timeToRegen: hearts.currentCount >= maxHearts ? "" : timeToRegen, spendHeart };
 }

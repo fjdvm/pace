@@ -77,10 +77,10 @@ export async function getModelWithFallback(assignmentId: string): Promise<Langua
   return getDefaultModel();
 }
 
-export async function streamWithFallback(
+export async function streamWithFallback<T>(
   assignmentId: string,
-  streamFn: (model: LanguageModel) => Promise<any>
-): Promise<any> {
+  streamFn: (model: LanguageModel) => Promise<T>
+): Promise<T> {
   const assignmentClass = await prisma.assignmentClass.findFirst({
     where: { assignmentId },
     include: { class: { select: { aiProvider: true, aiApiKeyEnc: true } } },
