@@ -5,6 +5,6 @@ export function assignmentTitle(body: string | null) {
 }
 
 export function professorLabel(name: string) {
-  const last = name.trim().split(/\s+/).pop() ?? name;
+  const last = name.trim().replace(/^prof\.?\s+/i, "").split(/\s+/).pop() ?? name;
   return `Prof. ${last}`;
 }

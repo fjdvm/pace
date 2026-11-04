@@ -13,9 +13,9 @@ export function AssignmentHeader({ data }: { data: StudentAssignmentData }) {
           {data.title}
         </h1>
         <p className="text-[13px] text-pace-muted">
-          {data.instructorName} · {formatMonthDay(data.postedAt)}
+          Prof. {data.instructorName.replace(/^prof\.?\s+/i, "")} · {formatMonthDay(data.postedAt)}
         </p>
-        <p className="border-b border-pace-line pb-3 text-right text-[13px] font-bold text-pace-ink md:[border-bottom-color:var(--color-pace-green)] md:text-[15px]">
+        <p className="border-b border-pace-line pb-3 text-right text-[13px] font-bold text-pace-ink md:[border-bottom-color:var(--color-pace-green-deep)] md:text-[15px]">
           {formatDueSentence(data.dueDate)}
         </p>
         <p className="whitespace-pre-wrap text-[15px] leading-[1.55] text-pace-ink">{data.instructions}</p>

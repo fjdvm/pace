@@ -15,6 +15,7 @@ type CommentSectionProps = {
   instructor: { id: string; email: string; name: string | null };
   initialComments: CommentData[];
   className?: string;
+  headingClassName?: string;
 };
 
 export function CommentSection({
@@ -26,6 +27,7 @@ export function CommentSection({
   instructor,
   initialComments,
   className,
+  headingClassName = "text-[15px] leading-[1.55] text-pace-ink-2",
 }: CommentSectionProps) {
   const [comments, setComments] = useState(initialComments);
   const [open, setOpen] = useState(initialComments.length > 0);
@@ -51,7 +53,7 @@ export function CommentSection({
 
   return (
     <section className={className}>
-      <h2 className="text-[15px] font-bold leading-[1.55] text-pace-ink-2">{title}</h2>
+      <h2 className={`font-bold ${headingClassName}`}>{title}</h2>
       {open ? (
         <div className="mt-2">
           <CommentFeed
