@@ -45,6 +45,7 @@ export function StreamPanel({ classId, initialPosts, isInstructor, canPost, curr
       {sorted.map((post) => (
         <AnnouncementRow
           key={post.id}
+          classId={classId}
           post={post}
           isInstructor={isInstructor}
           currentUserId={currentUserId}
