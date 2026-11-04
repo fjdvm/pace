@@ -1,5 +1,6 @@
 "use server";
 
+import { hasStudentWork } from "@/lib/items/started";
 import { prisma } from "@/lib/prisma";
 import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { createClient } from "@/lib/supabase/server";
@@ -17,14 +18,18 @@ export async function updateAssignment(assignmentId: string, values: AssignmentF
 
     const assignment = await prisma.assignment.findUnique({
       where: { id: assignmentId },
-      include: { classes: { select: { classId: true } }, _count: { select: { submissions: true } } },
+      include: { items: { orderBy: { position: "asc" }, take: 1 }, classes: { select: { classId: true } },
+        _count: { select: { submissions: true, codeDrafts: true, heartsStates: true, chatMessages: true } } },
     });
     if (!assignment) throw new Error("Assignment not found");
     if (!(await isAssignmentInstructor(assignmentId, user.id))) throw new Error("Unauthorized: Only the class's instructor can edit this assignment");
 
     const previousClassIds = new Set(assignment.classes.map((c) => c.classId));
     const addedClassIds = values.classIds.filter((id) => !previousClassIds.has(id));
-    const locksTestCases = assignment._count.submissions > 0;
+    const locksTestCases = hasStudentWork(assignment._count);
+    if (locksTestCases && values.language !== assignment.language) throw new Error("Cannot change language after a Student has started");
+    const itemId = assignment.items[0]?.id;
+    if (!itemId) throw new Error("Coding Item not found");
 
     await prisma.$transaction(async (tx) => {
       const ownedClasses = await tx.class.count({ where: { id: { in: values.classIds }, instructorId: user.id } });
@@ -45,7 +50,7 @@ export async function updateAssignment(assignmentId: string, values: AssignmentF
       await tx.assignmentClass.deleteMany({ where: { assignmentId } });
       await tx.assignmentClass.createMany({ data: values.classIds.map((classId) => ({ assignmentId, classId })) });
 
-      if (addedClassIds.length > 0) {
+      if (!assignment.isDraft && addedClassIds.length > 0) {
         await tx.post.createMany({
           data: addedClassIds.map((classId) => ({
             classId,
@@ -58,10 +63,11 @@ export async function updateAssignment(assignmentId: string, values: AssignmentF
       }
 
       if (!locksTestCases) {
-        await tx.testCase.deleteMany({ where: { assignmentId } });
+        await tx.testCase.deleteMany({ where: { assignmentId, itemId } });
         await tx.testCase.createMany({
           data: values.testCases.map((tc) => ({
             assignmentId,
+            itemId,
             input: tc.input.trim(),
             expectedOutput: tc.expectedOutput.trim(),
             visible: tc.visible,
@@ -70,7 +76,7 @@ export async function updateAssignment(assignmentId: string, values: AssignmentF
       }
     });
 
-    await notifyAssignmentPublished(addedClassIds, { id: assignmentId, title: values.title.trim() }).catch((err) =>
+    await notifyAssignmentPublished(assignment.isDraft ? [] : addedClassIds, { id: assignmentId, title: values.title.trim() }).catch((err) =>
       console.error("Failed to notify students:", err),
     );
 

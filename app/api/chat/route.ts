@@ -15,13 +15,13 @@ export async function POST(req: NextRequest) {
 
     const { assignmentId, currentCode, lastRunResults, messages } = body;
     const lastUserMessage = messages?.filter((m: { role: string }) => m.role === "user").pop();
-    const message = lastUserMessage?.content ?? lastUserMessage?.parts?.find((p: any) => p.type === "text")?.text ?? body.message;
+    const message = lastUserMessage?.content ?? lastUserMessage?.parts?.find((p: { type: string; text?: string }) => p.type === "text")?.text ?? body.message;
     if (!assignmentId || !message || message.trim() === "") {
       return new Response(JSON.stringify({ error: "Missing required parameters" }), { status: 400, headers: { "Content-Type": "application/json" } });
     }
 
     const [assignment, hasSubmission, heartsState, model] = await Promise.all([
-      prisma.assignment.findUnique({ where: { id: assignmentId } }),
+      prisma.assignment.findUnique({ where: { id: assignmentId, isDraft: false } }),
       prisma.submission.findUnique({ where: { studentId_assignmentId: { studentId: user.id, assignmentId } } }),
       getOrRegenerateHearts(user.id, assignmentId),
       getModelWithFallback(assignmentId),
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function buildSystemPrompt(assignment: any, currentCode: string | undefined, lastRunResults: any, totalSpent: number, tier: number): string {
+function buildSystemPrompt(assignment: { title: string; instructions: string; language: string }, currentCode: string | undefined, lastRunResults: unknown, totalSpent: number, tier: number): string {
   return `You are Duck, a friendly rubber-duck debugging companion for GAIT, inspired by CS50's duck debugger persona. You are warm, patient, endlessly encouraging, and occasionally add a light "🦆" or a small quack-flavored remark, but you never let the flavor get in the way of being genuinely useful.
 Your task is to guide the student to solve their assignment: "${assignment.title}".
 

@@ -10,9 +10,9 @@ const runHistory = new Map<string, number[]>();
 function checkRateLimit(userId: string): { allowed: boolean; remainingSecs?: number } {
   const now = Date.now();
   const history = runHistory.get(userId) || [];
-  
+
   const recentRuns = history.filter((timestamp) => now - timestamp < LIMIT_WINDOW_MS);
-  
+
   if (recentRuns.length >= RUN_LIMIT) {
     const oldestRecentRun = recentRuns[0];
     const remainingMs = LIMIT_WINDOW_MS - (now - oldestRecentRun);
@@ -21,7 +21,7 @@ function checkRateLimit(userId: string): { allowed: boolean; remainingSecs?: num
       remainingSecs: Math.max(1, Math.ceil(remainingMs / 1000)),
     };
   }
-  
+
   recentRuns.push(now);
   runHistory.set(userId, recentRuns);
   return { allowed: true };
@@ -60,11 +60,9 @@ export async function runCode(assignmentId: string, code: string) {
     }
 
     const assignment = await prisma.assignment.findUnique({
-      where: { id: assignmentId },
+      where: { id: assignmentId, isDraft: false },
       include: {
-        testCases: {
-          where: { visible: true },
-        },
+        items: { orderBy: { position: "asc" }, take: 1, include: { testCases: { where: { visible: true } } } },
       },
     });
 
@@ -72,13 +70,15 @@ export async function runCode(assignmentId: string, code: string) {
       throw new Error("Assignment not found");
     }
 
-    const langId = LANGUAGE_MAP[assignment.language];
+    const codingItem = assignment.items[0];
+    if (!codingItem) throw new Error("Coding Item not found");
+    const langId = LANGUAGE_MAP[codingItem.language];
     if (!langId) {
       throw new Error(`Unsupported programming language: ${assignment.language}`);
     }
 
-    const testCasesToRun = assignment.testCases.length > 0 
-      ? assignment.testCases 
+    const testCasesToRun = codingItem.testCases.length > 0
+      ? codingItem.testCases
       : [{ id: "default", input: "", expectedOutput: "", visible: true }];
 
     const runPromises = testCasesToRun.map(async (tc) => {
@@ -102,7 +102,7 @@ export async function runCode(assignmentId: string, code: string) {
         }
 
         const result = await response.json();
-        
+
         const stdout = result.stdout || "";
         const stderr = result.stderr || "";
         const compileOutput = result.compile_output || "";

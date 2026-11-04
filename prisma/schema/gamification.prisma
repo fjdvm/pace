@@ -1,0 +1,43 @@
+model XpEvent {
+  id           String   @id @default(uuid())
+  studentId    String   @map("student_id")
+  eventType    String   @map("event_type")
+  xpAmount     Int      @map("xp_amount")
+  assignmentId String?  @map("assignment_id")
+  classId      String?  @map("class_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  student      User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("xp_events")
+}
+
+model Badge {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  description String
+  condition   String
+  userBadges  UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  userId   String   @map("user_id")
+  badgeId  String   @map("badge_id")
+  earnedAt DateTime @default(now()) @map("earned_at")
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, badgeId])
+  @@map("user_badges")
+}
+
+model Streak {
+  studentId          String @map("student_id")
+  currentStreak      Int    @default(0) @map("current_streak")
+  lastSubmissionWeek Int    @default(0) @map("last_submission_week")
+  student            User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@id([studentId])
+  @@map("streaks")
+}

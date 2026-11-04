@@ -23,14 +23,14 @@ export async function AssignmentWorkspacePage({ params }: PageProps) {
   }
 
   const assignment = await prisma.assignment.findUnique({
-    where: { id },
+    where: { id, isDraft: false },
     include: {
       instructor: {
         select: {
           email: true,
         },
       },
-      testCases: true,
+      items: { orderBy: { position: "asc" }, take: 1, include: { testCases: true } },
     },
   });
 
@@ -67,11 +67,14 @@ export async function AssignmentWorkspacePage({ params }: PageProps) {
     orderBy: { createdAt: "asc" },
   });
 
+  const codingItem = assignment.items[0];
+  if (!codingItem) redirect("/dashboard");
+
   const formattedAssignment = {
     id: assignment.id,
     title: assignment.title,
-    instructions: assignment.instructions,
-    language: assignment.language,
+    instructions: codingItem.instructions,
+    language: codingItem.language,
     dueDate: assignment.dueDate.toISOString(),
     heartsCount: assignment.heartsCount,
     heartsRegenMinutes: assignment.heartsRegenMinutes,
@@ -84,7 +87,7 @@ export async function AssignmentWorkspacePage({ params }: PageProps) {
     totalSpent: heartsState.totalSpent,
   };
 
-  const visibleTests = assignment.testCases.filter((tc) => tc.visible);
+  const visibleTests = codingItem.testCases.filter((tc) => tc.visible);
   const formattedTestCases = visibleTests.map((tc) => ({
     id: tc.id,
     input: tc.input,
@@ -133,12 +136,12 @@ export async function AssignmentWorkspacePage({ params }: PageProps) {
       assignment={formattedAssignment}
       className={enrollment.class.name}
       classId={enrollment.class.id}
-      hiddenTestCount={assignment.testCases.length - visibleTests.length}
+      hiddenTestCount={codingItem.testCases.length - visibleTests.length}
       initialHearts={formattedHearts}
       visibleTestCases={formattedTestCases}
       initialSubmission={formattedSubmission}
       initialChatMessages={formattedMessages}
-      initialDraftCode={draft?.code ?? null}
+      initialDraftCode={draft?.code ?? (codingItem.starterCode || null)}
     />
   );
 }

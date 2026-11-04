@@ -18,6 +18,14 @@ export async function startAssignment(assignmentId: string) {
       throw new Error("Unauthorized");
     }
 
+    const assignment = await prisma.assignment.findUnique({
+      where: { id: assignmentId, isDraft: false },
+    });
+
+    if (!assignment) {
+      throw new Error("Assignment not found");
+    }
+
     let heartsState = await prisma.heartsState.findUnique({
       where: {
         studentId_assignmentId: {
@@ -28,14 +36,6 @@ export async function startAssignment(assignmentId: string) {
     });
 
     if (!heartsState) {
-      const assignment = await prisma.assignment.findUnique({
-        where: { id: assignmentId },
-      });
-
-      if (!assignment) {
-        throw new Error("Assignment not found");
-      }
-
       heartsState = await prisma.heartsState.create({
         data: {
           studentId: user.id,

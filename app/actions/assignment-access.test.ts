@@ -49,3 +49,12 @@ it("rejects a mix of teaching and someone else's Classes", async () => {
   expect(await createAssignment({ ...params, classIds: ["own-class", "other-class"] })).toMatchObject({ success: false });
   expect(db.assignment.create).not.toHaveBeenCalled();
 });
+
+it("creates a labelled Draft without publishing a stream entry or notifying Students", async () => {
+  const { createAssignment } = await import("./create-assignment");
+  const { notifyAssignmentPublished } = await import("@/lib/notifications");
+  expect(await createAssignment({ ...params, label: "Quiz", isDraft: true })).toMatchObject({ success: true });
+  expect(db.assignment.create).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ label: "Quiz", isDraft: true }) }));
+  expect(db.post.createMany).not.toHaveBeenCalled();
+  expect(notifyAssignmentPublished).not.toHaveBeenCalled();
+});

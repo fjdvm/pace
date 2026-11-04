@@ -21,6 +21,9 @@ export async function saveDraft(assignmentId: string, code: string) {
       throw new Error("Unauthorized: You must be logged in");
     }
 
+    const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId, isDraft: false }, select: { id: true } });
+    if (!assignment) throw new Error("Assignment not found");
+
     const existingSubmission = await prisma.submission.findUnique({
       where: {
         studentId_assignmentId: {

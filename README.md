@@ -444,7 +444,7 @@ fr-gaits/
 │   └── features/             Feature folders (student, instructor, admin, research, landing, ...)
 ├── hooks/                    Shared React hooks
 ├── lib/                      Domain logic (hearts, gamification, similarity, study analysis, data loaders)
-├── prisma/schema.prisma      Database schema
+├── prisma/schema/      Database schema
 ├── scripts/                  One-off scripts such as the demo class seeder
 ├── public/                   Static assets and logos
 ├── proxy.ts                  Session refresh and role-based route guard
