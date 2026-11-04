@@ -1,5 +1,5 @@
-import { StudentTodoPage } from "@/components/features/student/todo/page-content";
+import { TodoPage } from "@/components/features/todo-page/page-content";
 
 export default function Page() {
-  return <StudentTodoPage />;
+  return <TodoPage />;
 }
