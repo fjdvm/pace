@@ -14,8 +14,6 @@ describe("createAssignment auto-post", () => {
       data: {
         id: instructorId,
         email: `instructor-${instructorId}@test.com`,
-        role: "instructor",
-        approvalStatus: "approved",
       },
     });
     const cls = await prisma.class.create({

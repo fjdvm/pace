@@ -53,14 +53,15 @@ Supabase automatically links Google identities to existing Auth users with the
 same verified email. This preserves the Auth user ID used by every PACE relation.
 The callback validates the user with Supabase, requires a confirmed email and a
 Google identity, and upserts by that ID. Updates change only name and email.
-Existing roles, approval status, Classes, enrollments, and submissions stay intact.
-New rows receive the temporary `student` role until the contract ticket removes it.
-The existing hosted `handle_new_user` trigger also defaults to `student`.
+Classes, enrollments, submissions, and the Admin flag stay intact.
+The callback creates the application profile without a global role or approval
+status. The contract migration removes the old signup trigger and its function;
+Google profile synchronization is owned by this callback.
 
 An email uniqueness conflict fails sign-in and clears the session rather than
 replacing another user or moving their relations. Unexpected legacy identity
 conflicts need investigation; the callback never deletes an account to fix them.
-Dashboard routing uses the stored role, not user-editable metadata.
+Every User lands on the single dashboard. Admin access uses the stored Admin flag.
 
 ## Verification
 

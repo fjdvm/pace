@@ -15,9 +15,9 @@ describe("leaveClass", () => {
     outsiderStudentId = randomUUID();
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
-        { id: studentId, email: `student-${studentId}@test.com`, role: "student" },
-        { id: outsiderStudentId, email: `outsider-${outsiderStudentId}@test.com`, role: "student" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        { id: studentId, email: `student-${studentId}@test.com` },
+        { id: outsiderStudentId, email: `outsider-${outsiderStudentId}@test.com` },
       ],
     });
     const cls = await prisma.class.create({

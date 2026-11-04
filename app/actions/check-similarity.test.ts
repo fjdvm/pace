@@ -20,10 +20,10 @@ describe("checkSimilarity", () => {
 
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
-        { id: studentAId, email: `student-a-${studentAId}@test.com`, role: "student" },
-        { id: studentBId, email: `student-b-${studentBId}@test.com`, role: "student" },
-        { id: studentCId, email: `student-c-${studentCId}@test.com`, role: "student" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        { id: studentAId, email: `student-a-${studentAId}@test.com` },
+        { id: studentBId, email: `student-b-${studentBId}@test.com` },
+        { id: studentCId, email: `student-c-${studentCId}@test.com` },
       ],
     });
 
@@ -149,7 +149,7 @@ describe("checkSimilarity", () => {
   it("rejects a caller who does not own the assignment", async () => {
     const otherInstructorId = randomUUID();
     await prisma.user.create({
-      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com`, role: "instructor" },
+      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com` },
     });
     mockAuthenticatedUser(otherInstructorId);
     const { checkSimilarity } = await import("@/app/actions/check-similarity");

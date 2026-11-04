@@ -18,11 +18,8 @@ afterEach(() => {
 });
 
 describe("per-Class access", () => {
-  it.each([
-    { role: "student" },
-    { role: "instructor", approvalStatus: "pending" },
-  ])("lets a signed-in User with legacy metadata %j create a Class and receive a join code", async (metadata) => {
-    db.user.findUnique.mockResolvedValue({ id: "new-user", ...metadata });
+  it("lets a signed-in User without global role fields create a Class and receive a join code", async () => {
+    db.user.findUnique.mockResolvedValue({ id: "new-user" });
     db.class.findUnique.mockResolvedValue(null);
     db.class.create.mockImplementation(async ({ data }) => ({ id: "class", ...data }));
     const { createClass } = await import("./create-class");
@@ -34,7 +31,7 @@ describe("per-Class access", () => {
     expect(result.class?.joinCode).toMatch(/^[A-Z0-9]{6}$/);
   });
   it("lets a User who teaches elsewhere join a Class by code", async () => {
-    db.user.findUnique.mockResolvedValue({ id: "new-user", role: "instructor", approvalStatus: "pending" });
+    db.user.findUnique.mockResolvedValue({ id: "new-user" });
     db.class.findUnique.mockResolvedValue({ id: "class", name: "Other Class", instructorId: "other" });
     db.enrollment.findUnique.mockResolvedValue(null);
     const { joinClass } = await import("./join-class");

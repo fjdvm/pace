@@ -14,8 +14,8 @@ describe("kickStudent", () => {
 
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
-        { id: studentId, email: `student-${studentId}@test.com`, role: "student" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        { id: studentId, email: `student-${studentId}@test.com` },
       ],
     });
 
@@ -54,7 +54,7 @@ describe("kickStudent", () => {
   it("rejects a caller who does not own the class", async () => {
     const otherInstructorId = randomUUID();
     await prisma.user.create({
-      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com`, role: "instructor" },
+      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com` },
     });
     mockAuthenticatedUser(otherInstructorId);
     const { kickStudent } = await import("@/app/actions/kick-student");
@@ -78,7 +78,7 @@ describe("kickStudent", () => {
 
     const nonEnrolledId = randomUUID();
     await prisma.user.create({
-      data: { id: nonEnrolledId, email: `non-${nonEnrolledId}@test.com`, role: "student" },
+      data: { id: nonEnrolledId, email: `non-${nonEnrolledId}@test.com` },
     });
 
     const result = await kickStudent(classId, nonEnrolledId);

@@ -19,10 +19,10 @@ describe("getClassStream", () => {
 
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instr-${instructorId}@test.com`, role: "instructor" },
-        { id: studentAId, email: `studentA-${studentAId}@test.com`, role: "student" },
-        { id: studentBId, email: `studentB-${studentBId}@test.com`, role: "student" },
-        { id: outsiderId, email: `outsider-${outsiderId}@test.com`, role: "student" },
+        { id: instructorId, email: `instr-${instructorId}@test.com` },
+        { id: studentAId, email: `studentA-${studentAId}@test.com` },
+        { id: studentBId, email: `studentB-${studentBId}@test.com` },
+        { id: outsiderId, email: `outsider-${outsiderId}@test.com` },
       ],
     });
     const cls = await prisma.class.create({

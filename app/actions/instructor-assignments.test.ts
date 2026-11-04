@@ -15,7 +15,7 @@ describe("getInstructorAssignments", () => {
     instructorId = randomUUID();
 
     await prisma.user.create({
-      data: { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
+      data: { id: instructorId, email: `instructor-${instructorId}@test.com` },
     });
 
     const [activeClass, archivedClass] = await Promise.all([

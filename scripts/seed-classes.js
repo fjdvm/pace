@@ -37,13 +37,13 @@ const code = () => Array.from({ length: 6 }, () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ01
 (async () => {
   const c = new Client({ connectionString: process.env.DATABASE_URL });
   await c.connect();
-  const findUser = async (email, role) => {
-    const r = await c.query("select id from users where email=$1 and role=$2", [email, role]);
-    if (!r.rowCount) throw new Error(`No ${role} found with email ${email}`);
+  const findUser = async (email) => {
+    const r = await c.query("select id from users where email=$1", [email]);
+    if (!r.rowCount) throw new Error(`No User found with email ${email}`);
     return r.rows[0].id;
   };
-  const INSTRUCTOR = await findUser(instructorEmail, "instructor");
-  const STUDENT = await findUser(studentEmail, "student");
+  const INSTRUCTOR = await findUser(instructorEmail);
+  const STUDENT = await findUser(studentEmail);
   await c.query("begin");
   try {
     for (const cls of classes) {

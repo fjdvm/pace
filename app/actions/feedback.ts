@@ -18,11 +18,11 @@ export async function submitFeedback(title: string, description: string, pageUrl
     const { data: { user } } = await supabase.auth.getUser();
 
     const dbUser = user
-      ? await prisma.user.findUnique({ where: { id: user.id }, select: { email: true, role: true } })
+      ? await prisma.user.findUnique({ where: { id: user.id }, select: { email: true } })
       : null;
 
     const reporterLine = dbUser
-      ? `Reported by: ${dbUser.email} (${dbUser.role})`
+      ? `Reported by: ${dbUser.email}`
       : "Reported by: anonymous (not logged in)";
 
     const body = [

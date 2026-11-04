@@ -10,7 +10,7 @@ describe("createPost", () => {
   beforeEach(async () => {
     instructorId = randomUUID();
     await prisma.user.create({
-      data: { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
+      data: { id: instructorId, email: `instructor-${instructorId}@test.com` },
     });
     const cls = await prisma.class.create({
       data: { name: "Test Class", instructorId, joinCode: randomUUID().slice(0, 6).toUpperCase() },
@@ -38,7 +38,7 @@ describe("createPost", () => {
   it("rejects a caller who is not the class's instructor", async () => {
     const outsiderId = randomUUID();
     await prisma.user.create({
-      data: { id: outsiderId, email: `outsider-${outsiderId}@test.com`, role: "instructor" },
+      data: { id: outsiderId, email: `outsider-${outsiderId}@test.com` },
     });
 
     mockAuthenticatedUser(outsiderId);
@@ -67,7 +67,7 @@ describe("createPost", () => {
 
     const impostorId = randomUUID();
     await prisma.user.create({
-      data: { id: impostorId, email: `impostor-${impostorId}@test.com`, role: "instructor" },
+      data: { id: impostorId, email: `impostor-${impostorId}@test.com` },
     });
     vi.resetModules();
     vi.doUnmock("@/lib/supabase/server");

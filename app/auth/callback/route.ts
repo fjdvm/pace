@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     const name = typeof profileName === "string" ? profileName : undefined;
     await prisma.user.upsert({
       where: { id: user.id },
-      create: { id: user.id, email: user.email, name, role: "student" },
+      create: { id: user.id, email: user.email, name },
       update: { email: user.email, name },
     });
     return NextResponse.redirect(new URL("/dashboard", url.origin));

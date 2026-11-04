@@ -18,10 +18,10 @@ describe("getClassLeaderboardTabData", () => {
 
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
-        { id: studentAId, email: `a-${studentAId}@test.com`, role: "student" },
-        { id: studentBId, email: `b-${studentBId}@test.com`, role: "student" },
-        { id: outsiderId, email: `outsider-${outsiderId}@test.com`, role: "student" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        { id: studentAId, email: `a-${studentAId}@test.com` },
+        { id: studentBId, email: `b-${studentBId}@test.com` },
+        { id: outsiderId, email: `outsider-${outsiderId}@test.com` },
       ],
     });
     const cls = await prisma.class.create({

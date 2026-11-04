@@ -15,9 +15,9 @@ describe("deleteClass", () => {
     studentId = randomUUID();
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
-        { id: outsiderInstructorId, email: `outsider-${outsiderInstructorId}@test.com`, role: "instructor" },
-        { id: studentId, email: `student-${studentId}@test.com`, role: "student" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        { id: outsiderInstructorId, email: `outsider-${outsiderInstructorId}@test.com` },
+        { id: studentId, email: `student-${studentId}@test.com` },
       ],
     });
     const cls = await prisma.class.create({

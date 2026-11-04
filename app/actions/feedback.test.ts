@@ -11,7 +11,7 @@ describe("submitFeedback", () => {
   beforeEach(async () => {
     userId = randomUUID();
     await prisma.user.create({
-      data: { id: userId, email: `reporter-${userId}@test.com`, role: "student" },
+      data: { id: userId, email: `reporter-${userId}@test.com` },
     });
     process.env.GITHUB_TOKEN = "test-token";
   });

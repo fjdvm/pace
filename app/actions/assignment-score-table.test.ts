@@ -20,10 +20,10 @@ describe("getAssignmentScoreTable", () => {
 
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
-        { id: outsiderInstructorId, email: `outsider-${outsiderInstructorId}@test.com`, role: "instructor" },
-        { id: activeStudentId, email: `active-${activeStudentId}@test.com`, role: "student" },
-        { id: archivedStudentId, email: `archived-${archivedStudentId}@test.com`, role: "student" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        { id: outsiderInstructorId, email: `outsider-${outsiderInstructorId}@test.com` },
+        { id: activeStudentId, email: `active-${activeStudentId}@test.com` },
+        { id: archivedStudentId, email: `archived-${archivedStudentId}@test.com` },
       ],
     });
 

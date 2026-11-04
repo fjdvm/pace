@@ -19,8 +19,8 @@ beforeEach(() => {
 });
 
 describe("admin API key actions", () => {
-  it.each(["student", "instructor", "admin"])("rejects a non-admin with legacy role %s", async (role) => {
-    mocks.findUser.mockResolvedValue({ role, isAdmin: false });
+  it("rejects a non-admin without global role fields", async () => {
+    mocks.findUser.mockResolvedValue({ isAdmin: false });
     expect(await saveAdminApiKey("GROQ_API_KEY", "secret")).toEqual({ success: false, error: "Forbidden" });
     expect(await removeAdminApiKey("GROQ_API_KEY")).toEqual({ success: false, error: "Forbidden" });
     await expect(getAdminApiKeyStatus()).rejects.toThrow("Forbidden");
@@ -34,8 +34,8 @@ describe("admin API key actions", () => {
     expect(await saveAdminApiKey("GROQ_API_KEY", "secret")).toEqual({ success: false, error: "Unauthorized" });
   });
 
-  it("accepts an Admin who has a student role", async () => {
-    mocks.findUser.mockResolvedValue({ role: "student", isAdmin: true });
+  it("accepts an Admin without global role fields", async () => {
+    mocks.findUser.mockResolvedValue({ isAdmin: true });
     expect(await saveAdminApiKey("GROQ_API_KEY", "secret")).toEqual({ success: true });
     expect(await removeAdminApiKey("GROQ_API_KEY")).toEqual({ success: true });
     expect(await getAdminApiKeyStatus()).toHaveLength(2);

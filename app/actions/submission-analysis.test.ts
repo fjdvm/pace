@@ -29,8 +29,8 @@ describe("getSubmissionAnalysis", () => {
 
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
-        ...studentIds.map((id) => ({ id, email: `student-${id}@test.com`, role: "student" })),
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        ...studentIds.map((id) => ({ id, email: `student-${id}@test.com` })),
       ],
     });
 
@@ -145,7 +145,7 @@ describe("getSubmissionAnalysis", () => {
   it("rejects a caller who does not own the assignment", async () => {
     const otherInstructorId = randomUUID();
     await prisma.user.create({
-      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com`, role: "instructor" },
+      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com` },
     });
     mockAuthenticatedUser(otherInstructorId);
     const { getSubmissionAnalysis } = await import("@/app/actions/submission-analysis");
@@ -162,7 +162,7 @@ describe("getSubmissionAnalysis", () => {
 
     const unsubmittedStudentId = randomUUID();
     await prisma.user.create({
-      data: { id: unsubmittedStudentId, email: `unsubmitted-${unsubmittedStudentId}@test.com`, role: "student" },
+      data: { id: unsubmittedStudentId, email: `unsubmitted-${unsubmittedStudentId}@test.com` },
     });
 
     const result = await getSubmissionAnalysis(assignmentId, unsubmittedStudentId);

@@ -13,8 +13,8 @@ describe("archiveClass / unarchiveClass", () => {
     outsiderInstructorId = randomUUID();
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
-        { id: outsiderInstructorId, email: `outsider-${outsiderInstructorId}@test.com`, role: "instructor" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        { id: outsiderInstructorId, email: `outsider-${outsiderInstructorId}@test.com` },
       ],
     });
     const cls = await prisma.class.create({

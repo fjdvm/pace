@@ -26,8 +26,8 @@ describe("generateAssignmentReport", () => {
 
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor" },
-        { id: studentId, email: `student-${studentId}@test.com`, role: "student" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        { id: studentId, email: `student-${studentId}@test.com` },
       ],
     });
 
@@ -116,7 +116,7 @@ describe("generateAssignmentReport", () => {
   it("rejects a caller who does not own the assignment", async () => {
     const otherInstructorId = randomUUID();
     await prisma.user.create({
-      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com`, role: "instructor" },
+      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com` },
     });
     mockAuthenticatedUser(otherInstructorId);
     const { generateAssignmentReport } = await import("@/app/actions/assignment-report");

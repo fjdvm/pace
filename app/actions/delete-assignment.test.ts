@@ -16,8 +16,8 @@ describe("deleteAssignment", () => {
 
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, role: "instructor", approvalStatus: "approved" },
-        { id: studentId, email: `student-${studentId}@test.com`, role: "student" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com` },
+        { id: studentId, email: `student-${studentId}@test.com` },
       ],
     });
 
@@ -115,7 +115,7 @@ describe("deleteAssignment", () => {
   it("rejects a caller who does not own the assignment", async () => {
     const otherInstructorId = randomUUID();
     await prisma.user.create({
-      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com`, role: "instructor", approvalStatus: "approved" },
+      data: { id: otherInstructorId, email: `other-${otherInstructorId}@test.com` },
     });
     mockAuthenticatedUser(otherInstructorId);
     const { deleteAssignment } = await import("@/app/actions/delete-assignment");

@@ -18,10 +18,10 @@ describe("getClassRoster", () => {
 
     await prisma.user.createMany({
       data: [
-        { id: instructorId, email: `instructor-${instructorId}@test.com`, name: "Ivy Instructor", role: "instructor" },
-        { id: studentId, email: `student-${studentId}@test.com`, name: "Sam Student", role: "student" },
-        { id: outsiderInstructorId, email: `outsider-instr-${outsiderInstructorId}@test.com`, role: "instructor" },
-        { id: outsiderStudentId, email: `outsider-student-${outsiderStudentId}@test.com`, role: "student" },
+        { id: instructorId, email: `instructor-${instructorId}@test.com`, name: "Ivy Instructor" },
+        { id: studentId, email: `student-${studentId}@test.com`, name: "Sam Student" },
+        { id: outsiderInstructorId, email: `outsider-instr-${outsiderInstructorId}@test.com` },
+        { id: outsiderStudentId, email: `outsider-student-${outsiderStudentId}@test.com` },
       ],
     });
     const cls = await prisma.class.create({

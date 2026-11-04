@@ -21,7 +21,7 @@ const params = {
 beforeEach(() => {
   vi.clearAllMocks();
   mockAuthenticatedUser("user");
-  db.user.findUnique.mockResolvedValue({ id: "user", role: "student", approvalStatus: "pending" });
+  db.user.findUnique.mockResolvedValue({ id: "user" });
   db.class.count.mockResolvedValue(1);
   db.assignment.create.mockResolvedValue({ id: "assignment", title: params.title });
 });
