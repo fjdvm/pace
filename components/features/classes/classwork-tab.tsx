@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { BookOpen, Plus, Layers, Trash2, Pencil } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { PaceButton } from "@/components/features/student/shared/pace-button";
 import { useAssignmentActions } from "@/components/features/dashboard/instructor/components/use-assignment-actions";
 import { DeleteAssignmentDialog } from "@/components/features/submissions/delete-assignment-dialog";
@@ -22,7 +22,6 @@ interface ClassworkTabProps {
 }
 
 export function ClassworkTab({ classId, assignments }: ClassworkTabProps) {
-  const router = useRouter();
   const { pendingDelete, isDeleting, requestDelete, cancelDelete, confirmDelete } = useAssignmentActions();
 
   return (
@@ -38,12 +37,11 @@ export function ClassworkTab({ classId, assignments }: ClassworkTabProps) {
       ) : (
         <div className="space-y-3">
           {assignments.map((asm) => (
-            <Link
+            <div
               key={asm.id}
-              href={`/dashboard/submissions/${asm.id}`}
               className="flex items-center justify-between p-4 bg-white border border-surface-container rounded-2xl hover:shadow-md transition-shadow"
             >
-              <div className="flex items-center gap-3 min-w-0">
+              <Link href={`/dashboard/submissions/${asm.id}`} className="flex flex-1 items-center gap-3 min-w-0">
                 <div className="w-9 h-9 rounded-xl bg-primary-container/20 text-primary flex items-center justify-center shrink-0">
                   <BookOpen className="h-4 w-4" />
                 </div>
@@ -60,19 +58,20 @@ export function ClassworkTab({ classId, assignments }: ClassworkTabProps) {
                     {asm.language} · Due {new Date(asm.dueDate).toLocaleDateString()} · {asm.testCaseCount} test cases
                   </p>
                 </div>
-              </div>
-              <button
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  router.push(`/dashboard/assignments/${asm.id}/edit`);
-                }}
+              </Link>
+              <Button
+                nativeButton={false}
+                render={<Link href={`/dashboard/assignments/${asm.id}/edit`} />}
+                variant="ghost"
+                size="icon"
                 title="Edit assignment"
                 className="ml-auto p-2 rounded-xl text-secondary hover:text-primary shrink-0"
               >
                 <Pencil className="h-3.5 w-3.5" />
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -82,8 +81,8 @@ export function ClassworkTab({ classId, assignments }: ClassworkTabProps) {
                 className="p-2 rounded-xl text-secondary hover:text-red-600 hover:bg-surface-container-low transition-colors cursor-pointer shrink-0"
               >
                 <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            </Link>
+              </Button>
+            </div>
           ))}
         </div>
       )}
