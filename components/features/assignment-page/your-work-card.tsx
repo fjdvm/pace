@@ -7,7 +7,7 @@ import type { StudentAssignmentData } from "./types";
 
 export function YourWorkCard({ data, workHref }: { data: StudentAssignmentData; workHref: string }) {
   return (
-    <section className="hidden flex-col gap-3 rounded-lg border border-pace-line bg-white p-5 md:flex">
+    <section className="hidden flex-col gap-3 rounded-[6px] border border-pace-line bg-white p-5 md:flex">
       <div className="flex items-start justify-between">
         <h2 className="text-base font-bold leading-[1.35] tracking-[-0.08px] text-pace-ink">Your work</h2>
         <span className="text-[13px] font-bold text-pace-green-deep">{workStatusLabel(data.items)}</span>

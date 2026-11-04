@@ -26,7 +26,7 @@ export function PrivateComments({ data }: { data: AssignmentCommentsData }) {
       currentUserId={data.currentUserId}
       instructor={{ id: data.instructorId, email: "", name: data.instructorName }}
       initialComments={data.privateThread}
-      className="rounded-lg border border-pace-line bg-white p-4"
+      className="rounded-[6px] border border-pace-line bg-white p-4"
     />
   );
 }
