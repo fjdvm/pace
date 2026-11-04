@@ -16,7 +16,7 @@ export function StreamTab({ data, onViewAll }: StreamTabProps) {
   const instructorName = data.instructor.email ? getDisplayName(data.instructor) : "Instructor";
 
   return (
-    <div className="flex w-full max-w-[1000px] flex-col gap-3 md:gap-4">
+    <div className="flex w-full max-w-5xl flex-col gap-3 md:gap-4">
       <ClassBanner classId={data.classId} name={data.className} instructorName={instructorName} />
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:gap-6">
         {!isInstructor && <UpcomingCard next={upcoming} onViewAll={onViewAll} />}

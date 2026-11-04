@@ -35,7 +35,7 @@ export function PeopleTab({ classId, instructor, roster }: PeopleTabProps) {
   };
 
   return (
-    <div className="max-w-3xl w-full space-y-2">
+    <div className="max-w-5xl w-full space-y-2">
       <p className="text-xs font-bold text-secondary uppercase tracking-wide px-1">Instructor</p>
       <div className="flex items-center gap-3 p-3 bg-white border border-surface-container rounded-2xl">
         <div className="w-9 h-9 rounded-full bg-primary-container/20 flex items-center justify-center text-primary shrink-0">
