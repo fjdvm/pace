@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Check, UserRoundCog } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClassGrid } from "./class-grid";
@@ -17,13 +17,22 @@ const trigger =
   "h-full flex-none gap-2 rounded-none border-0 px-3 text-[13px] font-semibold leading-5 text-pace-ink hover:text-pace-ink data-active:bg-[#c2e7ff] data-active:text-pace-ink after:hidden [&_svg]:size-[18px]";
 
 export function ClassSwitcher({ teaching, enrolled }: ClassSwitcherProps) {
-  const [view, setView] = useState<View>(teaching.length > 0 ? "Teaching" : "Enrolled");
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
   const both = teaching.length > 0 && enrolled.length > 0;
+  const fallback: View = teaching.length > 0 ? "Teaching" : "Enrolled";
+  const requested = params.get("tab") === "enrolled" ? "Enrolled" : params.get("tab") === "teaching" ? "Teaching" : fallback;
+  const view: View = both ? requested : fallback;
+
+  function select(next: View) {
+    router.replace(`${pathname}?tab=${next.toLowerCase()}`, { scroll: false });
+  }
 
   return (
     <>
       {both && (
-        <Tabs value={view} onValueChange={(next) => setView(next as View)} className="gap-0 sm:mx-auto sm:w-full sm:max-w-[1392px]">
+        <Tabs value={view} onValueChange={(next) => select(next as View)} className="gap-0 sm:mx-auto sm:w-full sm:max-w-[1392px]">
           <TabsList className="h-10 group-data-horizontal/tabs:h-10 overflow-hidden rounded-full border border-[#747775] bg-transparent p-0">
             <TabsTrigger value="Teaching" className={trigger}>
               <UserRoundCog strokeWidth={1.5} />
