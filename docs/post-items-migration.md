@@ -38,6 +38,19 @@ transactional. The old application can continue using the compatibility columns
 and triggers during deployment. Do not drop the new tables to roll back the app:
 new Items could already contain Instructor or Student work.
 
+## Set up an empty development database
+
+Create the pre-Items schema first, then apply the migration. Run these commands only
+against a new, empty database; an existing database needs just the pending migration.
+
+```sh
+git show 20a3e8647f060d5dc670fd5da683f0f8da9038c6:prisma/schema.prisma > /tmp/pace-before.prisma
+npx prisma migrate diff --from-empty --to-schema /tmp/pace-before.prisma --script > /tmp/pace-before.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f /tmp/pace-before.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261104202210_post_items.sql
+npx prisma generate
+```
+
 ## Verify migration against populated legacy tables
 
 Use an empty, disposable local database. `MIGRATION_TEST_URL` must point to it.
