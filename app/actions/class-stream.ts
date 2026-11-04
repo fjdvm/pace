@@ -31,8 +31,13 @@ export async function getClassStream(classId: string) {
       }
     }
 
+    const drafts = isInstructor ? [] : await prisma.assignmentClass.findMany({
+      where: { classId, assignment: { isDraft: true } }, select: { assignmentId: true },
+    });
     const posts = await prisma.post.findMany({
-      where: { classId },
+      where: { classId, ...(isInstructor ? {} : { OR: [
+        { assignmentId: null }, { assignmentId: { notIn: drafts.map((draft) => draft.assignmentId) } },
+      ] }) },
       include: { comments: true },
       orderBy: { createdAt: "desc" },
     });

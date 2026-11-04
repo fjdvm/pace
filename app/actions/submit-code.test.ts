@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { randomUUID } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { mockAuthenticatedUser } from "../../test/mock-auth";
-import type { BehavioralSignals } from "@/lib/types/behavioral-signals";
+import type { BehavioralSignals, StoredBehavioralSignals } from "@/lib/types/behavioral-signals";
 
 describe("submitCode behavioral signals", () => {
   let studentId: string;
@@ -86,13 +86,13 @@ describe("submitCode behavioral signals", () => {
     const stored = await prisma.submission.findUnique({
       where: { studentId_assignmentId: { studentId, assignmentId } },
     });
-    const storedSignals = stored!.behavioralSignals as any;
+    const storedSignals = stored!.behavioralSignals as unknown as StoredBehavioralSignals;
 
     expect(storedSignals.events).toEqual(signals.events);
     expect(storedSignals.pasteCount).toBe(1);
     expect(storedSignals.riskScore).toBeDefined();
-    expect(storedSignals.riskScore.flag).toBeDefined();
-    expect(typeof storedSignals.riskScore.total).toBe("number");
+    expect(storedSignals.riskScore!.flag).toBeDefined();
+    expect(typeof storedSignals.riskScore!.total).toBe("number");
   });
 
   it("does not let the risk score affect the submission's score", async () => {

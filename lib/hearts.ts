@@ -2,7 +2,7 @@ import { prisma } from "./prisma";
 
 export async function getOrRegenerateHearts(studentId: string, assignmentId: string) {
   const assignment = await prisma.assignment.findUnique({
-    where: { id: assignmentId },
+    where: { id: assignmentId, isDraft: false },
   });
 
   if (!assignment) {

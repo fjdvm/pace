@@ -1,5 +1,6 @@
 "use server";
 
+import type { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { awardSubmissionXp, getTotalXp } from "@/lib/gamification";
@@ -50,9 +51,9 @@ export async function submitCode(
     }
 
     const assignment = await prisma.assignment.findUnique({
-      where: { id: assignmentId },
+      where: { id: assignmentId, isDraft: false },
       include: {
-        testCases: true,
+        items: { orderBy: { position: "asc" }, take: 1, include: { testCases: true } },
       },
     });
 
@@ -65,13 +66,15 @@ export async function submitCode(
       throw new Error("Late Submission: The submission deadline has passed. Submissions are no longer accepted.");
     }
 
-    const langId = LANGUAGE_MAP[assignment.language];
+    const codingItem = assignment.items[0];
+    if (!codingItem) throw new Error("Coding Item not found");
+    const langId = LANGUAGE_MAP[codingItem.language];
     if (!langId) {
       throw new Error(`Unsupported programming language: ${assignment.language}`);
     }
 
-    const testCasesToRun = assignment.testCases.length > 0 
-      ? assignment.testCases 
+    const testCasesToRun = codingItem.testCases.length > 0
+      ? codingItem.testCases
       : [{ id: "default", input: "", expectedOutput: "", visible: true }];
 
     const runPromises = testCasesToRun.map(async (tc) => {
@@ -95,7 +98,7 @@ export async function submitCode(
         }
 
         const result = await response.json();
-        
+
         const stdout = result.stdout || "";
         const stderr = result.stderr || "";
         const compileOutput = result.compile_output || "";
@@ -147,14 +150,14 @@ export async function submitCode(
         assignmentId,
         code,
         score: scorePercentage,
-        testResults: results as any,
+        testResults: results,
         behavioralSignals: {
           ...behavioralSignals,
           riskScore: computeRiskScore(behavioralSignals.events, {
             finalCodeLength: code.length,
             keystrokeCount: behavioralSignals.keystrokeCount,
           }),
-        } as any,
+        } as unknown as Prisma.InputJsonValue,
       },
     });
 

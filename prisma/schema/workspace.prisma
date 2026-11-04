@@ -1,0 +1,67 @@
+model HeartsState {
+  studentId    String     @map("student_id")
+  assignmentId String     @map("assignment_id")
+  itemId       String     @default(dbgenerated()) @map("item_id")
+  currentCount Int        @map("current_count")
+  lastRegenAt  DateTime   @default(now()) @map("last_regen_at")
+  totalSpent   Int        @default(0) @map("total_spent")
+  student      User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  item         Item       @relation(fields: [itemId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
+
+  @@id([studentId, assignmentId])
+  @@unique([studentId, itemId])
+  @@index([itemId, assignmentId])
+  @@map("hearts_states")
+}
+
+model Submission {
+  id                String     @id @default(uuid())
+  studentId         String     @map("student_id")
+  assignmentId      String     @map("assignment_id")
+  itemId            String     @default(dbgenerated()) @map("item_id")
+  code              String
+  score             Float
+  testResults       Json       @map("test_results")
+  behavioralSignals Json       @map("behavioral_signals")
+  submittedAt       DateTime   @default(now()) @map("submitted_at")
+  student           User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignment        Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  item              Item       @relation(fields: [itemId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
+
+  @@unique([studentId, assignmentId])
+  @@index([itemId, assignmentId])
+  @@map("submissions")
+}
+
+model ChatMessage {
+  id           String     @id @default(uuid())
+  studentId    String     @map("student_id")
+  assignmentId String     @map("assignment_id")
+  itemId       String     @default(dbgenerated()) @map("item_id")
+  role         String
+  content      String
+  createdAt    DateTime   @default(now()) @map("created_at")
+  student      User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  item         Item       @relation(fields: [itemId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
+
+  @@index([itemId, assignmentId])
+  @@map("chat_messages")
+}
+
+model CodeDraft {
+  studentId    String     @map("student_id")
+  assignmentId String     @map("assignment_id")
+  itemId       String     @default(dbgenerated()) @map("item_id")
+  code         String
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  student      User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  item         Item       @relation(fields: [itemId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
+
+  @@id([studentId, assignmentId])
+  @@unique([studentId, itemId])
+  @@index([itemId, assignmentId])
+  @@map("code_drafts")
+}

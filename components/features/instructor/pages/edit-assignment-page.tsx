@@ -1,3 +1,4 @@
+import { hasStudentWork } from "@/lib/items/started";
 import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -23,8 +24,8 @@ export async function EditAssignmentPage({ params }: PageProps) {
     where: { id },
     include: {
       classes: { select: { classId: true } },
-      testCases: { orderBy: { id: "asc" } },
-      _count: { select: { submissions: true } },
+      items: { orderBy: { position: "asc" }, take: 1, include: { testCases: { orderBy: { id: "asc" } } } },
+      _count: { select: { submissions: true, codeDrafts: true, heartsStates: true, chatMessages: true } },
     },
   });
   if (!assignment || !(await isAssignmentInstructor(id, user.id))) redirect("/dashboard");
@@ -35,7 +36,7 @@ export async function EditAssignmentPage({ params }: PageProps) {
     <AssignmentFormView
       classes={classes}
       assignmentId={assignment.id}
-      locked={assignment._count.submissions > 0}
+      locked={hasStudentWork(assignment._count)}
       initial={{
         title: assignment.title,
         instructions: assignment.instructions,
@@ -44,7 +45,7 @@ export async function EditAssignmentPage({ params }: PageProps) {
         heartsCount: assignment.heartsCount,
         heartsRegenMinutes: assignment.heartsRegenMinutes,
         classIds: assignment.classes.map((c) => c.classId),
-        testCases: assignment.testCases.map((tc) => ({
+        testCases: (assignment.items[0]?.testCases ?? []).map((tc) => ({
           input: encodeLineBreaks(tc.input),
           expectedOutput: encodeLineBreaks(tc.expectedOutput),
           visible: tc.visible,

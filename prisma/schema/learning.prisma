@@ -1,0 +1,81 @@
+model Assignment {
+  id                     String            @id @default(uuid())
+  title                  String
+  label                  PostLabel         @default(Assignment)
+  isDraft                Boolean           @default(false) @map("is_draft")
+  instructions           String
+  language               String
+  dueDate                DateTime          @map("due_date")
+  heartsCount            Int               @default(5) @map("hearts_count")
+  heartsRegenMinutes     Int               @default(30) @map("hearts_regen_minutes")
+  createdBy              String            @map("created_by")
+  createdAt              DateTime          @default(now()) @map("created_at")
+  statsReportNarrative   String?           @map("stats_report_narrative")
+  statsReportGeneratedAt DateTime?         @map("stats_report_generated_at")
+  instructor             User              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  classes                AssignmentClass[]
+  items                  Item[]
+  testCases              TestCase[]
+  heartsStates           HeartsState[]
+  submissions            Submission[]
+  chatMessages           ChatMessage[]
+  codeDrafts             CodeDraft[]
+
+  @@map("assignments")
+}
+
+model AssignmentClass {
+  assignmentId String     @map("assignment_id")
+  classId      String     @map("class_id")
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  class        Class      @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@id([assignmentId, classId])
+  @@map("assignment_classes")
+}
+
+model TestCase {
+  id             String     @id @default(uuid())
+  assignmentId   String     @map("assignment_id")
+  itemId         String     @default(dbgenerated()) @map("item_id")
+  input          String
+  expectedOutput String     @map("expected_output")
+  visible        Boolean
+  assignment     Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  item           Item       @relation(fields: [itemId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
+
+  @@index([itemId, assignmentId])
+  @@map("test_cases")
+}
+
+enum PostLabel {
+  Assignment
+  Activity
+  Quiz
+}
+
+enum ItemKind {
+  coding
+}
+
+model Item {
+  id           String        @id @default(uuid())
+  assignmentId String        @map("assignment_id")
+  position     Int
+  kind         ItemKind      @default(coding)
+  title        String
+  instructions String
+  language     String
+  starterCode  String        @default("") @map("starter_code")
+  points       Float         @default(100)
+  assignment   Assignment    @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  testCases    TestCase[]
+  submissions  Submission[]
+  codeDrafts   CodeDraft[]
+  heartsStates HeartsState[]
+  chatMessages ChatMessage[]
+
+  @@unique([assignmentId, position])
+  @@unique([id, assignmentId])
+  @@map("items")
+}

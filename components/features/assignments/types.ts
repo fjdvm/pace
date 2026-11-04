@@ -25,7 +25,7 @@ export interface SubmissionData {
   id: string;
   code: string;
   score: number;
-  testResults: any;
+  testResults: unknown;
   submittedAt: string;
 }
 
