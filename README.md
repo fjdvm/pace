@@ -368,9 +368,10 @@ Never commit real `.env` files. Only `.env.example` is tracked.
 ```bash
 npm install
 npx prisma generate
-npx prisma db push
 npm run dev
 ```
+
+Before starting the app, prepare the database using the [Post Items migration guide](docs/post-items-migration.md). Its SQL migration installs the backfill and compatibility triggers; `prisma db push` cannot install those behaviours.
 
 Open [http://localhost:3000](http://localhost:3000).
 
