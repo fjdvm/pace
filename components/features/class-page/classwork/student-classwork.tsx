@@ -8,7 +8,7 @@ export function StudentClasswork({ items }: { items: StudentAssignment[] }) {
     return <p className="py-10 text-center text-[13px] text-pace-ink-2">No work posted yet.</p>;
   }
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+    <div className="mx-auto flex w-full flex-col gap-6">
       <ViewYourWork />
       {groupByWeek(items).map((group) => (
         <WeekSection key={group.label} label={group.label} items={group.items} />
