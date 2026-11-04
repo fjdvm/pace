@@ -1,4 +1,4 @@
-import { Trophy } from "lucide-react";
+import { NoEnrolledCard } from "./no-enrolled-card";
 import { Podium } from "@/components/features/gamification/components/podium";
 import { getDisplayName } from "@/lib/display-name";
 
@@ -23,17 +23,11 @@ export function ClassLeaderboardTab({ leaderboard, myRank }: ClassLeaderboardTab
   const tableEntries = leaderboard.filter((e) => e.rank > 3);
 
   if (leaderboard.length === 0 || leaderboard.every((e) => e.totalXp === 0)) {
-    return (
-      <div className="max-w-3xl w-full bg-white border border-surface-container rounded-3xl p-12 text-center flex flex-col items-center">
-        <Trophy className="h-12 w-12 text-secondary/30 mb-4" />
-        <h3 className="font-bold text-lg text-on-surface">No leaderboard yet</h3>
-        <p className="text-xs text-secondary mt-1">Once students earn XP, rankings will appear here.</p>
-      </div>
-    );
+    return <NoEnrolledCard />;
   }
 
   return (
-    <div className="max-w-3xl w-full space-y-6">
+    <div className="max-w-5xl w-full space-y-6">
       {myRank ? (
         <p className="text-xs text-secondary">
           Your rank in this class: <span className="font-bold text-on-surface">#{myRank}</span>

@@ -5,8 +5,20 @@ import { getClassLeaderboardTabData } from "@/app/actions/class-leaderboard";
 import { getStudentClasses } from "@/lib/student-home-data";
 import type { ClassPageData } from "@/components/features/class-page/types";
 
+async function countTurnedIn(classId: string, assignmentIds: string[]) {
+  const rows = await prisma.submission.groupBy({
+    by: ["assignmentId"],
+    where: { assignmentId: { in: assignmentIds }, student: { enrollments: { some: { classId } } } },
+    _count: { _all: true },
+  });
+  return new Map(rows.map((r) => [r.assignmentId, r._count._all]));
+}
+
 export async function loadClassPageData(classId: string, userId: string): Promise<ClassPageData | null> {
-  const cls = await prisma.class.findUnique({ where: { id: classId } });
+  const cls = await prisma.class.findUnique({
+    where: { id: classId },
+    include: { instructor: { select: { id: true, email: true, name: true } } },
+  });
   if (!cls) return null;
   const isInstructor = cls.instructorId === userId;
   if (!isInstructor) {
@@ -31,7 +43,7 @@ export async function loadClassPageData(classId: string, userId: string): Promis
     roster: roster.success ? roster.students! : [],
     leaderboard: board.success ? board.leaderboard! : [],
     myRank: board.success ? board.myRank : 0,
-    instructor: roster.success ? roster.instructor! : { id: cls.instructorId, email: "", name: null },
+    instructor: cls.instructor,
   };
 
   if (!isInstructor) {
@@ -44,6 +56,8 @@ export async function loadClassPageData(classId: string, userId: string): Promis
     include: { assignment: { include: { _count: { select: { classes: true, testCases: true } } } } },
     orderBy: { assignment: { createdAt: "desc" } },
   });
+  const turnedIn = await countTurnedIn(classId, links.map((l) => l.assignmentId));
+  const assigned = roster.success ? roster.students!.length : 0;
   return {
     ...base,
     role: "instructor",
@@ -53,6 +67,8 @@ export async function loadClassPageData(classId: string, userId: string): Promis
       language: a.language,
       dueDate: a.dueDate.toISOString(),
       testCaseCount: a._count.testCases,
+      turnedIn: turnedIn.get(a.id) ?? 0,
+      assigned,
       isSharedWithOtherClasses: a._count.classes > 1,
     })),
   };

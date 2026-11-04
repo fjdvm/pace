@@ -4,15 +4,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { LogoutConfirmDialog } from "@/components/features/dashboard/logout-confirm-dialog";
 import { getInitials } from "@/components/features/student/shared/initials-avatar";
 import { useLogout } from "@/components/features/student/sidebar/use-logout";
-import { classColour } from "@/lib/class-colour";
 
 type AccountMenuProps = {
   userEmail: string;
   userName?: string | null;
+  isInstructor?: boolean;
   studentXp: { level: number; currentXp: number; nextThreshold: number };
 };
 
-export function AccountMenu({ userEmail, userName, studentXp }: AccountMenuProps) {
+export function AccountMenu({ userEmail, userName, isInstructor, studentXp }: AccountMenuProps) {
   const logout = useLogout();
   const displayName = userName || userEmail;
   return (
@@ -20,8 +20,8 @@ export function AccountMenu({ userEmail, userName, studentXp }: AccountMenuProps
       <DropdownMenu>
         <DropdownMenuTrigger
           aria-label="Account"
-          style={{ backgroundColor: classColour(userEmail) }}
-          className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-[11px] font-bold uppercase leading-[1.3] tracking-[0.06em] text-white outline-none md:size-9"
+          data-instructor={isInstructor}
+          className="flex size-8 shrink-0 bg-pace-purple data-[instructor=true]:bg-pace-green-deep cursor-pointer items-center justify-center rounded-full text-[11px] font-bold uppercase leading-[1.3] tracking-[0.06em] text-white outline-none md:size-9"
         >
           {getInitials(displayName)}
         </DropdownMenuTrigger>

@@ -16,7 +16,7 @@ export async function loadStudentAssignment(
 
   const enrollment = await prisma.enrollment.findFirst({
     where: { studentId: userId, classId: { in: assignment.classes.map((c) => c.classId) } },
-    select: { classId: true },
+    select: { classId: true, class: { select: { name: true } } },
   });
   if (!enrollment) return null;
 
@@ -47,6 +47,8 @@ export async function loadStudentAssignment(
   return {
     id: assignment.id,
     title: assignment.title,
+    classId: enrollment.classId,
+    className: enrollment.class.name,
     instructions: assignment.instructions,
     language: assignment.language,
     dueDate: assignment.dueDate.toISOString(),

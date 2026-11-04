@@ -12,14 +12,14 @@ type StreamTabProps = {
 
 export function StreamTab({ data, onViewAll }: StreamTabProps) {
   const isInstructor = data.role === "instructor";
-  const upcoming = data.role === "student" ? nextUpcoming(data.assignments) : null;
+  const upcoming = nextUpcoming(data.assignments.map((a) => ({ title: a.title, dueDate: a.dueDate, status: "status" in a ? a.status : "open" })));
   const instructorName = data.instructor.email ? getDisplayName(data.instructor) : "Instructor";
 
   return (
-    <div className="flex w-full max-w-[1000px] flex-col gap-3 md:gap-4">
-      <ClassBanner classId={data.classId} name={data.className} instructorName={instructorName} />
+    <div className="flex w-full max-w-5xl flex-col gap-3 md:gap-4">
+      <ClassBanner classId={data.classId} name={data.className} instructorName={instructorName} soft={isInstructor} />
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:gap-6">
-        {upcoming && <UpcomingCard title={upcoming.title} dueDate={upcoming.dueDate} onViewAll={onViewAll} />}
+        <UpcomingCard next={upcoming} emptyLabel={isInstructor ? "Woohoo, no work due soon!" : undefined} onViewAll={onViewAll} />
         <StreamPanel
           classId={data.classId}
           initialPosts={data.posts}

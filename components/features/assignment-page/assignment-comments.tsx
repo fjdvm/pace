@@ -1,3 +1,4 @@
+import { professorLabel } from "@/components/features/class-page/stream/assignment-title";
 import { CommentSection } from "./comment-section";
 import type { AssignmentCommentsData } from "./types";
 
@@ -20,13 +21,14 @@ export function PrivateComments({ data }: { data: AssignmentCommentsData }) {
   return (
     <CommentSection
       title="Private comments"
-      addLabel={`Add comment to ${data.instructorName}`}
+      addLabel={`Add comment to ${professorLabel(data.instructorName)}`}
       postId={data.postId}
       visibility="private"
       currentUserId={data.currentUserId}
       instructor={{ id: data.instructorId, email: "", name: data.instructorName }}
       initialComments={data.privateThread}
       className="rounded-lg border border-pace-line bg-white p-4"
+      headingClassName="text-base leading-[1.35] tracking-[-0.08px] text-pace-ink"
     />
   );
 }

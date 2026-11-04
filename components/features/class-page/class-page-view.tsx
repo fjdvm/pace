@@ -19,7 +19,7 @@ export function ClassPageView({ data }: { data: ClassPageData }) {
       <ClassTabList isInstructor={isInstructor} />
       <div className="flex flex-1 flex-col items-center gap-4 p-4 md:px-6 md:py-6">
         {data.archived && (
-          <p className="w-full max-w-[1000px] rounded-lg bg-pace-amber-tint px-4 py-3 text-[13px] text-pace-ink">
+          <p className="w-full max-w-5xl rounded-lg bg-pace-amber-tint px-4 py-3 text-[13px] text-pace-ink">
             This class has been archived. It is now read-only.
           </p>
         )}
@@ -27,7 +27,7 @@ export function ClassPageView({ data }: { data: ClassPageData }) {
           <StreamTab data={data} onViewAll={() => setTab("classwork")} />
         </TabsContent>
         {others.map((t) => (
-          <TabsContent key={t.id} value={t.id} className="w-full max-w-[1000px]">
+          <TabsContent key={t.id} value={t.id} className="w-full max-w-5xl">
             <OtherPanels tab={t.id as Exclude<ClassPageTab, "stream">} data={data} />
           </TabsContent>
         ))}
