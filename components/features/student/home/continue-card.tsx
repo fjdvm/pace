@@ -11,7 +11,7 @@ type ContinueCardProps = {
 };
 
 export function ContinueCard({ assignment }: ContinueCardProps) {
-  const href = `/dashboard/student/assignments/${assignment.id}`;
+  const href = `/dashboard/assignments/${assignment.id}`;
   const started = assignment.status === "in progress";
   const urgent = isUrgent(assignment.dueDate);
 

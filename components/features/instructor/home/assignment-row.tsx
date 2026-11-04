@@ -33,7 +33,7 @@ export function AssignmentRow({ assignment: a, classIndex }: AssignmentRowProps)
         </span>
         <span className="flex min-w-0 flex-col">
           <Link
-            href={`/dashboard/instructor/submissions/${a.id}`}
+            href={`/dashboard/submissions/${a.id}`}
             className="truncate text-sm font-semibold text-pace-ink"
           >
             {a.title}
@@ -63,12 +63,12 @@ export function AssignmentRow({ assignment: a, classIndex }: AssignmentRowProps)
       </span>
       <div className="flex justify-end">
         {hasSubmissions ? (
-          <PaceButton href={`/dashboard/instructor/submissions/${a.id}`} variant="secondary" className="h-9 px-4">
+          <PaceButton href={`/dashboard/submissions/${a.id}`} variant="secondary" className="h-9 px-4">
             Review
           </PaceButton>
         ) : (
           <Link
-            href={`/dashboard/instructor/assignments/${a.id}/edit`}
+            href={`/dashboard/assignments/${a.id}/edit`}
             className="px-4 text-[13px] font-semibold text-pace-ink"
           >
             Edit

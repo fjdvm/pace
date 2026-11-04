@@ -46,7 +46,7 @@ export function AssignmentFormView({ classes, initial, assignmentId, locked = fa
       <StudentTopBar
         title={isEditing ? "Edit assignment" : "New assignment"}
         subtitle={isEditing ? "Changes apply to every class it is assigned to" : "Students see it as soon as you publish"}
-        backHref="/dashboard/instructor"
+        backHref="/dashboard"
         actions={
           <div className="flex items-center gap-2">
             {isEditing ? (

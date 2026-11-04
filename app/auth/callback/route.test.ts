@@ -30,7 +30,7 @@ const callback = (query = "code=valid") => GET(new Request(`https://pace.example
 describe("Google sign-in callback", () => {
   it("creates a User with the Google profile and a temporary student role", async () => {
     const response = await callback();
-    expect(response.headers.get("location")).toBe("https://pace.example/dashboard/student");
+    expect(response.headers.get("location")).toBe("https://pace.example/dashboard");
     expect(mocks.upsert).toHaveBeenCalledWith({
       where: { id: "existing-user" },
       create: { id: "existing-user", email: "ada@example.com", name: "Ada Lovelace", role: "student" },
@@ -41,15 +41,15 @@ describe("Google sign-in callback", () => {
   it("keeps the linked existing User id and role without replacing related data", async () => {
     mocks.upsert.mockResolvedValue({ id: "existing-user", role: "instructor", approvalStatus: "approved" });
     const response = await callback();
-    expect(response.headers.get("location")).toBe("https://pace.example/dashboard/instructor");
+    expect(response.headers.get("location")).toBe("https://pace.example/dashboard");
     const { where, update } = mocks.upsert.mock.calls[0][0];
     expect(where).toEqual({ id: "existing-user" });
     expect(update).toEqual({ email: "ada@example.com", name: "Ada Lovelace" });
   });
 
-  it("retains pending approval for existing instructors", async () => {
+  it("sends existing pending instructors to the single dashboard", async () => {
     mocks.upsert.mockResolvedValue({ role: "instructor", approvalStatus: "pending" });
-    expect((await callback()).headers.get("location")).toBe("https://pace.example/pending-approval");
+    expect((await callback()).headers.get("location")).toBe("https://pace.example/dashboard");
   });
 
   it.each(["", "error=access_denied"])("returns failed or cancelled sign-in to login (%s)", async (query) => {
@@ -78,7 +78,7 @@ describe("Google sign-in callback", () => {
 
   it("ignores a supplied external redirect destination", async () => {
     expect((await callback("code=valid&next=https://evil.example")).headers.get("location"))
-      .toBe("https://pace.example/dashboard/student");
+      .toBe("https://pace.example/dashboard");
   });
 });
 
@@ -96,6 +96,6 @@ it("cannot grant Admin through Google metadata", async () => {
 
 it("preserves a legacy Admin flag and lands on the regular dashboard", async () => {
   mocks.upsert.mockResolvedValue({ role: "admin", isAdmin: true, approvalStatus: "approved" });
-  expect((await callback()).headers.get("location")).toBe("https://pace.example/dashboard/student");
+  expect((await callback()).headers.get("location")).toBe("https://pace.example/dashboard");
   expect(mocks.upsert.mock.calls[0][0].update).toEqual({ email: "ada@example.com", name: "Ada Lovelace" });
 });

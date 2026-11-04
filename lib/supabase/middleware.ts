@@ -70,7 +70,7 @@ export async function updateSession(request: NextRequest) {
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { role: true, approvalStatus: true, isAdmin: true },
+    select: { isAdmin: true },
   });
   if (!dbUser) {
     await supabase.auth.signOut();
@@ -78,41 +78,15 @@ export async function updateSession(request: NextRequest) {
     url.search = "?error=google_sign_in";
     return redirect();
   }
-  const { approvalStatus } = dbUser;
-  const role = dbUser.role === "admin" ? "student" : dbUser.role;
   const isAdminRoute = url.pathname === "/dashboard/admin" || url.pathname.startsWith("/dashboard/admin/");
   if (isAdminRoute) {
     if (dbUser.isAdmin) return response;
-    url.pathname = `/dashboard/${role}`;
+    url.pathname = "/dashboard";
     return redirect();
   }
 
-  if (role === "instructor" && approvalStatus !== "approved") {
-    if (url.pathname !== "/pending-approval") {
-      url.pathname = "/pending-approval";
-      return redirect();
-    }
-  } else {
-    if (url.pathname === "/pending-approval") {
-      url.pathname = `/dashboard/${role}`;
-      return redirect();
-    }
-
-    if (url.pathname === "/dashboard" || url.pathname.startsWith("/dashboard/")) {
-      const expectedPrefix = `/dashboard/${role}`;
-      if (url.pathname !== expectedPrefix && !url.pathname.startsWith(`${expectedPrefix}/`)) {
-        url.pathname = expectedPrefix;
-        return redirect();
-      }
-    }
-  }
-
-  if (isAuthRoute) {
-    if (role === "instructor" && approvalStatus !== "approved") {
-      url.pathname = "/pending-approval";
-    } else {
-      url.pathname = `/dashboard/${role}`;
-    }
+  if (isAuthRoute || ["/pending-approval", "/dashboard/student", "/dashboard/instructor"].includes(url.pathname)) {
+    url.pathname = "/dashboard";
     return redirect();
   }
 

@@ -3,7 +3,12 @@ import type { InstructorAssignmentRow } from "@/components/features/instructor/t
 
 export async function getInstructorAssignmentRows(instructorId: string): Promise<InstructorAssignmentRow[]> {
   const assignments = await prisma.assignment.findMany({
-    where: { createdBy: instructorId, classes: { some: { class: { archived: false } } } },
+    where: {
+      classes: {
+        some: { class: { instructorId, archived: false } },
+        every: { class: { instructorId } },
+      },
+    },
     include: {
       classes: { include: { class: { include: { enrollments: { select: { studentId: true } } } } } },
       submissions: { select: { score: true } },

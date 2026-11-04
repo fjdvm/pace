@@ -28,16 +28,16 @@ export function SidebarClasses({ classes, collapsed, onNavigate }: SidebarClasse
       {!collapsed && (
         <div className="flex w-full items-center justify-between px-3 pb-2 pt-6">
           <span className="text-[11px] font-bold uppercase leading-snug tracking-[0.06em] text-pace-muted">
-            My classes
+            Enrolled
           </span>
-          <Link href="/dashboard/student" aria-label="Join a class" onClick={onNavigate}>
+          <Link href="/dashboard" aria-label="Join a class" onClick={onNavigate}>
             <PaceIcon name="plus" size={16} />
           </Link>
         </div>
       )}
       {collapsed && (
         <Link
-          href="/dashboard/student"
+          href="/dashboard"
           aria-label="Join a class"
           className="flex size-12 items-center justify-center rounded-xl"
         >
@@ -45,7 +45,7 @@ export function SidebarClasses({ classes, collapsed, onNavigate }: SidebarClasse
         </Link>
       )}
       {active.map((cls, index) => {
-        const href = `/dashboard/student/classes/${cls.id}`;
+        const href = `/dashboard/classes/${cls.id}`;
         const purple = index % 2 === 1;
         return (
           <Link

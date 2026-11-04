@@ -42,27 +42,27 @@ export function StudentSidebar({
           <>
             <SidebarNavItem
               {...nav}
-              href="/dashboard/student"
+              href="/dashboard"
               label="Home"
               icon="grid-gray"
               activeIcon="grid"
-              active={pathname === "/dashboard/student"}
+              active={pathname === "/dashboard"}
             />
             <SidebarNavItem
               {...nav}
-              href="/dashboard/student/todo"
+              href="/dashboard/todo"
               label="To-do"
               icon="todo"
               activeIcon="todo-white"
-              active={pathname === "/dashboard/student/todo"}
+              active={pathname === "/dashboard/todo"}
               badge={todoCount}
             />
             <SidebarNavItem
               {...nav}
-              href="/dashboard/student/archive"
+              href="/dashboard/enrolled/archive"
               label="Archive"
               icon="archive"
-              active={pathname === "/dashboard/student/archive"}
+              active={pathname === "/dashboard/enrolled/archive"}
             />
             <SidebarClasses classes={classes} {...nav} />
             {isAdmin && <AdminSection {...nav} />}

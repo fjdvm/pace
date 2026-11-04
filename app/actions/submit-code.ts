@@ -170,7 +170,7 @@ export async function submitCode(
       type: "submission_graded",
       title: `${assignment.title} graded`,
       message: `You scored ${scorePercentage}% (${passedCount}/${totalCount} tests passed).`,
-      link: `/dashboard/student/assignments/${assignmentId}`,
+      link: `/dashboard/assignments/${assignmentId}`,
     });
 
     return {

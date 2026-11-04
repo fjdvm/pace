@@ -17,7 +17,7 @@ export function StatCards({ stats }: StatCardsProps) {
       {cards.map(({ key, label, Icon, tone }) => (
         <Link
           key={key}
-          href="/dashboard/instructor/submissions"
+          href="/dashboard/submissions"
           className="flex items-center gap-3.5 rounded-[20px] border-[1.5px] border-pace-line bg-white p-5 shadow-[0_3px_0_0_var(--color-pace-line)]"
         >
           <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-[14px]", tone)}>

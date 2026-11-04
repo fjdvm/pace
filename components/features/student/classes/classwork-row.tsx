@@ -5,7 +5,7 @@ import { formatDueLong, formatSubmitted } from "@/lib/student-dates";
 import type { StudentAssignment } from "@/components/features/student/types";
 
 export function ClassworkRow({ assignment: a }: { assignment: StudentAssignment }) {
-  const href = `/dashboard/student/assignments/${a.id}`;
+  const href = `/dashboard/assignments/${a.id}`;
   const submitted = a.status === "submitted";
   const started = a.status === "in progress";
   const hearts = submitted

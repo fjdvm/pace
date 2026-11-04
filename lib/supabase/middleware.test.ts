@@ -23,7 +23,7 @@ it.each(["student", "instructor", "admin"])("redirects a non-admin with legacy r
   mocks.findUnique.mockResolvedValue({ role, approvalStatus: "approved", isAdmin: false });
   for (const path of ["/dashboard/admin", "/dashboard/admin/settings", "/dashboard/admin/study-results", "/dashboard/admin/study-results/export"]) {
     const response = await visit(path);
-    expect(response.headers.get("location")).toBe(`https://pace.example/dashboard/${role === "admin" ? "student" : role}`);
+    expect(response.headers.get("location")).toBe("https://pace.example/dashboard");
   }
 });
 it("redirects a signed-out visitor to login", async () => {
@@ -36,5 +36,13 @@ it("allows a pending instructor with the Admin flag to open research results", a
 });
 it("lets a legacy Admin use the regular dashboard navigation", async () => {
   mocks.findUnique.mockResolvedValue({ role: "admin", approvalStatus: "approved", isAdmin: true });
-  expect((await visit("/dashboard/student")).headers.get("location")).toBeNull();
+  expect((await visit("/dashboard/student")).headers.get("location")).toBe("https://pace.example/dashboard");
+});
+
+it("lets a User with a pending legacy role open both Class views", async () => {
+  mocks.findUnique.mockResolvedValue({ role: "instructor", approvalStatus: "pending", isAdmin: false });
+  for (const path of ["/dashboard", "/dashboard/classes/class-1", "/dashboard/student/classes/class-1", "/dashboard/instructor/classes/class-2"]) {
+    expect((await visit(path)).headers.get("location")).toBeNull();
+  }
+  expect((await visit("/login")).headers.get("location")).toBe("https://pace.example/dashboard");
 });

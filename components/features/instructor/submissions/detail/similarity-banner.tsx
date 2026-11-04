@@ -17,7 +17,7 @@ export function SimilarityBanner({ assignmentId, studentId, similar }: Similarit
         not proof of copying.
       </p>
       <PaceButton
-        href={`/dashboard/instructor/submissions/${assignmentId}/compare?a=${studentId}&b=${similar.studentId}`}
+        href={`/dashboard/submissions/${assignmentId}/compare?a=${studentId}&b=${similar.studentId}`}
         variant="secondary"
         className="h-9"
       >
