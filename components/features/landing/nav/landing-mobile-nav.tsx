@@ -58,7 +58,7 @@ export function LandingMobileNav({ homeHref = "", account }: { homeHref?: string
             nativeButton={false}
             render={
               <Link
-                href={account?.href ?? "/login"}
+                href="/login"
                 className="pace-press rounded-full bg-pace-green px-6 py-2.5 text-center text-sm font-semibold text-white shadow-[0_3px_0_var(--color-pace-green-deep)]"
               />
             }

@@ -25,7 +25,7 @@ export async function LandingNav({ homeHref = "" }: { homeHref?: string }) {
         </nav>
         <div className="flex w-[200px] items-center justify-end gap-2">
           <Link
-            href={account?.href ?? "/login"}
+            href="/login"
             className="pace-press pace-body rounded-full border-[1.5px] border-pace-line bg-white px-[22px] py-3 font-semibold text-pace-ink transition-colors hover:bg-pace-canvas"
           >
             {account?.label ?? "Sign in"}
