@@ -23,7 +23,7 @@ export function ClassSection({ title, classes, children }: ClassSectionProps) {
             key={cls.id}
             classId={cls.id}
             name={cls.name}
-            active={pathname === `/dashboard/classes/${cls.id}`}
+            active={pathname.startsWith(`/dashboard/classes/${cls.id}`)}
           />
         ))}
       </SidebarMenu>
