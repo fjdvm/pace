@@ -10,6 +10,7 @@ export type SubmissionStudentRow = {
   score: number | null;
   hearts: number;
   flags: { label: string; tone: FlagTone }[];
+  activity: "Low" | "Medium" | "High" | null;
   submittedAt: string | null;
 };
 
