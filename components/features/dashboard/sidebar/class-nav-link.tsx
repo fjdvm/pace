@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { splitSection } from "@/lib/class-name";
 import { cn } from "@/lib/utils";
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { ClassDot } from "../class-dot";
@@ -13,6 +14,7 @@ type ClassNavLinkProps = {
 
 export function ClassNavLink({ classId, name, active }: ClassNavLinkProps) {
   const { setOpenMobile } = useSidebar();
+  const { title, section } = splitSection(name);
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
@@ -24,7 +26,10 @@ export function ClassNavLink({ classId, name, active }: ClassNavLinkProps) {
         )}
       >
         <ClassDot classId={classId} name={name} />
-        <span className="truncate">{name}</span>
+        <span className="flex min-w-0 flex-col">
+          <span className="truncate">{title}</span>
+          {section && <span className="truncate text-[13px] font-normal leading-normal text-pace-muted">{section}</span>}
+        </span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
