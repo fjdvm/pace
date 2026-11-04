@@ -92,6 +92,7 @@ export async function getAssignmentOverview(
       classCodes: activeClasses.map((c) => splitClassName(c.name).code).join(", "),
       dueDate: assignment.dueDate.toISOString(),
       heartsCount: assignment.heartsCount,
+      primaryClass: activeClasses[0] ? { id: activeClasses[0].id, name: activeClasses[0].name } : null,
     },
     students,
     stats: {

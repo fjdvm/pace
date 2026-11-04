@@ -18,7 +18,7 @@ export function DashboardShell({ children, teaching, enrolled, isAdmin, userEmai
   return (
     <SidebarProvider className="h-svh min-h-0 flex-col overflow-hidden bg-pace-canvas">
       <ClassTitleProvider>
-        <TopBar classes={[...teaching, ...enrolled]} userEmail={userEmail} userName={userName} studentXp={studentXp} />
+        <TopBar classes={[...teaching, ...enrolled]} userEmail={userEmail} userName={userName} isInstructor={teaching.length > 0 && enrolled.length === 0} studentXp={studentXp} />
         <div className="flex min-h-0 flex-1">
           <AppSidebar teaching={teaching} enrolled={enrolled} isAdmin={isAdmin} />
           <SidebarInset className="min-w-0 overflow-y-auto bg-pace-canvas">{children}</SidebarInset>

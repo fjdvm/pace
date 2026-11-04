@@ -8,11 +8,12 @@ function dueLabel(dueDate: string) {
 
 type UpcomingCardProps = {
   next: { title: string; dueDate: string } | null;
+  emptyLabel?: string;
   onViewAll: () => void;
 };
 
-export function UpcomingCard({ next, onViewAll }: UpcomingCardProps) {
-  const heading = next ? dueLabel(next.dueDate) : "Nothing due soon";
+export function UpcomingCard({ next, emptyLabel = "Nothing due soon", onViewAll }: UpcomingCardProps) {
+  const heading = next ? dueLabel(next.dueDate) : emptyLabel;
   const detail = next ? `${formatDueTime(next.dueDate)} – ${next.title}` : null;
   return (
     <>
