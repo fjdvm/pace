@@ -1,29 +1,11 @@
 "use client";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { RoleSidebar } from "./role-sidebar";
+import { RoleSidebar, type RoleSidebarProps } from "./role-sidebar";
 import { useSidebarCollapse } from "./use-sidebar-collapse";
 
-interface SidebarClass {
-  id: string;
-  name: string;
-  archived: boolean;
-  classArchived?: boolean;
-}
-
-interface MobileSidebarDrawerProps {
-  role: "student" | "instructor";
-  isAdmin: boolean;
-  userEmail: string;
-  userName?: string | null;
-  classes?: SidebarClass[];
-  studentXp?: { totalXp: number; level: number; currentXp: number; nextThreshold: number };
-  navBadge?: number;
-}
-
-export function MobileSidebarDrawer({ role, isAdmin, userEmail, userName, classes, studentXp, navBadge }: MobileSidebarDrawerProps) {
+export function MobileSidebarDrawer(props: RoleSidebarProps) {
   const { mobileOpen, setMobileOpen } = useSidebarCollapse();
-
   return (
     <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
       <SheetContent side="left" className="w-72 p-0">
@@ -31,17 +13,7 @@ export function MobileSidebarDrawer({ role, isAdmin, userEmail, userName, classe
           <SheetTitle>Navigation</SheetTitle>
           <SheetDescription>Dashboard navigation menu</SheetDescription>
         </SheetHeader>
-        <RoleSidebar
-          role={role}
-          isAdmin={isAdmin}
-          userEmail={userEmail}
-          userName={userName}
-          classes={classes}
-          studentXp={studentXp}
-          navBadge={navBadge}
-          forceExpanded
-          onNavigate={() => setMobileOpen(false)}
-        />
+        <RoleSidebar {...props} forceExpanded onNavigate={() => setMobileOpen(false)} />
       </SheetContent>
     </Sheet>
   );

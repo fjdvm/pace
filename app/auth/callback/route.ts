@@ -22,15 +22,12 @@ export async function GET(request: Request) {
 
     const profileName = user.user_metadata?.full_name ?? user.user_metadata?.name;
     const name = typeof profileName === "string" ? profileName : undefined;
-    const dbUser = await prisma.user.upsert({
+    await prisma.user.upsert({
       where: { id: user.id },
       create: { id: user.id, email: user.email, name, role: "student" },
       update: { email: user.email, name },
     });
-    const destination = dbUser.role === "instructor" && dbUser.approvalStatus !== "approved"
-      ? "/pending-approval"
-      : `/dashboard/${dbUser.role === "admin" ? "student" : dbUser.role}`;
-    return NextResponse.redirect(new URL(destination, url.origin));
+    return NextResponse.redirect(new URL("/dashboard", url.origin));
   } catch {
     await supabase.auth.signOut();
     return NextResponse.redirect(failure);

@@ -41,7 +41,7 @@ export function TeachingClasses({ classes, collapsed, onNavigate }: TeachingClas
         </div>
       )}
       {classes.map((cls, index) => {
-        const href = `/dashboard/instructor/classes/${cls.id}`;
+        const href = `/dashboard/classes/${cls.id}`;
         const purple = classTone(index) === "purple";
         const { code, description } = splitClassName(cls.name);
         return (

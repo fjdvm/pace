@@ -3,8 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { DashboardShell } from "@/components/features/dashboard/dashboard-shell";
 import { computeLevel, getTotalXp } from "@/lib/gamification";
-import { getStudentTodos } from "@/app/actions/student-todos";
-import { countRecentSubmissions } from "@/lib/instructor-home-data";
+import { getDashboardClasses } from "@/lib/dashboard-classes";
 
 export default async function DashboardLayout({
   children,
@@ -22,48 +21,18 @@ export default async function DashboardLayout({
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { role: true, email: true, name: true, isAdmin: true },
+    select: { email: true, name: true, isAdmin: true },
   });
 
   if (!dbUser) {
     redirect("/login");
   }
 
-  const role = (dbUser.role === "admin" ? "student" : dbUser.role) as "student" | "instructor";
-
-  let sidebarClasses: { id: string; name: string; archived: boolean; classArchived: boolean }[] = [];
-  let studentXp: { totalXp: number; level: number; currentXp: number; nextThreshold: number } | undefined;
-  let navBadge = 0;
-  if (role === "instructor") {
-    const classes = await prisma.class.findMany({
-      where: { instructorId: user.id },
-      select: { id: true, name: true, archived: true },
-      orderBy: { createdAt: "desc" },
-    });
-    sidebarClasses = classes.map((c) => ({ ...c, classArchived: c.archived }));
-    navBadge = await countRecentSubmissions(user.id);
-  } else if (role === "student") {
-    const enrollments = await prisma.enrollment.findMany({
-      where: { studentId: user.id },
-      select: { archived: true, class: { select: { id: true, name: true, archived: true } } },
-      orderBy: { enrolledAt: "desc" },
-    });
-    sidebarClasses = enrollments.map((e) => ({
-      id: e.class.id,
-      name: e.class.name,
-      archived: e.archived || e.class.archived,
-      classArchived: e.class.archived,
-    }));
-
-    const totalXp = await getTotalXp(user.id);
-    const { level, currentXp, nextThreshold } = computeLevel(totalXp);
-    studentXp = { totalXp, level, currentXp, nextThreshold };
-    const todos = await getStudentTodos();
-    navBadge = todos.success ? (todos.todos?.length ?? 0) : 0;
-  }
+  const [classes, totalXp] = await Promise.all([getDashboardClasses(user.id), getTotalXp(user.id)]);
+  const studentXp = computeLevel(totalXp);
 
   return (
-    <DashboardShell isAdmin={dbUser.isAdmin} role={role} userEmail={dbUser.email} userName={dbUser.name} classes={sidebarClasses} studentXp={studentXp} navBadge={navBadge}>
+    <DashboardShell isAdmin={dbUser.isAdmin} userEmail={dbUser.email} userName={dbUser.name} teaching={classes.teaching} enrolled={classes.enrolled} studentXp={studentXp}>
       {children}
     </DashboardShell>
   );

@@ -23,6 +23,7 @@ export function useJoinClass() {
         toast.success(`Successfully joined class: ${result.className}!`);
         setCode("");
         router.refresh();
+        return true;
       } else {
         toast.error(result.error || "Failed to join class");
       }
