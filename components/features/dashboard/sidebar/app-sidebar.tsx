@@ -17,7 +17,6 @@ export function AppSidebar({ teaching, enrolled, isAdmin }: AppSidebarProps) {
   const { isMobile } = useSidebar();
   const activeTeaching = teaching.filter((cls) => !cls.archived);
   const activeEnrolled = enrolled.filter((cls) => !cls.archived);
-  const archiveHref = teaching.length > 0 ? "/dashboard/teaching/archive" : "/dashboard/enrolled/archive";
 
   return (
     <Sidebar className="top-16 h-[calc(100svh-4rem)]">
@@ -50,7 +49,7 @@ export function AppSidebar({ teaching, enrolled, isAdmin }: AppSidebarProps) {
         )}
         <SidebarDivider />
         <SidebarMenu className="gap-0">
-          <SidebarNavLink href={archiveHref} label="Archived classes" icon={Archive} active={pathname.endsWith("/archive")} />
+          <SidebarNavLink href="/dashboard/archive" label="Archived classes" icon={Archive} active={pathname === "/dashboard/archive"} />
         </SidebarMenu>
         {isAdmin && <AdminSection />}
       </SidebarContent>
