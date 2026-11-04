@@ -30,6 +30,7 @@ export type AssignmentOverview = {
     classCodes: string;
     dueDate: string;
     heartsCount: number;
+    primaryClass?: { id: string; name: string } | null;
   };
   students: SubmissionStudentRow[];
   stats: {
