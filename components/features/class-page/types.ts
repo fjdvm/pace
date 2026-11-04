@@ -30,13 +30,13 @@ interface ClassPageBase {
   posts: StreamPostData[];
   roster: RosterStudent[];
   instructor: RosterInstructor;
+  leaderboard: LeaderboardEntry[];
+  myRank?: number;
 }
 
 export type ClassPageData =
   | (ClassPageBase & {
       role: "instructor";
       assignments: InstructorAssignment[];
-      leaderboard: LeaderboardEntry[];
-      myRank?: number;
     })
   | (ClassPageBase & { role: "student"; assignments: StudentAssignment[] });

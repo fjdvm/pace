@@ -1,22 +1,21 @@
-import { ClassworkTab } from "@/components/features/classes/classwork-tab";
 import { ClassLeaderboardTab } from "@/components/features/classes/class-leaderboard-tab";
-import { PeopleTab } from "@/components/features/classes/people-tab";
-import { ClassworkPanel } from "@/components/features/student/classes/classwork-panel";
+import { InstructorClasswork } from "./classwork/instructor-classwork";
+import { StudentClasswork } from "./classwork/student-classwork";
+import { PeoplePanel } from "./people-panel";
 import type { ClassPageData, ClassPageTab } from "./types";
 
 type OtherPanelsProps = {
   tab: Exclude<ClassPageTab, "stream">;
   data: ClassPageData;
-  onOpenStream: () => void;
 };
 
-export function OtherPanels({ tab, data, onOpenStream }: OtherPanelsProps) {
-  if (tab === "people") {
-    return <PeopleTab classId={data.role === "instructor" ? data.classId : undefined} instructor={data.instructor} roster={data.roster} />;
-  }
+export function OtherPanels({ tab, data }: OtherPanelsProps) {
+  if (tab === "people") return <PeoplePanel data={data} />;
   if (data.role === "instructor") {
     if (tab === "grades") return <ClassLeaderboardTab leaderboard={data.leaderboard} myRank={data.myRank} />;
-    return <ClassworkTab classId={data.classId} assignments={data.assignments} />;
+    return (
+      <InstructorClasswork classId={data.classId} joinCode={data.joinCode} archived={data.archived} items={data.assignments} />
+    );
   }
-  return <ClassworkPanel assignments={data.assignments} posts={data.posts} joinCode={data.joinCode} onOpenStream={onOpenStream} />;
+  return <StudentClasswork items={data.assignments} />;
 }
