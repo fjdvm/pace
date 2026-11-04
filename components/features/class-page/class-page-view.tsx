@@ -28,7 +28,7 @@ export function ClassPageView({ data }: { data: ClassPageData }) {
         </TabsContent>
         {others.map((t) => (
           <TabsContent key={t.id} value={t.id} className="w-full max-w-[1000px]">
-            <OtherPanels tab={t.id as Exclude<ClassPageTab, "stream">} data={data} onOpenStream={() => setTab("stream")} />
+            <OtherPanels tab={t.id as Exclude<ClassPageTab, "stream">} data={data} />
           </TabsContent>
         ))}
       </div>

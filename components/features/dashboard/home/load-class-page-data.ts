@@ -16,7 +16,11 @@ export async function loadClassPageData(classId: string, userId: string): Promis
     if (!enrollment) return null;
   }
 
-  const [stream, roster] = await Promise.all([getClassStream(classId), getClassRoster(classId)]);
+  const [stream, roster, board] = await Promise.all([
+    getClassStream(classId),
+    getClassRoster(classId),
+    getClassLeaderboardTabData(classId),
+  ]);
   const base = {
     classId,
     className: cls.name,
@@ -25,6 +29,8 @@ export async function loadClassPageData(classId: string, userId: string): Promis
     currentUserId: userId,
     posts: stream.success ? stream.posts! : [],
     roster: roster.success ? roster.students! : [],
+    leaderboard: board.success ? board.leaderboard! : [],
+    myRank: board.success ? board.myRank : 0,
     instructor: roster.success ? roster.instructor! : { id: cls.instructorId, email: "", name: null },
   };
 
@@ -33,14 +39,11 @@ export async function loadClassPageData(classId: string, userId: string): Promis
     return { ...base, role: "student", assignments: classes.find((c) => c.id === classId)?.assignments ?? [] };
   }
 
-  const [links, leaderboard] = await Promise.all([
-    prisma.assignmentClass.findMany({
-      where: { classId },
-      include: { assignment: { include: { _count: { select: { classes: true, testCases: true } } } } },
-      orderBy: { assignment: { createdAt: "desc" } },
-    }),
-    getClassLeaderboardTabData(classId),
-  ]);
+  const links = await prisma.assignmentClass.findMany({
+    where: { classId },
+    include: { assignment: { include: { _count: { select: { classes: true, testCases: true } } } } },
+    orderBy: { assignment: { createdAt: "desc" } },
+  });
   return {
     ...base,
     role: "instructor",
@@ -52,7 +55,5 @@ export async function loadClassPageData(classId: string, userId: string): Promis
       testCaseCount: a._count.testCases,
       isSharedWithOtherClasses: a._count.classes > 1,
     })),
-    leaderboard: leaderboard.success ? leaderboard.leaderboard! : [],
-    myRank: leaderboard.success ? leaderboard.myRank : 0,
   };
 }
