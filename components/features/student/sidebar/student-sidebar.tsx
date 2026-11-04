@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminSection } from "@/components/features/admin/sidebar/admin-section";
 import { usePathname } from "next/navigation";
 import { SidebarFrame } from "@/components/features/dashboard/sidebar/sidebar-frame";
 import { SidebarNavItem } from "./sidebar-nav-item";
@@ -8,6 +9,7 @@ import { SidebarProfile, type SidebarXp } from "./sidebar-profile";
 
 type StudentSidebarProps = {
   userEmail: string;
+  isAdmin?: boolean;
   userName?: string | null;
   classes: SidebarClass[];
   xp?: SidebarXp;
@@ -18,6 +20,7 @@ type StudentSidebarProps = {
 
 export function StudentSidebar({
   userEmail,
+  isAdmin = false,
   userName,
   classes,
   xp,
@@ -62,6 +65,7 @@ export function StudentSidebar({
               active={pathname === "/dashboard/student/archive"}
             />
             <SidebarClasses classes={classes} {...nav} />
+            {isAdmin && <AdminSection {...nav} />}
           </>
         );
       }}

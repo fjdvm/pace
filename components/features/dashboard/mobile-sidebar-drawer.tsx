@@ -12,7 +12,8 @@ interface SidebarClass {
 }
 
 interface MobileSidebarDrawerProps {
-  role: "student" | "instructor" | "admin";
+  role: "student" | "instructor";
+  isAdmin: boolean;
   userEmail: string;
   userName?: string | null;
   classes?: SidebarClass[];
@@ -20,7 +21,7 @@ interface MobileSidebarDrawerProps {
   navBadge?: number;
 }
 
-export function MobileSidebarDrawer({ role, userEmail, userName, classes, studentXp, navBadge }: MobileSidebarDrawerProps) {
+export function MobileSidebarDrawer({ role, isAdmin, userEmail, userName, classes, studentXp, navBadge }: MobileSidebarDrawerProps) {
   const { mobileOpen, setMobileOpen } = useSidebarCollapse();
 
   return (
@@ -32,6 +33,7 @@ export function MobileSidebarDrawer({ role, userEmail, userName, classes, studen
         </SheetHeader>
         <RoleSidebar
           role={role}
+          isAdmin={isAdmin}
           userEmail={userEmail}
           userName={userName}
           classes={classes}

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/require-admin";
 import { encrypt, decrypt } from "@/lib/encryption";
 
 const API_KEY_SETTINGS = {
@@ -13,19 +13,6 @@ const API_KEY_SETTINGS = {
 } as const;
 
 type ApiKeyName = keyof typeof API_KEY_SETTINGS;
-
-async function requireAdmin() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
-
-  const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-  if (!dbUser || dbUser.role !== "admin") throw new Error("Forbidden");
-
-  return dbUser;
-}
 
 export async function getAdminApiKeyStatus(): Promise<
   { key: ApiKeyName; label: string; hasValue: boolean; updatedAt: string | null }[]
@@ -102,6 +89,7 @@ export async function removeAdminApiKey(keyName: string) {
 export async function getDecryptedAdminApiKey(
   keyName: string
 ): Promise<string | null> {
+  await requireAdmin();
   const setting = await prisma.systemSetting.findUnique({
     where: { key: keyName },
   });

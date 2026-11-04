@@ -70,7 +70,7 @@ export async function updateSession(request: NextRequest) {
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { role: true, approvalStatus: true },
+    select: { role: true, approvalStatus: true, isAdmin: true },
   });
   if (!dbUser) {
     await supabase.auth.signOut();
@@ -78,7 +78,14 @@ export async function updateSession(request: NextRequest) {
     url.search = "?error=google_sign_in";
     return redirect();
   }
-  const { role, approvalStatus } = dbUser;
+  const { approvalStatus } = dbUser;
+  const role = dbUser.role === "admin" ? "student" : dbUser.role;
+  const isAdminRoute = url.pathname === "/dashboard/admin" || url.pathname.startsWith("/dashboard/admin/");
+  if (isAdminRoute) {
+    if (dbUser.isAdmin) return response;
+    url.pathname = `/dashboard/${role}`;
+    return redirect();
+  }
 
   if (role === "instructor" && approvalStatus !== "approved") {
     if (url.pathname !== "/pending-approval") {

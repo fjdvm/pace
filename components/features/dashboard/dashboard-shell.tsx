@@ -12,7 +12,8 @@ interface SidebarClass {
 }
 
 interface DashboardShellProps {
-  role: "student" | "instructor" | "admin";
+  role: "student" | "instructor";
+  isAdmin: boolean;
   userEmail: string;
   userName?: string | null;
   classes?: SidebarClass[];
@@ -21,8 +22,8 @@ interface DashboardShellProps {
   children: React.ReactNode;
 }
 
-export function DashboardShell({ role, userEmail, userName, classes, studentXp, navBadge, children }: DashboardShellProps) {
-  const sidebar = { role, userEmail, userName, classes, studentXp, navBadge };
+export function DashboardShell({ role, isAdmin, userEmail, userName, classes, studentXp, navBadge, children }: DashboardShellProps) {
+  const sidebar = { role, isAdmin, userEmail, userName, classes, studentXp, navBadge };
   return (
     <SidebarCollapseProvider>
       <div className="flex h-screen w-full overflow-hidden bg-pace-canvas text-on-surface">

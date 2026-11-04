@@ -7,6 +7,6 @@ export async function requireAdmin() {
   if (!user) throw new Error("Unauthorized");
 
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-  if (!dbUser || dbUser.role !== "admin") throw new Error("Forbidden");
+  if (!dbUser || !dbUser.isAdmin) throw new Error("Forbidden");
   return dbUser;
 }

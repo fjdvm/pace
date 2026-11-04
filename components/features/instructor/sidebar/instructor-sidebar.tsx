@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminSection } from "@/components/features/admin/sidebar/admin-section";
 import { usePathname } from "next/navigation";
 import { GraduationCap } from "lucide-react";
 import { SidebarFrame } from "@/components/features/dashboard/sidebar/sidebar-frame";
@@ -10,6 +11,7 @@ import { TeachingClasses, type TeachingClass } from "./teaching-classes";
 
 type InstructorSidebarProps = {
   userEmail: string;
+  isAdmin?: boolean;
   userName?: string | null;
   classes: TeachingClass[];
   submissionCount: number;
@@ -19,6 +21,7 @@ type InstructorSidebarProps = {
 
 export function InstructorSidebar({
   userEmail,
+  isAdmin = false,
   userName,
   classes,
   submissionCount,
@@ -64,6 +67,7 @@ export function InstructorSidebar({
               active={pathname === "/dashboard/instructor/archive"}
             />
             <TeachingClasses classes={classes} {...nav} />
+            {isAdmin && <AdminSection {...nav} />}
           </>
         );
       }}

@@ -81,3 +81,21 @@ describe("Google sign-in callback", () => {
       .toBe("https://pace.example/dashboard/student");
   });
 });
+
+it("cannot grant Admin through Google metadata", async () => {
+  mocks.getUser.mockResolvedValue({ data: { user: {
+    ...googleUser, user_metadata: { full_name: "Ada Lovelace", role: "admin", isAdmin: true, is_admin: true },
+  } }, error: null });
+  await callback();
+  const { create, update } = mocks.upsert.mock.calls[0][0];
+  expect(create).not.toHaveProperty("isAdmin");
+  expect(update).not.toHaveProperty("isAdmin");
+  expect(create.role).toBe("student");
+  expect(update).not.toHaveProperty("role");
+});
+
+it("preserves a legacy Admin flag and lands on the regular dashboard", async () => {
+  mocks.upsert.mockResolvedValue({ role: "admin", isAdmin: true, approvalStatus: "approved" });
+  expect((await callback()).headers.get("location")).toBe("https://pace.example/dashboard/student");
+  expect(mocks.upsert.mock.calls[0][0].update).toEqual({ email: "ada@example.com", name: "Ada Lovelace" });
+});

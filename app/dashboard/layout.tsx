@@ -22,14 +22,14 @@ export default async function DashboardLayout({
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { role: true, email: true, name: true },
+    select: { role: true, email: true, name: true, isAdmin: true },
   });
 
   if (!dbUser) {
     redirect("/login");
   }
 
-  const role = dbUser.role as "student" | "instructor" | "admin";
+  const role = (dbUser.role === "admin" ? "student" : dbUser.role) as "student" | "instructor";
 
   let sidebarClasses: { id: string; name: string; archived: boolean; classArchived: boolean }[] = [];
   let studentXp: { totalXp: number; level: number; currentXp: number; nextThreshold: number } | undefined;
@@ -60,12 +60,10 @@ export default async function DashboardLayout({
     studentXp = { totalXp, level, currentXp, nextThreshold };
     const todos = await getStudentTodos();
     navBadge = todos.success ? (todos.todos?.length ?? 0) : 0;
-  } else {
-    navBadge = await prisma.user.count({ where: { role: "instructor", approvalStatus: "pending" } });
   }
 
   return (
-    <DashboardShell role={role} userEmail={dbUser.email} userName={dbUser.name} classes={sidebarClasses} studentXp={studentXp} navBadge={navBadge}>
+    <DashboardShell isAdmin={dbUser.isAdmin} role={role} userEmail={dbUser.email} userName={dbUser.name} classes={sidebarClasses} studentXp={studentXp} navBadge={navBadge}>
       {children}
     </DashboardShell>
   );

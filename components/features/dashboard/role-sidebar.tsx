@@ -2,7 +2,6 @@
 
 import { StudentSidebar } from "@/components/features/student/sidebar/student-sidebar";
 import { InstructorSidebar } from "@/components/features/instructor/sidebar/instructor-sidebar";
-import { AdminSidebar } from "@/components/features/admin/sidebar/admin-sidebar";
 
 interface SidebarClass {
   id: string;
@@ -12,7 +11,8 @@ interface SidebarClass {
 }
 
 export interface RoleSidebarProps {
-  role: "student" | "instructor" | "admin";
+  role: "student" | "instructor";
+  isAdmin: boolean;
   userEmail: string;
   userName?: string | null;
   classes?: SidebarClass[];
@@ -25,6 +25,7 @@ export interface RoleSidebarProps {
 export function RoleSidebar({ role, studentXp, navBadge = 0, classes = [], ...rest }: RoleSidebarProps) {
   const shared = {
     userEmail: rest.userEmail,
+    isAdmin: rest.isAdmin,
     userName: rest.userName,
     forceExpanded: rest.forceExpanded,
     onNavigate: rest.onNavigate,
@@ -32,8 +33,5 @@ export function RoleSidebar({ role, studentXp, navBadge = 0, classes = [], ...re
   if (role === "student") {
     return <StudentSidebar {...shared} classes={classes} xp={studentXp} todoCount={navBadge} />;
   }
-  if (role === "instructor") {
-    return <InstructorSidebar {...shared} classes={classes.filter((c) => !c.archived)} submissionCount={navBadge} />;
-  }
-  return <AdminSidebar {...shared} pendingCount={navBadge} />;
+  return <InstructorSidebar {...shared} classes={classes.filter((c) => !c.archived)} submissionCount={navBadge} />;
 }

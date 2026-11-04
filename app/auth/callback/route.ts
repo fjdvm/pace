@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     });
     const destination = dbUser.role === "instructor" && dbUser.approvalStatus !== "approved"
       ? "/pending-approval"
-      : `/dashboard/${dbUser.role}`;
+      : `/dashboard/${dbUser.role === "admin" ? "student" : dbUser.role}`;
     return NextResponse.redirect(new URL(destination, url.origin));
   } catch {
     await supabase.auth.signOut();
