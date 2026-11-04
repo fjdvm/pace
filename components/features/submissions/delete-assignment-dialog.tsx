@@ -30,9 +30,11 @@ export function DeleteAssignmentDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete assignment?</AlertDialogTitle>
+          <AlertDialogTitle>Delete Post?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete &quot;{assignmentTitle}&quot; and all its test cases, student submissions, chat messages, and code drafts. This action cannot be undone.
+            This will permanently delete &quot;{assignmentTitle}&quot; and all
+            its Items, test cases, Student Submissions, chat messages, and code
+            drafts. This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -42,7 +44,7 @@ export function DeleteAssignmentDialog({
             disabled={isDeleting}
             className="bg-destructive text-white hover:bg-destructive/90"
           >
-            {isDeleting ? "Deleting..." : "Delete Assignment"}
+            {isDeleting ? "Deleting..." : "Delete Post"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

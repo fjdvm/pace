@@ -5,6 +5,7 @@ const db = vi.hoisted(() => ({
   user: { findUnique: vi.fn() },
   class: { count: vi.fn() },
   assignment: { create: vi.fn() },
+  item: { update: vi.fn() },
   assignmentClass: { createMany: vi.fn() },
   testCase: { createMany: vi.fn() },
   post: { createMany: vi.fn() },

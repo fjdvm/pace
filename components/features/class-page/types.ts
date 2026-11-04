@@ -6,6 +6,7 @@ export interface InstructorAssignment {
   title: string;
   language: string;
   dueDate: string;
+  isDraft?: boolean;
   testCaseCount: number;
   turnedIn: number;
   assigned: number;

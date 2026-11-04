@@ -20,9 +20,9 @@ export function InstructorWorkList({ items, onDelete }: InstructorWorkListProps)
           {group.items.map((item) => (
             <WorkRow
               key={item.id}
-              href={`/dashboard/submissions/${item.id}`}
+              href={item.isDraft ? `/dashboard/assignments/${item.id}/edit` : `/dashboard/submissions/${item.id}`}
               title={item.title}
-              meta={`${item.turnedIn} turned in · ${item.assigned} assigned`}
+              meta={item.isDraft ? "Draft" : `${item.turnedIn} turned in · ${item.assigned} assigned`}
               menu={<ClassworkRowMenu assignmentId={item.id} onDelete={() => onDelete(item)} />}
             />
           ))}

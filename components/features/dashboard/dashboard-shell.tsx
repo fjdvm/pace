@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { DashboardClasses } from "@/lib/dashboard-classes";
 import { AppSidebar } from "./sidebar/app-sidebar";
@@ -15,6 +16,9 @@ type DashboardShellProps = DashboardClasses & {
 };
 
 export function DashboardShell({ children, teaching, enrolled, isAdmin, userEmail, userName, studentXp }: DashboardShellProps) {
+  const pathname = usePathname();
+  if (/^\/dashboard\/assignments\/(new|[^/]+\/edit)$/.test(pathname)) return <>{children}</>;
+
   return (
     <SidebarProvider className="h-svh min-h-0 flex-col overflow-hidden bg-pace-canvas">
       <ClassTitleProvider>

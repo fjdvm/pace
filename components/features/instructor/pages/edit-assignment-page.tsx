@@ -36,8 +36,15 @@ export async function EditAssignmentPage({ params }: PageProps) {
     <AssignmentFormView
       classes={classes}
       assignmentId={assignment.id}
+      initialSavedAt={assignment.isDraft ? assignment.updatedAt.toISOString() : undefined}
       locked={hasStudentWork(assignment._count)}
       initial={{
+        isDraft: assignment.isDraft,
+        label: assignment.label,
+        starterCode: assignment.items[0]?.starterCode ?? "",
+        points: assignment.items[0]?.points ?? 100,
+        itemTitle: assignment.items[0]?.title,
+        itemInstructions: assignment.items[0]?.instructions,
         title: assignment.title,
         instructions: assignment.instructions,
         language: assignment.language,

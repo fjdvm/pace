@@ -10,6 +10,7 @@ model Assignment {
   heartsRegenMinutes     Int               @default(30) @map("hearts_regen_minutes")
   createdBy              String            @map("created_by")
   createdAt              DateTime          @default(now()) @map("created_at")
+  updatedAt              DateTime          @default(now()) @updatedAt @db.Timestamptz(3) @map("updated_at")
   statsReportNarrative   String?           @map("stats_report_narrative")
   statsReportGeneratedAt DateTime?         @map("stats_report_generated_at")
   instructor             User              @relation(fields: [createdBy], references: [id], onDelete: Cascade)

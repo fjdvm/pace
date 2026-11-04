@@ -13,7 +13,7 @@ export async function requireItemInstructor(tx: Prisma.TransactionClient, assign
   const assignment = await tx.assignment.findUnique({
     where: { id: assignmentId },
     include: {
-      classes: { select: { class: { select: { instructorId: true } } } },
+      classes: { select: { classId: true, class: { select: { instructorId: true } } } },
       _count: { select: { codeDrafts: true, submissions: true, heartsStates: true, chatMessages: true } },
     },
   });
