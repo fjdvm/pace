@@ -14,14 +14,14 @@ export function ClassCard({ id, name, instructorName, menu }: ClassCardProps) {
   const colour = classColour(id);
   const { title, section } = splitSection(name);
   return (
-    <div className="relative w-full sm:h-[292px] sm:w-[296px]">
+    <div className="relative flex w-full sm:h-[316px] sm:w-[336px]">
     <Link
       href={`/dashboard/classes/${id}`}
       className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-pace-line bg-white outline-none focus-visible:ring-2 focus-visible:ring-pace-purple"
     >
       <div
         style={{ backgroundColor: colour }}
-        className="flex h-[120px] flex-col justify-between px-4 pb-[14px] pt-4 text-white sm:h-[100px] sm:justify-end sm:gap-0"
+        className="flex h-[120px] flex-col justify-between px-4 pb-[14px] pt-4 text-white sm:h-[108px] sm:justify-end sm:gap-0"
       >
         <p className="truncate text-xl font-bold leading-tight tracking-[-0.01em]">{title}</p>
         {section && <p className="truncate text-[13px] font-bold leading-normal">{section}</p>}
@@ -32,7 +32,7 @@ export function ClassCard({ id, name, instructorName, menu }: ClassCardProps) {
       <span
         aria-hidden
         style={{ backgroundColor: colour }}
-        className="absolute left-[215px] top-[65px] hidden size-16 items-center justify-center rounded-full border-[3px] border-white text-[22px] font-bold text-white sm:flex"
+        className="absolute right-4 top-[73px] hidden size-16 items-center justify-center rounded-full border-[3px] border-white text-[22px] font-bold text-white sm:flex"
       >
         {getInitials(instructorName)}
       </span>

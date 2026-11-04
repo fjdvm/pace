@@ -3,6 +3,7 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { DashboardClasses } from "@/lib/dashboard-classes";
 import { AppSidebar } from "./sidebar/app-sidebar";
+import { ClassTitleProvider } from "./top-bar/class-title-context";
 import { TopBar } from "./top-bar/top-bar";
 
 type DashboardShellProps = DashboardClasses & {
@@ -16,11 +17,13 @@ type DashboardShellProps = DashboardClasses & {
 export function DashboardShell({ children, teaching, enrolled, isAdmin, userEmail, userName, studentXp }: DashboardShellProps) {
   return (
     <SidebarProvider className="h-svh min-h-0 flex-col overflow-hidden bg-pace-canvas">
-      <TopBar classes={[...teaching, ...enrolled]} userEmail={userEmail} userName={userName} studentXp={studentXp} />
-      <div className="flex min-h-0 flex-1">
-        <AppSidebar teaching={teaching} enrolled={enrolled} isAdmin={isAdmin} />
-        <SidebarInset className="min-w-0 overflow-y-auto bg-pace-canvas">{children}</SidebarInset>
-      </div>
+      <ClassTitleProvider>
+        <TopBar classes={[...teaching, ...enrolled]} userEmail={userEmail} userName={userName} studentXp={studentXp} />
+        <div className="flex min-h-0 flex-1">
+          <AppSidebar teaching={teaching} enrolled={enrolled} isAdmin={isAdmin} />
+          <SidebarInset className="min-w-0 overflow-y-auto bg-pace-canvas">{children}</SidebarInset>
+        </div>
+      </ClassTitleProvider>
     </SidebarProvider>
   );
 }

@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Trash2 } from "lucide-react";
+import Link from "next/link";
+import { ExternalLink, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DeletePostDialog } from "@/components/features/classes/delete-post-dialog";
 
-export function RowMenu({ onDelete }: { onDelete: () => void }) {
+export function RowMenu({ href, onDelete }: { href: string; onDelete?: () => void }) {
   const [confirming, setConfirming] = useState(false);
   return (
     <>
@@ -15,9 +16,14 @@ export function RowMenu({ onDelete }: { onDelete: () => void }) {
           <Image src="/class/more.svg" alt="" width={24} height={24} />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setConfirming(true)}>
-            <Trash2 /> Delete
+          <DropdownMenuItem render={<Link href={href} />}>
+            <ExternalLink /> Open
           </DropdownMenuItem>
+          {onDelete && (
+            <DropdownMenuItem onClick={() => setConfirming(true)}>
+              <Trash2 /> Delete
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       <DeletePostDialog
@@ -25,7 +31,7 @@ export function RowMenu({ onDelete }: { onDelete: () => void }) {
         onOpenChange={setConfirming}
         onConfirm={() => {
           setConfirming(false);
-          onDelete();
+          onDelete?.();
         }}
       />
     </>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { clearHomeView } from "@/lib/home-view";
 import { createClient } from "@/lib/supabase/client";
 
 export function useLogout() {
@@ -15,6 +16,7 @@ export function useLogout() {
     try {
       const { error } = await createClient().auth.signOut();
       if (error) throw error;
+      clearHomeView();
       toast.success("Logged out successfully");
       router.push("/login");
       router.refresh();

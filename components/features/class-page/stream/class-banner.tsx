@@ -16,7 +16,11 @@ export function ClassBanner({ classId, name, instructorName }: ClassBannerProps)
     >
       <p className="truncate text-[22px] font-bold leading-tight tracking-[-0.01em] md:text-[32px] md:leading-[1.15] md:tracking-[-0.015em]">{title}</p>
       <p className="truncate text-[13px] leading-normal md:text-lg">
-        {section && `${section} · `}Prof. {instructorName.replace(/^prof\.?\s+/i, "")}</p>
+        {section}
+        <span className="hidden md:inline">
+          {section && " · "}Prof. {instructorName.replace(/^prof\.?\s+/i, "")}
+        </span>
+      </p>
     </div>
   );
 }

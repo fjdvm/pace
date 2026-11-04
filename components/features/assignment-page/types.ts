@@ -21,6 +21,8 @@ export type AssignmentCommentsData = {
 export type StudentAssignmentData = {
   id: string;
   title: string;
+  classId: string;
+  className: string;
   instructions: string;
   language: string;
   dueDate: string;

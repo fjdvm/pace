@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Megaphone } from "lucide-react";
 import { resolveAuthorDisplay } from "@/components/features/classes/comment-utils";
 import type { RosterInstructor, RosterStudent, StreamPostData } from "@/components/features/classes/types";
+import { assignmentTitle, professorLabel } from "./assignment-title";
 import { postHref } from "./post-href";
 import { RowMenu } from "./row-menu";
 
@@ -24,6 +25,10 @@ export function AnnouncementRow({ classId, post, isInstructor, currentUserId, ro
   const isAssignment = post.type === "assignment_created";
   const author = resolveAuthorDisplay(post.authorId, currentUserId, instructor, roster);
   const canDelete = isInstructor && post.authorId === currentUserId;
+  const href = postHref(post, classId, isInstructor);
+  const title = assignmentTitle(post.body);
+  const mobileText = isAssignment ? `New assignment: ${title}` : post.body;
+  const text = isAssignment ? `${professorLabel(author.name)} posted a new assignment: ${title}` : post.body;
   const count = post.classComments.length;
 
   return (
@@ -32,21 +37,22 @@ export function AnnouncementRow({ classId, post, isInstructor, currentUserId, ro
         {isAssignment ? <Image src="/class/assignment.svg" alt="" width={24} height={24} /> : <Megaphone className="size-5 text-white" />}
       </span>
       <Link
-        href={postHref(post, classId, isInstructor)}
+        href={href}
         className="flex min-w-0 flex-1 flex-col gap-0.5 text-left after:absolute after:inset-0 after:content-['']"
       >
         {!isAssignment && <span className="text-[13px] font-bold leading-normal text-pace-ink">{author.name}</span>}
-        <span className="whitespace-pre-wrap break-words text-[15px] leading-[1.55] text-pace-ink">{post.body}</span>
+        <span className="whitespace-pre-wrap break-words text-[15px] leading-[1.55] text-pace-ink">
+          <span className="md:hidden">{mobileText}</span>
+          <span className="hidden md:inline">{text}</span>
+        </span>
         <span className="text-[13px] leading-normal text-pace-muted">
           {shortDate.format(new Date(post.createdAt))}
           {count > 0 && ` · ${count} ${count === 1 ? "comment" : "comments"}`}
         </span>
       </Link>
-      {canDelete && (
-        <div className="relative z-10">
-          <RowMenu onDelete={() => onDelete(post.id)} />
-        </div>
-      )}
+      <div className="relative z-10">
+        <RowMenu href={href} onDelete={canDelete ? () => onDelete(post.id) : undefined} />
+      </div>
     </article>
   );
 }
