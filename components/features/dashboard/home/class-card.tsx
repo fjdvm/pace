@@ -1,0 +1,36 @@
+import Link from "next/link";
+import { classColour } from "@/lib/class-colour";
+import { getInitials } from "@/components/features/student/shared/initials-avatar";
+
+type ClassCardProps = {
+  id: string;
+  name: string;
+  instructorName: string;
+};
+
+export function ClassCard({ id, name, instructorName }: ClassCardProps) {
+  const colour = classColour(id);
+  return (
+    <Link
+      href={`/dashboard/classes/${id}`}
+      className="relative flex w-full flex-col overflow-hidden rounded-lg border border-pace-line bg-white outline-none focus-visible:ring-2 focus-visible:ring-pace-purple sm:h-[292px] sm:w-[296px]"
+    >
+      <div
+        style={{ backgroundColor: colour }}
+        className="flex h-[120px] flex-col justify-between px-4 pb-[14px] pt-4 text-white sm:h-[100px] sm:justify-end sm:gap-0"
+      >
+        <p className="truncate text-xl font-bold leading-tight tracking-[-0.01em]">{name}</p>
+        <p className="truncate text-[13px] leading-normal">Prof. {instructorName.replace(/^prof\.?\s+/i, "")}</p>
+      </div>
+      <div className="hidden flex-1 border-b border-pace-line sm:block" />
+      <div className="hidden h-[52px] sm:block" />
+      <span
+        aria-hidden
+        style={{ backgroundColor: colour }}
+        className="absolute left-[215px] top-[65px] hidden size-16 items-center justify-center rounded-full border-[3px] border-white text-[22px] font-bold text-white sm:flex"
+      >
+        {getInitials(instructorName)}
+      </span>
+    </Link>
+  );
+}
