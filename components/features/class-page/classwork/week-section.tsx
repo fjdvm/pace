@@ -1,15 +1,12 @@
-import type { StudentAssignment } from "@/components/features/student/types";
-import { StudentWorkRow } from "./student-work-row";
+type WeekSectionProps = { label: string; children: React.ReactNode };
 
-type WeekSectionProps = { label: string; items: StudentAssignment[] };
-
-export function WeekSection({ label, items }: WeekSectionProps) {
+export function WeekSection({ label, children }: WeekSectionProps) {
   return (
     <section className="flex flex-col">
-      <h2 className="border-b border-solid [border-bottom-color:var(--color-pace-green)] pb-2 text-[20px] font-bold leading-tight text-pace-green-deep">{label}</h2>
-      {items.map((item) => (
-        <StudentWorkRow key={item.id} item={item} />
-      ))}
+      <h2 className="border-b border-solid [border-bottom-color:var(--color-pace-green-deep)] pb-3 pl-1 pt-6 text-[22px] font-bold leading-tight tracking-[-0.22px] text-pace-green-deep">
+        {label}
+      </h2>
+      {children}
     </section>
   );
 }
