@@ -47,37 +47,35 @@ export function PeopleTab({ classId, instructor, roster }: PeopleTabProps) {
         </div>
       </div>
 
-      {roster.length > 0 && (
-        <>
-          <div className="border-t border-surface-container my-4" />
-          <p className="text-xs font-bold text-secondary uppercase tracking-wide px-1">Students ({roster.length})</p>
-          {roster.map((student) => (
-            <div
-              key={student.id}
-              className="flex items-center justify-between gap-3 p-3 bg-white border border-surface-container rounded-2xl"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center text-secondary shrink-0">
-                  <User className="h-4 w-4" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-on-surface truncate">{getDisplayName(student)}</p>
-                  <p className="text-[10px] text-secondary truncate">{student.email}</p>
-                </div>
-              </div>
-              {classId && (
-                <button
-                  onClick={() => setPendingKick(student)}
-                  title="Remove student"
-                  className="p-2 rounded-xl text-secondary hover:text-red-600 hover:bg-surface-container-low transition-colors cursor-pointer shrink-0"
-                >
-                  <UserMinus className="h-4 w-4" />
-                </button>
-              )}
+      <div className="border-t border-surface-container my-4" />
+      <p className="text-xs font-bold text-secondary uppercase tracking-wide px-1">
+        Students {roster.length > 0 && `(${roster.length})`}
+      </p>
+      {roster.map((student) => (
+        <div
+          key={student.id}
+          className="flex items-center justify-between gap-3 p-3 bg-white border border-surface-container rounded-2xl"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center text-secondary shrink-0">
+              <User className="h-4 w-4" />
             </div>
-          ))}
-        </>
-      )}
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-on-surface truncate">{getDisplayName(student)}</p>
+              <p className="text-[10px] text-secondary truncate">{student.email}</p>
+            </div>
+          </div>
+          {classId && (
+            <button
+              onClick={() => setPendingKick(student)}
+              title="Remove student"
+              className="p-2 rounded-xl text-secondary hover:text-red-600 hover:bg-surface-container-low transition-colors cursor-pointer shrink-0"
+            >
+              <UserMinus className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      ))}
 
       <KickStudentDialog
         open={!!pendingKick}
