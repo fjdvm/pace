@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { saveDraft } from "@/app/actions/save-draft";
 import type { WorkspaceItem } from "@/components/features/assignments/types";
-import { DEFAULT_CODE_TEMPLATES } from "@/components/features/assignments/code-templates";
+import { initialItemCode } from "@/lib/items/work-status";
 import type { AutosaveStatus } from "@/components/features/assignments/use-autosave";
 
 export function useItemDrafts(
@@ -15,7 +15,7 @@ export function useItemDrafts(
     Object.fromEntries(
       items.map((i) => [
         i.id,
-        i.code ?? (i.kind === "multiple_choice" || i.kind === "short_answer" ? "" : (i.starterCode || DEFAULT_CODE_TEMPLATES[i.language] || "")),
+        i.code ?? initialItemCode(i),
       ]),
     ),
   );

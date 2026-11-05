@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { reorderItems } from "@/app/actions/items/reorder-items";
 import { createItem } from "@/app/actions/items/create-item";
 import { updateItem } from "@/app/actions/items/update-item";
 import { deleteItem } from "@/app/actions/items/delete-item";
@@ -29,6 +30,7 @@ export const emptyShortAnswer = { kind: "short_answer" as const, title: "", inst
 export function usePostItems(
   postId: string | undefined,
   onEditingChange: (editing: boolean) => void,
+  primaryId?: string,
 ) {
   const [items, setItems] = useState<AuthoringItem[]>([]);
   const [editing, setEditingState] = useState<string | null>(null);
@@ -51,7 +53,7 @@ export function usePostItems(
   }, [postId]);
   const edit = (id: string | null) => {
     setEditingState(id);
-    onEditingChange(id !== null && id !== items[0]?.id);
+    onEditingChange(id !== null && id !== primaryId);
   };
   const save = async (input: AnswerInput) => {
     if (!postId || busy) return;
@@ -93,5 +95,21 @@ export function usePostItems(
       setBusy(false);
     }
   };
-  return { items, editing, busy, loaded, edit, save, remove };
+  const move = async (id: string, direction: number) => {
+    if (!postId || busy || editing) return;
+    const index = items.findIndex((item) => item.id === id);
+    const target = index + direction;
+    if (target < 0 || target >= items.length) return;
+    const ordered = [...items];
+    [ordered[index], ordered[target]] = [ordered[target], ordered[index]];
+    setBusy(true);
+    onEditingChange(true);
+    try {
+      const result = await reorderItems(postId, ordered.map((item) => item.id));
+      if (result.success) setItems(ordered);
+      else toast.error(result.error);
+    } catch { toast.error("Could not reorder Items"); }
+    finally { setBusy(false); onEditingChange(false); }
+  };
+  return { items, editing, busy, loaded, edit, save, remove, move };
 }

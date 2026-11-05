@@ -7,6 +7,7 @@ export type TestCaseForm = {
 export type AssignmentFormValues = {
   label?: "Assignment" | "Activity" | "Quiz";
   isDraft?: boolean;
+  itemId?: string;
   itemTitle?: string;
   itemInstructions?: string;
   starterCode?: string;

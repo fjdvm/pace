@@ -77,6 +77,7 @@ export async function AssignmentWorkspacePage({ params, searchParams }: PageProp
   const formattedAssignment = {
     id: assignment.id,
     title: assignment.title,
+    overviewInstructions: assignment.instructions,
     instructions: codingItem.instructions,
     language: codingItem.language,
     dueDate: assignment.dueDate.toISOString(),

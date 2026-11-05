@@ -2,6 +2,8 @@
 
 import { JetBrains_Mono } from "next/font/google";
 import type { WorkspaceViewProps } from "@/components/features/assignments/types";
+import { MultiCodingWorkspace } from "./multi-coding-workspace";
+import { PostOverview } from "./post-overview";
 import { AnswerWorkspace } from "./answer-workspace";
 import { WorkspaceTopBar } from "./workspace-top-bar";
 import { InstructionsPanel } from "./instructions-panel";
@@ -38,6 +40,7 @@ export function StudentWorkspaceView(props: WorkspaceViewProps) {
   );
   const editor = (
     <EditorPanel
+      compact={ws.items.length > 1}
       itemId={ws.activeId}
       language={ws.activeItem.language}
       mobile={!isDesktop}
@@ -72,13 +75,37 @@ export function StudentWorkspaceView(props: WorkspaceViewProps) {
     <div
       className={`${workspaceMono.variable} flex h-dvh flex-col overflow-hidden bg-white text-pace-ink`}
     >
-      {ws.activeItem.kind === "multiple_choice" || ws.activeItem.kind === "short_answer" ? (
+      {ws.overview ? (
+        <PostOverview
+          ws={ws}
+          title={assignment.title}
+          instructions={assignment.overviewInstructions ?? ""}
+          instructor={assignment.instructorEmail}
+          className={props.className}
+          classId={props.classId}
+          onBack={() => ws.leave(backHref)}
+        />
+      ) : ws.items.length > 1 && ws.activeItem.kind === "coding" ? (
+        <MultiCodingWorkspace
+          ws={ws}
+          title={assignment.title}
+          className={props.className}
+          classId={props.classId}
+          maxHearts={assignment.heartsCount}
+          editor={editor}
+          tutor={tutor}
+          onBack={() => ws.setOverview(true)}
+        />
+      ) : ws.activeItem.kind === "multiple_choice" ||
+        ws.activeItem.kind === "short_answer" ? (
         <AnswerWorkspace
           ws={ws}
           title={assignment.title}
           className={props.className}
           classId={props.classId}
-          onBack={() => ws.leave(backHref)}
+          onBack={() =>
+            ws.items.length > 1 ? ws.setOverview(true) : ws.leave(backHref)
+          }
         />
       ) : (
         <>
@@ -140,6 +167,7 @@ export function StudentWorkspaceView(props: WorkspaceViewProps) {
         onOpenChange={ws.setConfirmOpen}
         items={ws.items}
         results={ws.itemResults}
+        statuses={ws.statuses}
         heartsUsed={ws.hearts.totalSpent}
         maxHearts={assignment.heartsCount}
         busy={ws.isSubmitting}

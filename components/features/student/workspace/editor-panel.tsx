@@ -23,7 +23,7 @@ const FILE_EXTENSIONS: Record<string, string> = {
 };
 
 const defineTheme: BeforeMount = (monaco) => {
-  monaco.editor.defineTheme("pace-light", {
+  const theme: editor.IStandaloneThemeData = {
     base: "vs",
     inherit: true,
     rules: [
@@ -37,10 +37,13 @@ const defineTheme: BeforeMount = (monaco) => {
       "editorLineNumber.foreground": "#8a8a85",
       "editorLineNumber.activeForeground": "#141414",
     },
-  });
+  };
+  monaco.editor.defineTheme("pace-light", theme);
+  monaco.editor.defineTheme("pace-canvas", { ...theme, colors: { ...theme.colors, "editor.background": "#f6f5f1" } });
 };
 
 type EditorPanelProps = {
+  compact?: boolean;
   itemId?: string;
   language: string;
   mobile?: boolean;
@@ -58,18 +61,18 @@ export function EditorPanel(props: EditorPanelProps) {
   const ext = FILE_EXTENSIONS[props.language] ?? "txt";
   return (
     <div className="flex h-full w-full min-w-0 flex-col bg-white">
-      <div className="flex shrink-0 items-center gap-2 border-b border-pace-line bg-white px-4 py-2.5 text-[13px] leading-[22px]">
+      {!props.compact && <div className="flex shrink-0 items-center gap-2 border-b border-pace-line bg-white px-4 py-2.5 text-[13px] leading-[22px]">
         <span className="font-mono font-bold text-pace-ink">main.{ext}</span>
         <PaceTag tone="neutral">
           {props.language === "Python" ? "Python 3" : props.language}
         </PaceTag>
-      </div>
+      </div>}
       <div className="min-h-0 flex-1">
         <Editor
           path={props.itemId ? `${props.itemId}/main.${ext}` : undefined}
           height="100%"
           language={MONACO_LANGUAGE_MAP[props.language]}
-          theme="pace-light"
+          theme={props.compact ? "pace-canvas" : "pace-light"}
           beforeMount={defineTheme}
           value={props.code}
           onChange={props.onCodeChange}
@@ -99,7 +102,7 @@ export function EditorPanel(props: EditorPanelProps) {
           }}
         />
       </div>
-      {!props.mobile && (
+      {!props.mobile && !props.compact && (
         <div className="h-[250px] shrink-0">
           <ConsolePanel
             results={props.runResults}

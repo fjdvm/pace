@@ -2,6 +2,8 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { itemWorkStatus } from "@/lib/items/work-status";
+import { workspaceEntry } from "./workspace-entry";
 import { workspaceItems } from "./workspace-items";
 import { useWorkspaceTutor } from "./use-workspace-tutor";
 import { toast } from "sonner";
@@ -23,7 +25,9 @@ export function useWorkspace(props: WorkspaceViewProps) {
   const { assignment, initialSubmission } = props;
   const router = useRouter();
   const items = useMemo(() => workspaceItems(props), [props]);
-  const [activeId, setActiveId] = useState(items.some((i) => i.id === props.initialItemId) ? props.initialItemId! : items[0].id);
+  const entry = workspaceEntry(items, props.initialItemId);
+  const [activeId, setActiveId] = useState(entry.activeId);
+  const [overview, setOverview] = useState(entry.overview);
   const activeItem = items.find((i) => i.id === activeId)!;
   const [submission, setSubmission] = useState<SubmissionData | null>(
     initialSubmission,
@@ -48,7 +52,14 @@ export function useWorkspace(props: WorkspaceViewProps) {
   const [resultOpen, setResultOpen] = useState(false);
 
   const autosaveStatus = drafts.status;
-  const tutor = useWorkspaceTutor({ props, items, activeId, code, runResults, submitted: !!submission });
+  const tutor = useWorkspaceTutor({
+    props,
+    items,
+    activeId,
+    code,
+    runResults,
+    submitted: !!submission,
+  });
   const {
     handleEditorMount,
     recordKeystroke,
@@ -95,7 +106,6 @@ export function useWorkspace(props: WorkspaceViewProps) {
         setConsoleOutput(
           `Passed ${passed}/${results.length} visible test cases.`,
         );
-
       }
     } catch {
       setConsoleOutput("Connection failed.");
@@ -144,7 +154,19 @@ export function useWorkspace(props: WorkspaceViewProps) {
     }
   };
 
+  const statuses = Object.fromEntries(
+    items.map((item) => [
+      item.id,
+      itemWorkStatus(item, drafts.codes[item.id], itemResults[item.id]),
+    ]),
+  );
   return {
+    dueDate: assignment.dueDate,
+    overview,
+    setOverview,
+    statuses,
+    done: Object.values(statuses).filter((status) => status === "answered")
+      .length,
     async leave(href: string) {
       if (submission || (await drafts.flush())) router.push(href);
       else toast.error("Save failed. Please try again before leaving.");
@@ -153,7 +175,13 @@ export function useWorkspace(props: WorkspaceViewProps) {
     items,
     activeItem,
     activeId,
-    setActiveId(id: string) { setActiveId(id); setConsoleOutput(""); setRanAt(null); },
+    setActiveId(id: string) {
+      if (isRunning || isSubmitting) return;
+      setActiveId(id);
+      setOverview(false);
+      setConsoleOutput("");
+      setRanAt(null);
+    },
     itemResults,
     confirmOpen,
     setConfirmOpen,

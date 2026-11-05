@@ -23,7 +23,7 @@ export async function updateAssignment(
       if (!assignment.isDraft && values.isDraft)
         throw new Error("An assigned Post cannot become a Draft");
       const item = await tx.item.findFirst({
-        where: { assignmentId },
+        where: { assignmentId, kind: "coding", ...(values.itemId ? { id: values.itemId } : {}) },
         orderBy: { position: "asc" },
       });
       if (!item) throw new Error("Coding Item not found");

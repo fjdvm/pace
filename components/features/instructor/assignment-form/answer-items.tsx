@@ -1,10 +1,10 @@
 "use client";
+import { PostItemsDetails } from "./post-items-details";
+import { ItemOrderControls } from "./item-order-controls";
 import { ItemAuthoringRow } from "./item-authoring-row";
 import { AddChoiceMenu } from "./add-choice-menu";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { formControl } from "./form-field";
-import { Input } from "@/components/ui/input";
 import { AnswerEditor, type AnswerInput } from "./answer-editor";
 import { ShortAnswerPreview } from "./short-answer-preview";
 import { ChoicePreview } from "./choice-preview";
@@ -20,29 +20,39 @@ type Props = {
   codingEditor: ReactNode;
 };
 export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
-  const state = usePostItems(form.id, form.setItemEditing);
+  const state = usePostItems(
+    form.id,
+    form.setItemEditing,
+    form.values.itemId ?? form.id,
+  );
   const [preview, setPreview] = useState<AnswerInput | null>(null);
-  const [newKind, setNewKind] = useState<"multiple_choice" | "short_answer">("multiple_choice");
+  const [newKind, setNewKind] = useState<"multiple_choice" | "short_answer">(
+    "multiple_choice",
+  );
   const select = (id: string | null, kind = newKind) => {
     state.edit(id);
     const item = state.items.find((i) => i.id === id);
     setPreview(
       id === "new"
-        ? (kind === "short_answer" ? emptyShortAnswer : emptyChoice)
-        : item?.kind === "short_answer" ? { ...item, kind: "short_answer" } : item?.kind === "multiple_choice"
-          ? {
-              ...item,
-              kind: "multiple_choice",
-              correctOption: item.correctOption ?? -1,
-            }
-          : null,
+        ? kind === "short_answer"
+          ? emptyShortAnswer
+          : emptyChoice
+        : item?.kind === "short_answer"
+          ? { ...item, kind: "short_answer" }
+          : item?.kind === "multiple_choice"
+            ? {
+                ...item,
+                kind: "multiple_choice",
+                correctOption: item.correctOption ?? -1,
+              }
+            : null,
     );
   };
   const total =
     state.items.reduce(
-      (sum, i, n) =>
+      (sum, i) =>
         sum +
-        (n === 0
+        (i.id === (form.values.itemId ?? form.id)
           ? (form.values.points ?? i.points)
           : state.editing === i.id
             ? (preview?.points ?? i.points)
@@ -57,48 +67,35 @@ export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
   return (
     <div className="grid flex-1 items-start gap-6 px-4 py-4 lg:grid-cols-[minmax(0,1fr)_420px] lg:px-12 lg:py-6">
       <main className="min-w-0 space-y-4">
-        <section className="space-y-3.5 rounded-[12px] border border-pace-line bg-white p-6">
-          <label className="block space-y-2 text-[13px] font-semibold">
-            <span className="block">Title</span>
-            <Input
-              value={form.values.title}
-              onChange={(e) => form.patch({ title: e.target.value })}
-              className={formControl}
-            />
-          </label>
-          <label className="block space-y-2 text-[13px] font-semibold">
-            <span className="block">Instructions (optional)</span>
-            <Input
-              value={form.values.instructions}
-              onChange={(e) => form.patch({ instructions: e.target.value })}
-              className={formControl}
-            />
-          </label>
-          <p className="text-[13px]">
-            <b>{count} items</b>
-            <span className="text-pace-muted">
-              {" "}
-              · {total} points total (added up from the items)
-            </span>
-          </p>
-        </section>
+        <PostItemsDetails form={form} count={count} total={total} />
         <section className="space-y-4" aria-label="Post Items">
           {state.items.map((item, index) => (
             <section
               key={item.id}
               className={`overflow-hidden rounded-[12px] border bg-white ${state.editing === item.id ? "border-2 border-pace-green" : "border-pace-line"}`}
             >
-              {ItemAuthoringRow(
-                state,
-                select,
-                item.id,
-                index === 0
-                  ? (form.values.itemTitle ?? item.title)
-                  : item.title,
-                item.kind,
-                index === 0 ? (form.values.points ?? item.points) : item.points,
-                index,
-              )}
+              <div className="flex items-center">
+                <ItemOrderControls
+                  index={index}
+                  count={state.items.length}
+                  title={item.title}
+                  disabled={state.busy || !!state.editing || form.isSaving}
+                  onMove={(direction) => state.move(item.id, direction)}
+                />
+                {ItemAuthoringRow(
+                  state,
+                  select,
+                  item.id,
+                  item.id === (form.values.itemId ?? form.id)
+                    ? (form.values.itemTitle ?? item.title)
+                    : item.title,
+                  item.kind,
+                  item.id === (form.values.itemId ?? form.id)
+                    ? (form.values.points ?? item.points)
+                    : item.points,
+                  index,
+                )}
+              </div>
               {state.editing === item.id &&
                 (item.kind !== "coding" ? (
                   <AnswerEditor
@@ -118,7 +115,7 @@ export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
                       if (await state.remove()) setPreview(null);
                     }}
                   />
-                ) : index === 0 ? (
+                ) : item.id === (form.values.itemId ?? form.id) ? (
                   <div className="space-y-4 p-4">
                     {codingEditor}
                     <Button onClick={() => select(null)} variant="outline">
@@ -136,13 +133,17 @@ export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
                 state,
                 select,
                 "new",
-                newKind === "short_answer" ? "New short answer item" : "New multiple choice item",
+                newKind === "short_answer"
+                  ? "New short answer item"
+                  : "New multiple choice item",
                 newKind,
                 preview?.points ?? 10,
                 count - 1,
               )}
               <AnswerEditor
-                initial={newKind === "short_answer" ? emptyShortAnswer : emptyChoice}
+                initial={
+                  newKind === "short_answer" ? emptyShortAnswer : emptyChoice
+                }
                 locked={false}
                 busy={state.busy}
                 onPreviewChange={setPreview}
@@ -157,13 +158,24 @@ export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
           )}
           <AddChoiceMenu
             disabled={!state.loaded || state.busy || state.editing !== null}
-            onAdd={(kind) => { setNewKind(kind); select("new", kind); }}
+            onAdd={(kind) => {
+              setNewKind(kind);
+              select("new", kind);
+            }}
           />
         </section>
       </main>
       <aside className="min-w-0">
         {preview ? (
-          preview.kind === "multiple_choice" ? <ChoicePreview value={preview} index={activeIndex} total={count} /> : <ShortAnswerPreview value={preview} index={activeIndex} total={count} />
+          preview.kind === "multiple_choice" ? (
+            <ChoicePreview value={preview} index={activeIndex} total={count} />
+          ) : (
+            <ShortAnswerPreview
+              value={preview}
+              index={activeIndex}
+              total={count}
+            />
+          )
         ) : (
           <div className="space-y-4 rounded-[12px] border border-pace-line bg-white p-5">
             <h2 className="text-base font-bold">Settings</h2>
