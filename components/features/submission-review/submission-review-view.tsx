@@ -7,7 +7,7 @@ import { useState } from "react";
 import { JetBrains_Mono } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { PaceTag } from "@/components/features/student/shared/pace-tag";
-import { ReviewTabsPanel } from "@/components/features/instructor/submissions/detail/review-tabs-panel";
+import { InsightsSheet } from "./insights/insights-sheet";
 import type { SubmissionDetail } from "@/components/features/instructor/submissions/detail/types";
 import type { SubmissionReview } from "@/lib/submission-review-data";
 import { ReviewHeader } from "./components/review-header";
@@ -47,7 +47,7 @@ export function SubmissionReviewView({
         review={review}
         active={active}
         onSelectItem={setActive}
-        onToggleInsights={() => setInsights(!insights)}
+        onToggleInsights={() => setInsights(true)}
       />
       <div className="flex flex-1">
         <StudentList
@@ -134,16 +134,26 @@ export function SubmissionReviewView({
                 </>
               )}
             </ItemReviewTabs>
-            <ReviewActivity detail={detail} />
+            <ReviewActivity detail={detail} item={item} firstItemId={review.items[0].id} />
             <SubmissionHistoryView history={history} detail={detail} />
             <Button
               variant="outline"
-              onClick={() => setInsights(!insights)}
-              className="h-[46px] rounded-[12px] border-pace-purple bg-pace-purple-tint text-pace-purple md:hidden"
+              onClick={() => setInsights(true)}
+              className="h-[46px] rounded-[12px] border-pace-purple bg-pace-purple-tint text-[13px] font-bold text-pace-purple md:hidden"
             >
-              ✦ Insights
+              ✦  Insights: 3 next steps
             </Button>
-            {insights && <ReviewTabsPanel detail={detail} />}
+            <InsightsSheet
+              open={insights}
+              onOpenChange={setInsights}
+              postId={detail.assignment.id}
+              studentId={detail.student.id}
+              name={detail.student.name}
+              itemId={item.id}
+              itemNumber={active + 1}
+              submissionId={review.submissionId}
+              reviewed={review.reviewed}
+            />
             <p className="hidden rounded-[8px] bg-pace-canvas px-4 py-3 text-[13px] text-pace-ink-2 md:block">
               {detail.similar
                 ? `Code similarity: ${Math.round(detail.similar.similarity * 100)}% similar to ${detail.similar.name}.`

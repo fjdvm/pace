@@ -9,11 +9,13 @@ export interface BehavioralSignals {
 }
 
 export type BehavioralEvent =
-  | { type: "paste"; timestamp: number; length: number; charsAtTimeOfPaste: number }
+  | { type: "paste"; timestamp: number; length: number; charsAtTimeOfPaste: number; lines?: number; itemId?: string }
   | { type: "focus"; timestamp: number }
   | { type: "blur"; timestamp: number }
-  | { type: "tab_switch"; timestamp: number; awayDurationSecs: number }
-  | { type: "run_attempt"; timestamp: number; passedCount: number; totalCount: number }
+  | { type: "tab_switch"; timestamp: number; awayDurationSecs: number; itemId?: string }
+  | { type: "run_attempt"; timestamp: number; passedCount: number; totalCount: number; itemId?: string }
+  | { type: "open"; timestamp: number; itemId: string }
+  | { type: "typing"; timestamp: number; chars: number; itemId: string }
   | { type: "submit"; timestamp: number };
 
 export interface StoredBehavioralSignals extends Omit<BehavioralSignals, "events" | "tabSwitchCount"> {

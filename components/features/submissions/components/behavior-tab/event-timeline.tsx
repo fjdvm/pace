@@ -17,6 +17,10 @@ function describeEvent(event: BehavioralEvent): string {
       return `Run attempt (${event.passedCount}/${event.totalCount} passed)`;
     case "tab_switch":
       return `Switched away from tab (${event.awayDurationSecs}s)`;
+    case "open":
+      return "Opened an Item";
+    case "typing":
+      return `Typed ${event.chars} characters`;
     case "submit":
       return "Submitted";
   }

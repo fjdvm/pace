@@ -7,11 +7,13 @@ import type { BehavioralSignals, BehavioralEvent } from "@/lib/types/behavioral-
 
 export type { BehavioralSignals };
 
-export function useBehavioralTracking(disabled: boolean) {
+export function useBehavioralTracking(disabled: boolean, activeItemId?: string) {
+  const itemRef = useRef(activeItemId);
   const trackingRef = useRef({
     pasteCount: 0,
     pasteLength: 0,
     keystrokeCount: 0,
+    itemKeystrokes: 0,
     typingStartTime: 0,
     focusStartTime: 0,
     totalFocusTimeSecs: 0,
@@ -23,6 +25,21 @@ export function useBehavioralTracking(disabled: boolean) {
   useEffect(() => {
     trackingRef.current.focusStartTime = Date.now();
   }, []);
+
+  const flushTyping = useCallback(() => {
+    const t = trackingRef.current;
+    if (itemRef.current && t.itemKeystrokes > 0) {
+      t.events.push({ type: "typing", timestamp: Date.now(), chars: t.itemKeystrokes, itemId: itemRef.current });
+    }
+    t.itemKeystrokes = 0;
+  }, []);
+
+  useEffect(() => {
+    if (disabled || !activeItemId) return;
+    flushTyping();
+    itemRef.current = activeItemId;
+    trackingRef.current.events.push({ type: "open", timestamp: Date.now(), itemId: activeItemId });
+  }, [activeItemId, disabled, flushTyping]);
 
   useEffect(() => {
     if (disabled) return;
@@ -56,6 +73,7 @@ export function useBehavioralTracking(disabled: boolean) {
           type: "tab_switch",
           timestamp: Date.now(),
           awayDurationSecs: Math.round(awayDurationSecs),
+          itemId: itemRef.current,
         });
         trackingRef.current.hiddenAtTime = 0;
       }
@@ -67,7 +85,8 @@ export function useBehavioralTracking(disabled: boolean) {
   const handleEditorMount: OnMount = useCallback((editor) => {
     if (disabled) return;
     editor.onDidPaste((e: MonacoEditorNS.IPasteEvent) => {
-      const pasteLength = (editor.getModel()?.getValueInRange(e.range) || "").length;
+      const pasted = editor.getModel()?.getValueInRange(e.range) || "";
+      const pasteLength = pasted.length;
       const charsAtTimeOfPaste = (editor.getModel()?.getValueLength() || 0) - pasteLength;
       trackingRef.current.pasteCount += 1;
       trackingRef.current.pasteLength += pasteLength;
@@ -76,6 +95,8 @@ export function useBehavioralTracking(disabled: boolean) {
         timestamp: Date.now(),
         length: pasteLength,
         charsAtTimeOfPaste: Math.max(0, charsAtTimeOfPaste),
+        lines: pasted.split("\n").length,
+        itemId: itemRef.current,
       });
     });
   }, [disabled]);
@@ -83,6 +104,7 @@ export function useBehavioralTracking(disabled: boolean) {
   const recordKeystroke = useCallback(() => {
     if (trackingRef.current.typingStartTime === 0) trackingRef.current.typingStartTime = Date.now();
     trackingRef.current.keystrokeCount += 1;
+    trackingRef.current.itemKeystrokes += 1;
   }, []);
 
   const recordRunAttempt = useCallback((passedCount: number, totalCount: number) => {
@@ -91,6 +113,7 @@ export function useBehavioralTracking(disabled: boolean) {
       timestamp: Date.now(),
       passedCount,
       totalCount,
+      itemId: itemRef.current,
     });
   }, []);
 
@@ -102,6 +125,7 @@ export function useBehavioralTracking(disabled: boolean) {
     const wpm = trackingRef.current.typingStartTime > 0
       ? Math.round((trackingRef.current.keystrokeCount / 5) / ((Date.now() - trackingRef.current.typingStartTime) / 60000))
       : 0;
+    flushTyping();
     trackingRef.current.events.push({ type: "submit", timestamp: Date.now() });
     return {
       pasteCount: trackingRef.current.pasteCount,
@@ -112,7 +136,7 @@ export function useBehavioralTracking(disabled: boolean) {
       tabSwitchCount: trackingRef.current.tabSwitchCount,
       events: trackingRef.current.events,
     };
-  }, []);
+  }, [flushTyping]);
 
   return { handleEditorMount, recordKeystroke, recordRunAttempt, collectSignals };
 }

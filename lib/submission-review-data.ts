@@ -27,6 +27,7 @@ export async function getSubmissionReview(
     submissionId: submission.id,
     status: submission.status as SubmissionStatus,
     finalGrade: submission.finalGrade,
+    reviewed: submission.reviewedAt !== null,
     feedback: submission.feedback ?? "",
     className: post.classes.map((c) => c.class.name).join(", "),
     students: post.submissions.map((s) => ({

@@ -73,7 +73,7 @@ export async function getSubmissionDetail(
     signals,
     heartsUsed: hearts.reduce((sum, state) => sum + state.totalSpent, 0),
     minutesOnTask: signals?.totalFocusTimeSecs ? Math.max(1, Math.round(signals.totalFocusTimeSecs / 60)) : null,
-    chat: chat.map((m) => ({ role: m.role, content: m.content, createdAt: m.createdAt.toISOString() })),
+    chat: chat.map((m) => ({ role: m.role, content: m.content, createdAt: m.createdAt.toISOString(), itemId: m.itemId })),
     similar,
     neighbors: {
       previousId: index > 0 ? ordered[index - 1].studentId : null,

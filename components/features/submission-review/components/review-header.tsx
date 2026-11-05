@@ -74,6 +74,7 @@ export function ReviewHeader({
         className="hidden rounded-full border-pace-purple bg-pace-purple-tint text-pace-purple md:flex"
       >
         ✦ Insights
+        <span className="flex size-5 items-center justify-center rounded-full bg-pace-purple text-[11px] font-bold uppercase tracking-[0.66px] text-white">3</span>
       </Button>
       {review.status !== "returned" && (
         <Button
@@ -84,7 +85,7 @@ export function ReviewHeader({
         </Button>
       )}
       <span className="shrink-0 md:hidden">
-        <PaceTag tone={flag === "High" ? "red" : "neutral"}>{flag}</PaceTag>
+        <PaceTag tone={flag === "High" ? "red" : flag === "Medium" ? "amber" : "neutral"}>{flag === "Medium" ? "Med" : flag}</PaceTag>
       </span>
     </header>
   );
