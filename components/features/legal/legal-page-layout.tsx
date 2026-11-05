@@ -15,7 +15,7 @@ export function LegalPageLayout({
     <div
       className={`${landingFontClasses} pace-landing flex min-h-screen flex-col bg-pace-canvas font-pace-sans text-pace-ink`}
     >
-      <LandingNav homeHref="/" />
+      <LandingNav />
       <main className="mx-auto w-full max-w-[800px] flex-1 px-6 pb-20 pt-36">
         <p className="pace-eyebrow mb-4 text-pace-green-deep">Legal</p>
         <h1 className="pace-h2 mb-3">{title}</h1>

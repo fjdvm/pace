@@ -43,11 +43,10 @@ test.describe("mobile", () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("button", { name: "Open menu" }).click();
-    await page.getByRole("dialog", { name: "Menu" }).getByRole("button", { name: "Start learning" }).click();
+    await page.locator("header").getByRole("link", { name: "Sign in" }).click();
   });
 
-  test("menu Start learning opens the modal", async ({ page }) => {
+  test("nav Sign in opens the modal", async ({ page }) => {
     await expect(dialogHeading(page)).toBeVisible();
   });
 
