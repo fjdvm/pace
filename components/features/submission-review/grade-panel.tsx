@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useGradeDraft } from "./components/use-grade-draft";
+import type { GradeDraft } from "./components/use-grade-draft";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,11 +13,11 @@ import type { SubmissionReview } from "@/lib/submission-review-data";
 
 export function GradePanel({
   review,
-  postId,
+  draft,
   name,
 }: {
   review: SubmissionReview;
-  postId: string;
+  draft: GradeDraft;
   name: string;
 }) {
   const [commentOpen, setCommentOpen] = useState(false);
@@ -34,7 +34,7 @@ export function GradePanel({
     total,
     sum,
     act,
-  } = useGradeDraft(review, postId);
+  } = draft;
   return (
     <section
       id="grade"
@@ -141,7 +141,6 @@ export function GradePanel({
             Return to {name.split(" ")[0]}
           </Button>
           <Button
-            id="save-draft-grade"
             variant="outline"
             disabled={pending}
             onClick={() => act("save")}

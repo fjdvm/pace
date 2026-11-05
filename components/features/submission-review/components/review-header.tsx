@@ -27,7 +27,7 @@ export function ReviewHeader({
 }) {
   const router = useRouter();
   const base = `/dashboard/submissions/${detail.assignment.id}`;
-  const flag = detail.signals?.riskScore?.flag ?? "Low";
+  const flag = review.students.find((s) => s.id === detail.student.id)?.flag ?? "Low";
   return (
     <header className="flex h-[52px] shrink-0 items-center gap-2 border-b border-pace-line pl-1 pr-4 md:h-16 md:gap-4 md:pl-3 md:pr-5">
       <Link

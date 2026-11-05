@@ -14,6 +14,7 @@ import { ReviewHeader } from "./components/review-header";
 import type { SubmissionHistory } from "@/lib/submission-history";
 import { SubmissionHistoryView } from "./components/submission-history-view";
 import { GradePanel } from "./grade-panel";
+import { useGradeDraft } from "./components/use-grade-draft";
 import { ReviewActivity } from "./review-activity";
 import { StudentList } from "./student-list";
 
@@ -22,7 +23,7 @@ const reviewMono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
-export function SubmissionReviewView({
+function ReviewBody({
   detail,
   review,
   history,
@@ -33,6 +34,7 @@ export function SubmissionReviewView({
 }) {
   const [active, setActive] = useState(0);
   const [insights, setInsights] = useState(false);
+  const draft = useGradeDraft(review, detail.assignment.id);
   const item = review.items[active];
   const tests = item.tests;
   const visible = tests.filter((t) => t.visible !== false);
@@ -153,6 +155,8 @@ export function SubmissionReviewView({
               itemNumber={active + 1}
               submissionId={review.submissionId}
               reviewed={review.reviewed}
+              draft={draft}
+              draftSaved={review.status === "graded"}
             />
             <p className="hidden rounded-[8px] bg-pace-canvas px-4 py-3 text-[13px] text-pace-ink-2 md:block">
               {detail.similar
@@ -162,9 +166,8 @@ export function SubmissionReviewView({
           </main>
           <aside className="px-4 pb-32 md:w-[320px] md:shrink-0 md:p-0">
             <GradePanel
-              key={review.submissionId + review.status}
               review={review}
-              postId={detail.assignment.id}
+              draft={draft}
               name={detail.student.name}
             />
             {detail.neighbors.nextId && (
@@ -180,4 +183,8 @@ export function SubmissionReviewView({
       </div>
     </div>
   );
+}
+
+export function SubmissionReviewView(props: Parameters<typeof ReviewBody>[0]) {
+  return <ReviewBody key={props.review.submissionId + props.review.status} {...props} />;
 }

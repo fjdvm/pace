@@ -9,6 +9,8 @@ import { returnSubmissions } from "@/app/actions/return-submissions";
 import { validateGrade } from "@/lib/submission-state";
 import type { SubmissionReview } from "@/lib/submission-review-data";
 
+export type GradeDraft = ReturnType<typeof useGradeDraft>;
+
 export function useGradeDraft(review: SubmissionReview, postId: string) {
   const [grades, setGrades] = useState<
     import("@/lib/submission-state").ItemGrade[]
