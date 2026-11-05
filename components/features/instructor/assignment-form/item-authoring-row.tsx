@@ -15,7 +15,7 @@ export function ItemAuthoringRow(
       disabled={
         state.busy ||
         (state.editing !== null &&
-          (state.editing !== id || kind === "multiple_choice"))
+          (state.editing !== id || kind !== "coding"))
       }
       onClick={() => select(state.editing === id ? null : id)}
       className="flex h-auto w-full justify-start gap-2.5 whitespace-normal rounded-none disabled:opacity-100 px-3.5 py-3 text-left"
@@ -28,9 +28,9 @@ export function ItemAuthoringRow(
       </span>
       <span className="min-w-0 flex-1 text-[15px] font-bold">{title}</span>
       <span
-        className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${kind === "coding" ? "bg-pace-blue-tint text-pace-blue" : "bg-pace-green-tint text-pace-green-deep"}`}
+        className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${kind === "short_answer" ? "bg-pace-amber-tint text-pace-ink" : kind === "coding" ? "bg-pace-blue-tint text-pace-blue" : "bg-pace-green-tint text-pace-green-deep"}`}
       >
-        {kind === "coding" ? "Coding" : "Multiple choice"}
+        {kind === "short_answer" ? "Short answer" : kind === "coding" ? "Coding" : "Multiple choice"}
       </span>
       <span className="shrink-0 text-[13px]">{points} pts</span>
       <span className="text-pace-muted">

@@ -11,8 +11,8 @@ export function ChoiceNavigation({
   mobile: boolean;
 }) {
   const done = ws.items.filter((item) =>
-    item.kind === "multiple_choice"
-      ? ws.codes[item.id] !== ""
+    item.kind === "multiple_choice" || item.kind === "short_answer"
+      ? !!ws.codes[item.id]?.trim()
       : itemComplete(ws.itemResults[item.id]),
   ).length;
   return (

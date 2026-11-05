@@ -51,7 +51,7 @@ export async function getSubmissionReview(
         code:
           answer?.code ??
           (item.id === submission.itemId ? submission.code : ""),
-        autoGrade:
+        autoGrade: item.kind === "short_answer" ? null :
           ((answer?.score ??
             (item.id === submission.itemId ? submission.score : 0)) /
             100) *

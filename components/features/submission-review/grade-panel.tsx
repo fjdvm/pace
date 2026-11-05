@@ -43,10 +43,10 @@ export function GradePanel({
       <h2 className="hidden text-base font-bold md:block">Grade</h2>
       <div className="hidden justify-between text-[13px] md:flex">
         <span className="text-pace-ink-2">
-          Items 1–{review.items.length} (automatic)
+          Automatic Item scores
         </span>
         <b>
-          {review.items.reduce((s, i) => s + i.autoGrade, 0)}/{total}
+          {review.items.reduce((s, i) => s + (i.autoGrade ?? 0), 0)}/{total}
         </b>
       </div>
 
@@ -83,7 +83,7 @@ export function GradePanel({
           className="min-h-12 rounded-[12px] border-[1.5px] border-pace-line-strong text-[15px] font-normal"
         />
       </label>
-      <details className="text-[13px]">
+      <details open={review.items.some((i) => i.kind === "short_answer")} className="text-[13px]">
         <summary className="cursor-pointer text-pace-green-deep">
           Adjust Item scores
         </summary>
@@ -93,7 +93,7 @@ export function GradePanel({
               key={item.id}
               className="flex items-center justify-between gap-2"
             >
-              Item {index + 1} / {item.points}
+              Item {index + 1}{item.kind === "short_answer" ? " · Short answer" : ""} / {item.points}
               <Input
                 aria-label={`Item ${index + 1} grade`}
                 type="number"

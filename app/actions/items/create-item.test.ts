@@ -55,3 +55,8 @@ it("creates a multiple-choice Item with its options and answer key", async () =>
     options: ["for", "do-while"], correctOption: 1 })).toMatchObject({ success: true,
       item: { kind: "multiple_choice", options: ["for", "do-while"], correctOption: 1, position: 1 } });
 });
+
+it("creates a Short answer without choices or coding configuration", async () => {
+  const { createItem } = await import("./create-item");
+  expect(await createItem("post", { kind: "short_answer", title: "Explain a loop", instructions: "", points: 10 })).toMatchObject({ success: true, item: { kind: "short_answer", options: [], correctOption: null, language: "", starterCode: "", testCases: { create: [] } } });
+});

@@ -1,21 +1,22 @@
 "use server";
 
 import { multipleChoiceData, type MultipleChoiceInput } from "@/lib/items/multiple-choice";
+import { shortAnswerData, type ShortAnswerInput } from "@/lib/items/short-answer";
 import { prisma } from "@/lib/prisma";
 import { codingItemData, type CodingItemInput } from "@/lib/items/input";
 import { currentUserId, requireItemInstructor } from "@/lib/items/permissions";
 
-export async function createItem(assignmentId: string, input: CodingItemInput | MultipleChoiceInput) {
+export async function createItem(assignmentId: string, input: CodingItemInput | MultipleChoiceInput | ShortAnswerInput) {
   try {
     const userId = await currentUserId();
-    const data = input.kind === "multiple_choice" ? multipleChoiceData(input as MultipleChoiceInput) : codingItemData(input as CodingItemInput);
+    const data = input.kind === "short_answer" ? shortAnswerData(input as ShortAnswerInput) : input.kind === "multiple_choice" ? multipleChoiceData(input as MultipleChoiceInput) : codingItemData(input as CodingItemInput);
     const item = await prisma.$transaction(async (tx) => {
       await requireItemInstructor(tx, assignmentId, userId);
       const items = await tx.item.findMany({ where: { assignmentId }, orderBy: { position: "desc" }, take: 1 });
       return tx.item.create({
         data: {
           ...data, assignmentId, position: (items[0]?.position ?? -1) + 1,
-          testCases: { create: ((input as CodingItemInput).testCases ?? []).map((tc) => ({ ...tc, assignmentId })) },
+          testCases: { create: (data.kind === "coding" ? (input as CodingItemInput).testCases ?? [] : []).map((tc) => ({ ...tc, assignmentId })) },
         },
       });
     });

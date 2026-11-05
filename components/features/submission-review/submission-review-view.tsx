@@ -1,4 +1,5 @@
 "use client";
+import { ShortAnswerReview } from "./components/short-answer-review";
 import { ChoiceOptions } from "@/components/features/student/workspace/choice-options";
 import Link from "next/link";
 import { useState } from "react";
@@ -64,15 +65,15 @@ export function SubmissionReviewView({
                     onClick={() => setActive(n)}
                     className={`h-[38px] shrink-0 rounded-[18px] bg-white px-3.5 text-[13px] ${active === n ? "border-pace-green bg-pace-green-tint" : "border-pace-line"}`}
                   >
-                    Item {n + 1} · {i.kind === "multiple_choice" ? "Multiple choice" : "Coding"}{" "}
+                    Item {n + 1} · {i.kind === "short_answer" ? "Short answer" : i.kind === "multiple_choice" ? "Multiple choice" : "Coding"}{" "}
                     <span className="text-[11px] font-bold text-pace-green-deep">
-                      {i.grade ?? i.autoGrade}/{i.points}
+                      {i.grade ?? i.autoGrade ?? "Ungraded"}/{i.points}
                     </span>
                   </Button>
                 ))}
               </div>
             )}
-            {item.kind === "multiple_choice" ? <section className="space-y-3"><h2 className="text-[22px] font-bold">{item.title}</h2>
+            {item.kind === "short_answer" ? <ShortAnswerReview item={item} /> : item.kind === "multiple_choice" ? <section className="space-y-3"><h2 className="text-[22px] font-bold">{item.title}</h2>
               <ChoiceOptions options={item.options} value={item.code} disabled />
               <p className="text-sm">Chosen option: {item.options[Number(item.code)] && item.code !== "" ? item.options[Number(item.code)] : "Unanswered"}</p>
               <p className="text-sm">Auto score: {item.autoGrade}/{item.points} · Correct answer: {item.options[item.correctOption ?? -1]}</p>

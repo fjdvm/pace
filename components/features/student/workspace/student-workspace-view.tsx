@@ -72,7 +72,7 @@ export function StudentWorkspaceView(props: WorkspaceViewProps) {
     <div
       className={`${workspaceMono.variable} flex h-dvh flex-col overflow-hidden bg-white text-pace-ink`}
     >
-      {ws.activeItem.kind === "multiple_choice" ? (
+      {ws.activeItem.kind === "multiple_choice" || ws.activeItem.kind === "short_answer" ? (
         <ChoiceWorkspace
           ws={ws}
           title={assignment.title}

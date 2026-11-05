@@ -45,7 +45,7 @@ export async function saveSubmissionGrade(
       where: { id: submissionId },
       data: {
         status: "graded",
-        finalGrade: grade,
+        finalGrade: grades.some((g) => g.grade === null) ? finalGrade : grade,
         feedback: feedback.trim() || null,
       },
     });
