@@ -38,7 +38,7 @@ export function AddChoiceMenu({
               </span>
             </span>
           </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onAdd("short_answer")} className="rounded-[8px] p-3"><span className="mr-3 flex size-8 items-center justify-center rounded-full bg-pace-amber-tint">≡</span><span><b className="block text-[15px]">Short answer</b><span className="text-[13px] text-pace-muted">A written answer graded by the Instructor</span></span></DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onAdd("short_answer")} className="rounded-[8px] p-3"><span><b className="block text-[15px]">Short answer</b><span className="text-[13px] text-pace-muted">A written answer graded by the Instructor</span></span></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

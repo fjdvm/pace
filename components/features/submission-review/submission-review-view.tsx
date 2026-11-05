@@ -1,4 +1,5 @@
 "use client";
+import { itemKindLabel } from "@/lib/items/presentation";
 import { ShortAnswerReview } from "./components/short-answer-review";
 import { ChoiceOptions } from "@/components/features/student/workspace/choice-options";
 import Link from "next/link";
@@ -65,7 +66,7 @@ export function SubmissionReviewView({
                     onClick={() => setActive(n)}
                     className={`h-[38px] shrink-0 rounded-[18px] bg-white px-3.5 text-[13px] ${active === n ? "border-pace-green bg-pace-green-tint" : "border-pace-line"}`}
                   >
-                    Item {n + 1} · {i.kind === "short_answer" ? "Short answer" : i.kind === "multiple_choice" ? "Multiple choice" : "Coding"}{" "}
+                    Item {n + 1} · {itemKindLabel(i.kind)}{" "}
                     <span className="text-[11px] font-bold text-pace-green-deep">
                       {i.grade ?? i.autoGrade ?? "Ungraded"}/{i.points}
                     </span>

@@ -1,3 +1,4 @@
+import { itemKindLabel } from "@/lib/items/presentation";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { useDashboardSession } from "@/components/features/dashboard/dashboard-session";
 import { TopBar } from "@/components/features/dashboard/top-bar/top-bar";
@@ -19,7 +20,7 @@ type Props = {
   classId: string;
   onBack: () => void;
 };
-export function ChoiceWorkspace({
+export function AnswerWorkspace({
   ws,
   title,
   className,
@@ -27,7 +28,7 @@ export function ChoiceWorkspace({
   onBack,
 }: Props) {
   const short = ws.activeItem.kind === "short_answer";
-  const label = short ? "Short answer" : "Multiple choice";
+  const label = itemKindLabel(ws.activeItem.kind);
   const session = useDashboardSession();
   const index = ws.items.findIndex((item) => item.id === ws.activeId);
   return (
@@ -90,9 +91,7 @@ export function ChoiceWorkspace({
               <span className="min-w-0">
                 <span className="block text-[13px]">{item.title}</span>
                 <span className="text-[11px] font-bold uppercase leading-[1.3] tracking-[.66px] text-pace-muted">
-                  {item.kind === "short_answer" ? "Short answer" : item.kind === "multiple_choice"
-                    ? "Multiple choice"
-                    : "Coding"}{" "}
+                  {itemKindLabel(item.kind)}{" "}
                   · {item.points} pts
                 </span>
               </span>
@@ -107,7 +106,7 @@ export function ChoiceWorkspace({
               </p>
               <b>{ws.activeItem.title}</b>
             </div>
-            <span className="rounded-full bg-pace-green-tint px-2.5 py-1 text-xs font-bold text-pace-green-deep">
+            <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${short ? "bg-pace-amber-tint text-pace-ink" : "bg-pace-green-tint text-pace-green-deep"}`}>
               {label} · {ws.activeItem.points} pts
             </span>
           </div>

@@ -1,3 +1,4 @@
+import { itemKindLabel } from "@/lib/items/presentation";
 import { Button } from "@/components/ui/button";
 export function ItemAuthoringRow(
   state: { busy: boolean; editing: string | null },
@@ -30,7 +31,7 @@ export function ItemAuthoringRow(
       <span
         className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${kind === "short_answer" ? "bg-pace-amber-tint text-pace-ink" : kind === "coding" ? "bg-pace-blue-tint text-pace-blue" : "bg-pace-green-tint text-pace-green-deep"}`}
       >
-        {kind === "short_answer" ? "Short answer" : kind === "coding" ? "Coding" : "Multiple choice"}
+        {itemKindLabel(kind)}
       </span>
       <span className="shrink-0 text-[13px]">{points} pts</span>
       <span className="text-pace-muted">

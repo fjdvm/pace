@@ -19,7 +19,7 @@ type Props = {
   settings: ReactNode;
   codingEditor: ReactNode;
 };
-export function ChoiceItems({ form, locked, settings, codingEditor }: Props) {
+export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
   const state = usePostItems(form.id, form.setItemEditing);
   const [preview, setPreview] = useState<AnswerInput | null>(null);
   const [newKind, setNewKind] = useState<"multiple_choice" | "short_answer">("multiple_choice");
