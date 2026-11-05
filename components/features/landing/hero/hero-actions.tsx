@@ -2,7 +2,7 @@ import { SignInLink } from "@/components/features/auth/sign-in/sign-in-link";
 
 export function HeroActions() {
   return (
-    <div className="flex w-full flex-col items-center gap-4 pt-10 sm:w-auto sm:flex-row">
+    <div data-hero-actions className="flex w-full flex-col items-center gap-4 pt-10 sm:w-auto sm:flex-row">
       <SignInLink
         className="pace-press group relative flex h-[66px] w-full items-center justify-center overflow-hidden rounded-[18px] bg-pace-green shadow-[0_5px_0_0_#11923a] transition-transform hover:-translate-y-0.5 sm:w-[300px]"
       >

@@ -7,5 +7,5 @@ export const metadata: Metadata = { title: "Evaluation questionnaire · PACE" };
 export const dynamic = "force-dynamic";
 
 export default async function QuestionnairePage() {
-  return <QuestionnaireView closed={!!(await getQuestionnaireClosedAt())} nav={<LandingNav homeHref="/" />} />;
+  return <QuestionnaireView closed={!!(await getQuestionnaireClosedAt())} nav={<LandingNav />} />;
 }
