@@ -28,6 +28,7 @@ model Submission {
   finalGrade        Float? @map("final_grade")
   feedback          String?
   returnedAt        DateTime? @map("returned_at")
+  reviewedAt        DateTime? @map("reviewed_at")
   submittedAt       DateTime   @default(now()) @map("submitted_at")
   student           User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
   assignment        Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)

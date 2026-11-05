@@ -19,7 +19,7 @@ export type SubmissionDetail = {
   signals: StoredBehavioralSignals | null;
   heartsUsed: number;
   minutesOnTask: number | null;
-  chat: { role: string; content: string; createdAt: string }[];
+  chat: { role: string; content: string; createdAt: string; itemId: string }[];
   similar: { studentId: string; name: string; similarity: number } | null;
   neighbors: { previousId: string | null; nextId: string | null };
 };

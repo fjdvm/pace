@@ -27,17 +27,19 @@ export function SubmissionHistoryView({
           {(revision.snapshot.answers.length
             ? revision.snapshot.answers
             : [{ itemId: revision.id, code: revision.snapshot.code }]
-          ).map((answer, index) => (
+          ).map((answer, index, all) => (
             <div key={answer.itemId}>
               <h3 className="mb-2 font-bold">Item {index + 1}</h3>
               <pre className="overflow-auto whitespace-pre rounded-[8px] bg-pace-canvas p-3 font-mono text-[13px]">
                 {answer.code}
               </pre>
+              <ReviewActivity
+                detail={{ ...detail, signals: revision.snapshot.behavioralSignals }}
+                item={{ id: answer.itemId, code: answer.code, language: detail.assignment.language }}
+                firstItemId={all[0].itemId}
+              />
             </div>
           ))}
-          <ReviewActivity
-            detail={{ ...detail, signals: revision.snapshot.behavioralSignals }}
-          />
         </section>
       ))}
     </details>

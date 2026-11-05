@@ -141,6 +141,7 @@ export function GradePanel({
             Return to {name.split(" ")[0]}
           </Button>
           <Button
+            id="save-draft-grade"
             variant="outline"
             disabled={pending}
             onClick={() => act("save")}
