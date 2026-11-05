@@ -25,7 +25,7 @@ export function TutorPanel(props: TutorPanelProps) {
   const outOfHearts = props.hearts <= 0 && !props.isSubmitted;
 
   return (
-    <div className="flex h-full w-full min-w-0 flex-col overflow-hidden border-l border-pace-line bg-white">
+    <div className="flex h-full w-full min-w-0 flex-col overflow-hidden lg:border-l border-pace-line bg-white">
       <TutorHeader
         hearts={props.hearts}
         maxHearts={props.maxHearts}
@@ -55,9 +55,10 @@ export function TutorPanel(props: TutorPanelProps) {
             ))}
           </div>
         )}
-        {outOfHearts && <OutOfHeartsCard timeToRegen={props.timeToRegen} />}
+        {outOfHearts && <OutOfHeartsCard timeToRegen={props.timeToRegen} maxHearts={props.maxHearts} />}
       </TutorMessages>
       <TutorComposer
+        hearts={props.hearts}
         disabled={outOfHearts}
         isLoading={props.isLoading}
         isSubmitted={props.isSubmitted}

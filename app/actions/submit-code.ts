@@ -107,8 +107,8 @@ export async function submitCode(
     let reward;
     try {
       revalidatePath("/dashboard", "layout");
-      const heartsState = await prisma.heartsState.findUnique({ where: key });
-      const totalHintsUsed = heartsState?.totalSpent || 0;
+      const heartsStates = await prisma.heartsState.findMany({ where: { studentId: user.id, assignmentId } });
+      const totalHintsUsed = heartsStates.reduce((sum, state) => sum + state.totalSpent, 0);
       const events = await awardSubmissionXp(
         user.id,
         assignmentId,

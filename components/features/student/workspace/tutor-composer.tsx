@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 type Props = {
+  hearts: number;
   disabled: boolean;
   isLoading: boolean;
   isSubmitted: boolean;
@@ -12,10 +13,10 @@ type Props = {
 export function TutorComposer(props: Props) {
   const locked = props.disabled || props.isSubmitted || props.isLoading;
   return (
-    <div className="flex shrink-0 flex-col gap-2 border-t border-pace-line px-4 pb-4 pt-3">
+    <div className="flex shrink-0 flex-col gap-1.5 border-t border-pace-line px-4 pb-7 pt-2.5 lg:gap-2 lg:pb-4 lg:pt-3">
       <form
         onSubmit={props.onSubmit}
-        className="flex items-center gap-2 rounded-[24px] border border-pace-line-strong py-1.5 pl-3.5 pr-1.5"
+        className={`flex items-center gap-2 rounded-[24px] border border-pace-line-strong py-1.5 pl-3.5 pr-1.5 ${props.disabled ? "bg-pace-sunken" : ""}`}
       >
         <input
           value={props.value}
@@ -26,7 +27,7 @@ export function TutorComposer(props: Props) {
             props.isSubmitted
               ? "Chat closes after submission"
               : props.disabled
-                ? `Hearts refill in ${props.timeToRegen || "a bit"}`
+                ? "Wait for a heart to ask again"
                 : "Ask about your code…"
           }
           className="min-w-0 flex-1 bg-transparent text-[13px] leading-normal outline-none placeholder:text-pace-muted"
@@ -34,14 +35,15 @@ export function TutorComposer(props: Props) {
         <Button
           type="submit"
           aria-label="Send"
-          disabled={locked || !props.value.trim()}
-          className="size-9 rounded-full bg-pace-purple p-0 text-base font-bold text-white"
+          disabled={locked}
+          className="size-9 rounded-full bg-pace-purple p-0 text-base font-bold text-white disabled:bg-pace-line-strong disabled:opacity-100"
         >
           ↑
         </Button>
       </form>
       <p className="text-[11px] font-bold uppercase leading-[1.3] tracking-[0.66px] text-pace-muted">
-        Uses 1 heart · Hearts refill every {props.regenMinutes} min
+        <span className="hidden lg:inline">Uses 1 heart · Hearts refill every {props.regenMinutes} min</span>
+        <span className="lg:hidden">Uses 1 heart · {props.hearts} left · {props.timeToRegen ? `next refill in ${Math.ceil(Number(props.timeToRegen.split(":")[0]) + Number(props.timeToRegen.split(":")[1]) / 60)} min` : "hearts full"}</span>
       </p>
     </div>
   );

@@ -59,18 +59,20 @@ export async function AssignmentWorkspacePage({ params, searchParams }: PageProp
     redirect("/dashboard");
   }
 
-  const heartsState = await getOrRegenerateHearts(user.id, id);
-
-  const chatMessages = await prisma.chatMessage.findMany({
-    where: {
-      studentId: user.id,
-      assignmentId: id,
-    },
-    orderBy: { createdAt: "asc" },
-  });
-
-  const codingItem = assignment.items[0];
+  const codingItem = assignment.items.find((item) => item.id === requestedItemId) ?? assignment.items[0];
   if (!codingItem) redirect("/dashboard");
+  const tutorStates = await Promise.all(assignment.items.map(async (item) => {
+    const hearts = await getOrRegenerateHearts(user.id, id, item.id);
+    const messages = await prisma.chatMessage.findMany({
+      where: { studentId: user.id, assignmentId: id, itemId: item.id },
+      orderBy: { createdAt: "asc" },
+    });
+    return [item.id, {
+      hearts: { currentCount: hearts.currentCount, lastRegenAt: hearts.lastRegenAt.toISOString(), totalSpent: hearts.totalSpent },
+      messages: messages.map((msg) => ({ ...msg, role: msg.role as "user" | "assistant", createdAt: msg.createdAt.toISOString() })),
+    }] as const;
+  }));
+  const initialTutorStates = Object.fromEntries(tutorStates);
 
   const formattedAssignment = {
     id: assignment.id,
@@ -83,24 +85,11 @@ export async function AssignmentWorkspacePage({ params, searchParams }: PageProp
     instructorEmail: assignment.instructor.email,
   };
 
-  const formattedHearts = {
-    currentCount: heartsState.currentCount,
-    lastRegenAt: heartsState.lastRegenAt.toISOString(),
-    totalSpent: heartsState.totalSpent,
-  };
-
   const visibleTests = codingItem.testCases.filter((tc) => tc.visible);
   const formattedTestCases = visibleTests.map((tc) => ({
     id: tc.id,
     input: tc.input,
     expectedOutput: tc.expectedOutput,
-  }));
-
-  const formattedMessages = chatMessages.map((msg) => ({
-    id: msg.id,
-    role: msg.role as "user" | "assistant",
-    content: msg.content,
-    createdAt: msg.createdAt.toISOString(),
   }));
 
   const submission = await prisma.submission.findUnique({
@@ -171,10 +160,11 @@ export async function AssignmentWorkspacePage({ params, searchParams }: PageProp
       className={enrollment.class.name}
       classId={enrollment.class.id}
       hiddenTestCount={codingItem.testCases.length - visibleTests.length}
-      initialHearts={formattedHearts}
+      initialTutorStates={initialTutorStates}
+      initialHearts={initialTutorStates[codingItem.id].hearts}
       visibleTestCases={formattedTestCases}
       initialSubmission={formattedSubmission}
-      initialChatMessages={formattedMessages}
+      initialChatMessages={initialTutorStates[codingItem.id].messages}
       initialDraftCode={items[0].code ?? codingItem.starterCode}
     />
   );

@@ -48,7 +48,7 @@ it("keeps drafts when the test runner is unavailable", async () => {
 });
 
 it("reports success after commit even if cache invalidation or hearts lookup fails", async () => {
-  db.heartsState.findUnique.mockRejectedValueOnce(new Error("offline"));
+  db.heartsState.findMany.mockRejectedValueOnce(new Error("offline"));
   expect((await submitCode("post", "print(7)", signals)).success).toBe(true);
   const { revalidatePath } = await import("next/cache");
   vi.mocked(revalidatePath).mockImplementationOnce(() => { throw new Error("cache unavailable"); });

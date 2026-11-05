@@ -50,6 +50,7 @@ export interface WorkspaceItem {
 }
 
 export interface WorkspaceViewProps {
+  initialTutorStates?: Record<string, { hearts: HeartsStateData; messages: ChatMessageData[] }>;
   initialItemId?: string;
   items?: WorkspaceItem[];
   assignment: AssignmentData;

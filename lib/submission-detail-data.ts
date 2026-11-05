@@ -31,7 +31,7 @@ export async function getSubmissionDetail(
     }),
     prisma.user.findUnique({ where: { id: studentId }, select: { id: true, name: true, email: true } }),
     prisma.chatMessage.findMany({ where: { studentId, assignmentId }, orderBy: { createdAt: "asc" } }),
-    prisma.heartsState.findUnique({ where: { studentId_assignmentId: { studentId, assignmentId } } }),
+    prisma.heartsState.findMany({ where: { studentId, assignmentId } }),
   ]);
   if (!student) return null;
   const enrolled = await prisma.enrollment.count({
@@ -71,7 +71,7 @@ export async function getSubmissionDetail(
     score: submission?.score ?? null,
     testResults: (submission?.testResults as DetailTestResult[] | undefined) ?? [],
     signals,
-    heartsUsed: hearts?.totalSpent ?? 0,
+    heartsUsed: hearts.reduce((sum, state) => sum + state.totalSpent, 0),
     minutesOnTask: signals?.totalFocusTimeSecs ? Math.max(1, Math.round(signals.totalFocusTimeSecs / 60)) : null,
     chat: chat.map((m) => ({ role: m.role, content: m.content, createdAt: m.createdAt.toISOString() })),
     similar,

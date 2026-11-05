@@ -1,6 +1,6 @@
 export const HINT_LEVEL_NAMES = [
-  "Gentle nudge",
-  "Concept hint",
+  "Concept",
+  "Where to look",
   "Specific steps",
   "Guided walkthrough",
   "Near-pseudocode",
