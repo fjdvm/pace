@@ -12,9 +12,9 @@ export function FanSlot({ index, children }: { index: number; children: ReactNod
     >
       <div
         style={{ animationDuration: `${4.4 + (index % 4) * 0.7}s`, animationDelay: `${index * 0.4}s` }}
-        className="animate-pace-fan-float [transform-style:preserve-3d]"
+        className="group animate-pace-fan-float [transform-style:preserve-3d]"
       >
-        <div className="transition-transform duration-500 ease-out [transform-style:preserve-3d] [transform:rotateY(-22deg)_rotateX(6deg)] max-sm:[transform:rotateY(-14deg)_rotateX(6deg)] hover:[transform:rotateY(0deg)_rotateX(0deg)_scale(1.05)]">
+        <div className="transition-transform duration-500 ease-out [transform-style:preserve-3d] [transform:rotateY(22deg)_rotateX(-6deg)] max-sm:[transform:rotateY(14deg)_rotateX(-6deg)] group-hover:[transform:rotateY(0deg)_rotateX(0deg)_scale(1.05)]">
           {children}
         </div>
       </div>
