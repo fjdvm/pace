@@ -29,3 +29,11 @@ test("closes on backdrop click", async ({ page }) => {
   await page.mouse.click(5, 5);
   await expect(page.getByRole("dialog")).toBeHidden();
 });
+
+test("shows no focus ring on the Google button on open, but does after Tab", async ({ page }) => {
+  const button = page.getByRole("dialog").getByRole("button", { name: /continue with google/i });
+  await expect(button).not.toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(button).toBeFocused();
+  await expect(button).toHaveCSS("box-shadow", /rgb/);
+});
