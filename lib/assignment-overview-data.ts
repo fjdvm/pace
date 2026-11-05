@@ -1,3 +1,4 @@
+import { gradePercent } from "@/lib/submission-state";
 import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { heartsSpentByStudent } from "@/lib/hearts-summary";
 import { prisma } from "@/lib/prisma";
@@ -46,7 +47,7 @@ export async function getAssignmentOverview(
   const submissions = automaticSubmissions.map((submission) => ({
     ...submission,
     score: submission.finalGrade !== null
-      ? (totalPoints ? submission.finalGrade / totalPoints * 100 : 0)
+      ? gradePercent(submission.finalGrade, totalPoints)
       : submission.score,
   }));
 

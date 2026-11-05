@@ -74,7 +74,7 @@ export function SubmittedMobile({
         <div className="flex items-center justify-between border-b border-pace-line py-1.5 text-[13px] text-pace-ink-2">
           Hearts used
           <PaceTag tone="neutral">
-            {s.heartsUsed} of {data.heartsMax}
+            {s.heartsUsed} total
           </PaceTag>
         </div>
         {s.status === "turned_in" && (

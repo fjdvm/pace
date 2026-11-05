@@ -14,6 +14,7 @@ const db = vi.hoisted(() => ({
   },
   submissionAnswer: { update: vi.fn(), updateMany: vi.fn() },
   codeDraft: { upsert: vi.fn() },
+  submissionRevision: { create: vi.fn() },
 }));
 vi.mock("@/lib/prisma", () => ({
   prisma: { ...db, $transaction: (fn: (tx: typeof db) => unknown) => fn(db) },
@@ -39,6 +40,13 @@ export const submission = {
   code: "print(1)",
   status: "turned_in",
   finalGrade: null,
+  score: 90,
+  testResults: [{ passed: true }],
+  behavioralSignals: {
+    pasteLength: 74,
+    events: [{ type: "paste", length: 74, timestamp: 42 }],
+  },
+  submittedAt: new Date("2026-11-05T10:00:00Z"),
   answers: [
     { itemId: "one", code: "print(1)", grade: 20 },
     { itemId: "two", code: "print(2)", grade: 30 },

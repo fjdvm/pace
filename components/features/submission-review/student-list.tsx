@@ -1,5 +1,6 @@
 "use client";
 import { PaceTag } from "@/components/features/student/shared/pace-tag";
+import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -31,13 +32,12 @@ export function StudentList({
           className={`flex items-center gap-2.5 py-2.5 pl-4 pr-3 ${s.id === studentId ? "bg-pace-green-tint" : ""}`}
         >
           {s.status === "graded" && (
-            <input
-              type="checkbox"
+            <Checkbox
               aria-label={`Select ${s.name} for return`}
               checked={selected.includes(s.submissionId)}
-              onChange={(e) =>
+              onCheckedChange={(checked) =>
                 setSelected(
-                  e.target.checked
+                  checked
                     ? [...selected, s.submissionId]
                     : selected.filter((id) => id !== s.submissionId),
                 )

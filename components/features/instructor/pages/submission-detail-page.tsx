@@ -1,3 +1,5 @@
+import { getSubmissionHistory } from "@/lib/submission-history";
+import { SubmissionHistoryView } from "@/components/features/submission-review/components/submission-history-view";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSubmissionDetail } from "@/lib/submission-detail-data";
@@ -16,6 +18,7 @@ export async function SubmissionDetailPage({ params }: PageProps) {
   if (!detail) redirect("/dashboard/submissions");
 
   const review = await getSubmissionReview(assignmentId, studentId, user.id);
-  if (!review) return <p className="p-6">No Submission yet.</p>;
-  return <SubmissionReviewView detail={detail} review={review} />;
+  const history = await getSubmissionHistory(assignmentId, studentId, user.id);
+  if (!review) return <main className="p-6"><p className="mb-4">No current Submission.</p><SubmissionHistoryView history={history} detail={detail} /></main>;
+  return <SubmissionReviewView detail={detail} review={review} history={history} />;
 }

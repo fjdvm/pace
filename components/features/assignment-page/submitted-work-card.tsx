@@ -49,7 +49,7 @@ export function SubmittedWorkCard({
       <p className="flex justify-between text-[13px] text-pace-ink-2">
         Hearts used{" "}
         <b className="text-pace-ink">
-          {submission.heartsUsed} of {data.heartsMax}
+          {submission.heartsUsed} total
         </b>
       </p>
       {submission.status === "turned_in" ? (

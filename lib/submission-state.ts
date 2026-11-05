@@ -46,3 +46,7 @@ export function validateGrade(
     throw new Error("Final grade must be within the Post's points");
   return finalGrade ?? grades.reduce((sum, g) => sum + (g.grade ?? 0), 0);
 }
+
+export function gradePercent(grade: number, totalPoints: number) {
+  return totalPoints > 0 ? (grade / totalPoints) * 100 : 0;
+}

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { requireStudentPost } from "@/lib/workspace/student-access";
@@ -39,6 +40,16 @@ export async function unsubmitSubmission(postId: string) {
         update: { code: answer.code },
       });
     }
+    await tx.submissionRevision.create({
+      data: {
+        id: submission.id,
+        studentId: user.id,
+        assignmentId: postId,
+        snapshot: JSON.parse(
+          JSON.stringify(submission),
+        ) as Prisma.InputJsonValue,
+      },
+    });
     await tx.submission.delete({ where: { id: submission.id } });
   });
   revalidatePath("/dashboard", "layout");

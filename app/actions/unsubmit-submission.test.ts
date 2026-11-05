@@ -16,6 +16,17 @@ it("restores every answer as a draft before removing the Turned in Submission", 
       },
     }),
   );
+  expect(db.submissionRevision.create).toHaveBeenCalledWith({
+    data: {
+      id: "submission",
+      studentId: "student",
+      assignmentId: "post",
+      snapshot: JSON.parse(JSON.stringify(submission)),
+    },
+  });
+  expect(db.submissionRevision.create.mock.invocationCallOrder[0]).toBeLessThan(
+    db.submission.delete.mock.invocationCallOrder[0],
+  );
   expect(db.submission.delete).toHaveBeenCalledWith({
     where: { id: "submission" },
   });

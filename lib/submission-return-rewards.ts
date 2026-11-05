@@ -1,3 +1,4 @@
+import { gradePercent } from "@/lib/submission-state";
 import { prisma } from "@/lib/prisma";
 import { awardSubmissionXp } from "@/lib/gamification";
 import { createNotification } from "@/lib/notifications";
@@ -21,7 +22,7 @@ export async function rewardReturnedSubmissions(ids: string[]) {
         (sum, i) => sum + i.points,
         0,
       );
-      const percent = total ? ((submission.finalGrade ?? 0) / total) * 100 : 0;
+      const percent = gradePercent(submission.finalGrade ?? 0, total);
       await awardSubmissionXp(
         submission.studentId,
         submission.assignmentId,

@@ -18,6 +18,7 @@ model User {
   createdAssignments Assignment[]
   heartsStates       HeartsState[]
   submissions        Submission[]
+  submissionRevisions SubmissionRevision[]
   chatMessages       ChatMessage[]
   xpEvents           XpEvent[]
   userBadges         UserBadge[]

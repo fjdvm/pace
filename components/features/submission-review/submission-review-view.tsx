@@ -8,6 +8,8 @@ import { ReviewTabsPanel } from "@/components/features/instructor/submissions/de
 import type { SubmissionDetail } from "@/components/features/instructor/submissions/detail/types";
 import type { SubmissionReview } from "@/lib/submission-review-data";
 import { ReviewHeader } from "./components/review-header";
+import type { SubmissionHistory } from "@/lib/submission-history";
+import { SubmissionHistoryView } from "./components/submission-history-view";
 import { GradePanel } from "./grade-panel";
 import { ReviewActivity } from "./review-activity";
 import { StudentList } from "./student-list";
@@ -20,9 +22,11 @@ const reviewMono = JetBrains_Mono({
 export function SubmissionReviewView({
   detail,
   review,
+  history,
 }: {
   detail: SubmissionDetail;
   review: SubmissionReview;
+  history: SubmissionHistory;
 }) {
   const [active, setActive] = useState(0);
   const [insights, setInsights] = useState(false);
@@ -113,6 +117,7 @@ export function SubmissionReviewView({
               </PaceTag>
             </div>
             <ReviewActivity detail={detail} />
+            <SubmissionHistoryView history={history} detail={detail} />
             <Button
               variant="outline"
               onClick={() => setInsights(!insights)}

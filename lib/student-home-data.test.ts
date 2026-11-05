@@ -21,11 +21,11 @@ it("keeps automatic and draft grades private until Returned", async () => {
     mocks.enrollments.mockResolvedValue([{ archived: false, class: {
       id: "class", name: "Class", instructor: { email: "instructor@test.com" }, joinCode: "code", archived: false,
       assignments: [{ assignment: { id: "post", title: "Post", language: "Python", dueDate: new Date(),
-        items: [{ id: "first" }], heartsCount: 5, heartsStates: [],
-        submissions: [{ status, score: 100, finalGrade: 75, submittedAt: new Date() }],
+        items: [{ id: "first", points: 0.5 }], heartsCount: 5, heartsStates: [],
+        submissions: [{ status, score: 100, finalGrade: 0.25, submittedAt: new Date() }],
       } }],
     } }]);
     const classes = await getStudentClasses("student");
-    expect(classes[0].assignments[0].score).toBe(status === "returned" ? 75 : null);
+    expect(classes[0].assignments[0].score).toBe(status === "returned" ? 50 : null);
   }
 });

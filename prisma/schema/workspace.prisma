@@ -93,3 +93,17 @@ enum SubmissionStatus {
   graded
   returned
 }
+
+model SubmissionRevision {
+  id String @id
+  studentId String @map("student_id")
+  assignmentId String @map("assignment_id")
+  snapshot Json
+  withdrawnAt DateTime @default(now()) @map("withdrawn_at")
+  student User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@index([assignmentId, studentId, withdrawnAt])
+  @@index([studentId])
+  @@map("submission_revisions")
+}

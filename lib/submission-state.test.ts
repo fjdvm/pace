@@ -41,3 +41,10 @@ it("rejects invalid grades and an ungraded Short answer before return", () => {
     ),
   ).toBe(15);
 });
+
+it("normalizes fractional point totals without clamping them", async () => {
+  const { gradePercent } = await import("./submission-state");
+  expect(gradePercent(0.25, 0.5)).toBe(50);
+  expect(gradePercent(30, 60)).toBe(50);
+  expect(gradePercent(0, 0)).toBe(0);
+});

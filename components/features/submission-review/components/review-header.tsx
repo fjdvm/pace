@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { ReviewSelect } from "./review-selects";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -42,43 +43,29 @@ export function ReviewHeader({
           <span className="hidden md:inline">{detail.assignment.title}</span>
         </h1>
         <p className="truncate text-[11px] font-bold uppercase tracking-[0.66px] text-pace-muted md:text-[13px] md:font-normal md:normal-case md:tracking-normal">
-          <select
-            aria-label="Item"
-            value={active}
-            onChange={(e) => onSelectItem(Number(e.target.value))}
-            className="max-w-full appearance-none border-0 bg-transparent font-inherit text-inherit uppercase md:hidden"
-          >
-            {review.items.map((item, n) => (
-              <option value={n} key={item.id}>
-                {detail.assignment.title} · Item {n + 1} of{" "}
-                {review.items.length}
-              </option>
-            ))}
-          </select>
+          <span className="block min-w-0 md:hidden">
+            <ReviewSelect
+              mobile
+              label="Item"
+              value={String(active)}
+              onChange={(value) => onSelectItem(Number(value))}
+              options={review.items.map((item, n) => ({
+                value: String(n),
+                label: `${detail.assignment.title} · Item ${n + 1} of ${review.items.length}`,
+              }))}
+            />
+          </span>
           <span className="hidden md:inline">
             {review.className} · {review.students.length} turned in
           </span>
         </p>
       </div>
-      <div className="relative hidden md:block">
-        <select
-          aria-label="Student"
+      <div className="hidden md:block">
+        <ReviewSelect
+          label="Student"
           value={detail.student.id}
-          onChange={(e) => router.push(`${base}/${e.target.value}`)}
-          className="h-[42px] appearance-none rounded-[8px] border border-pace-line-strong bg-white py-2 pl-3.5 pr-10 text-[13px] font-bold"
-        >
-          {review.students.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-        <Image
-          src="/grading/chevron-down.svg"
-          alt=""
-          width={24}
-          height={24}
-          className="pointer-events-none absolute right-2.5 top-[9px]"
+          options={review.students.map((s) => ({ value: s.id, label: s.name }))}
+          onChange={(value) => router.push(`${base}/${value}`)}
         />
       </div>
       <Button
@@ -96,7 +83,7 @@ export function ReviewHeader({
           Return
         </Button>
       )}
-      <span className="md:hidden">
+      <span className="shrink-0 md:hidden">
         <PaceTag tone={flag === "High" ? "red" : "neutral"}>{flag}</PaceTag>
       </span>
     </header>
