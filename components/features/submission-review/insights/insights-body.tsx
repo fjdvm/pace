@@ -16,6 +16,7 @@ export function InsightsBody({
   sent,
   onSend,
   onSaveDraft,
+  draftState,
 }: {
   result: InsightsResult | null;
   name: string;
@@ -24,6 +25,7 @@ export function InsightsBody({
   sent: boolean;
   onSend: (body: string) => void;
   onSaveDraft: () => void;
+  draftState: { pending: boolean; error: string; saved: boolean };
 }) {
   if (!result) return <Skeleton className="h-64 w-full rounded-[10px]" />;
   if (!result.success) return <p role="alert" className="text-[13px] text-pace-red">{result.error}</p>;
@@ -68,10 +70,12 @@ export function InsightsBody({
             number={3}
             title="Keep the grade as a draft"
             body={steps.draftNote}
-            actionLabel="Save grade as draft"
-            mobileLabel="Save as draft"
+            actionLabel={draftState.saved ? "Draft saved" : draftState.pending ? "Saving…" : "Save grade as draft"}
+            mobileLabel={draftState.saved ? "Draft saved" : draftState.pending ? "Saving…" : "Save as draft"}
+            disabled={draftState.pending || draftState.saved}
             onAction={onSaveDraft}
           />
+          {draftState.error && <p role="alert" className="text-[13px] text-pace-red">{draftState.error}</p>}
         </>
       )}
       <p className={`rounded-[10px] bg-pace-canvas p-3 text-[11px] font-bold uppercase tracking-[0.66px] text-pace-muted`}>

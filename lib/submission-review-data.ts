@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { isAssignmentInstructor } from "@/lib/assignment-instructor";
+import { studentFlag } from "@/lib/insights/student-flag";
+import type { StoredBehavioralSignals } from "@/lib/types/behavioral-signals";
 import { getDisplayName } from "@/lib/display-name";
 import type { DetailTestResult } from "@/components/features/instructor/submissions/detail/types";
 import type { SubmissionStatus } from "@/lib/submission-state";
@@ -35,9 +37,11 @@ export async function getSubmissionReview(
       submissionId: s.id,
       name: getDisplayName(s.student),
       status: s.status as SubmissionStatus,
-      flag:
-        (s.behavioralSignals as { riskScore?: { flag?: string } })?.riskScore
-          ?.flag ?? "Low",
+      flag: studentFlag(
+        s.behavioralSignals as unknown as StoredBehavioralSignals,
+        s.answers,
+        post.items.map((i) => i.id),
+      ),
     })),
     items: post.items.map((item) => {
       const answer = submission.answers.find((a) => a.itemId === item.id);

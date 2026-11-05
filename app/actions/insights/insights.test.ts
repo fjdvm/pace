@@ -61,6 +61,8 @@ it("marks a Submission reviewed only for its Post's Instructor", async () => {
   db.submission.updateMany.mockResolvedValue({ count: 1 });
   await markSubmissionReviewed("post", "sub");
   expect(db.submission.updateMany).toHaveBeenCalledWith({ where: { id: "sub", assignmentId: "post" }, data: { reviewedAt: expect.any(Date) } });
+  await markSubmissionReviewed("post", "sub", false);
+  expect(db.submission.updateMany).toHaveBeenLastCalledWith({ where: { id: "sub", assignmentId: "post" }, data: { reviewedAt: null } });
   db.submission.updateMany.mockResolvedValue({ count: 0 });
   await expect(markSubmissionReviewed("post", "nope")).rejects.toThrow("not found");
   auth.userId = null;

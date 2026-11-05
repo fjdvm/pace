@@ -10,6 +10,7 @@ Now: events carry the Item (`open`, `typing`, `paste` with line count, `tab_swit
 - Insights sheet (right drawer at desktop, bottom sheet at mobile): flag banner, log, three next steps, fixed not-proof note.
 - One Gemini call writes the summary, explanation, suggested comment, similarity note and draft note. It is stubbed in tests. If the key is missing or the call fails, the log and flag still show with an error.
 - Similarity runs per Item across the same Post's Submissions; "similar" means 80% or more, matching the frame's copy.
+- Follow-ups: the Student flag in the list and header is now the highest per-Item flag, matching the sheet; Mark as reviewed can be undone; Save grade as draft calls the shared grade draft directly and shows saving, saved and error states; the 32% overlay applies only to this sheet (`overlayClassName`).
 - Send suggested comment posts a private comment (existing comment rules). Save grade as draft uses the grade panel's draft save. Mark as reviewed is stored per Submission (`submissions.reviewed_at`).
 
 ## Migration

@@ -7,6 +7,7 @@ import { paceButtonBase, paceButtonStyles } from "@/components/features/student/
 import { useIsMobile } from "@/hooks/use-mobile";
 import { markSubmissionReviewed } from "@/app/actions/insights/mark-reviewed";
 import { sendSuggestedComment } from "@/app/actions/insights/send-suggested-comment";
+import type { GradeDraft } from "../components/use-grade-draft";
 import { InsightsBody } from "./insights-body";
 import { useInsights } from "./use-insights";
 
@@ -20,6 +21,8 @@ export function InsightsSheet({
   itemNumber,
   submissionId,
   reviewed,
+  draft,
+  draftSaved,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -30,6 +33,8 @@ export function InsightsSheet({
   itemNumber: number;
   submissionId: string;
   reviewed: boolean;
+  draft: GradeDraft;
+  draftSaved: boolean;
 }) {
   const mobile = useIsMobile();
   const router = useRouter();
@@ -52,6 +57,7 @@ export function InsightsSheet({
       <SheetContent
         side={mobile ? "bottom" : "right"}
         showCloseButton={false}
+        overlayClassName="bg-black/32 supports-backdrop-filter:backdrop-blur-none"
         className="gap-3 overflow-y-auto bg-white px-5 pb-7 pt-3 max-md:rounded-t-[20px] md:w-[480px] md:px-7 md:py-6 md:data-[side=right]:sm:max-w-[480px] md:shadow-[-8px_0_32px_rgba(0,0,0,0.2)]"
       >
         <span className="mx-auto h-1 w-10 rounded-sm bg-pace-line-strong md:hidden" />
@@ -76,7 +82,8 @@ export function InsightsSheet({
           studentId={studentId}
           sent={sentFor === itemId}
           onSend={(body) => run(async () => { await sendSuggestedComment(postId, studentId, body); setSentFor(itemId); })}
-          onSaveDraft={() => { document.getElementById("save-draft-grade")?.click(); close(); }}
+          onSaveDraft={() => draft.act("save")}
+          draftState={{ pending: draft.pending, error: draft.error, saved: draftSaved }}
         />
         {error && <p role="alert" className="text-[13px] text-pace-red">{error}</p>}
         <div className="flex gap-2.5 md:justify-end">
@@ -84,11 +91,11 @@ export function InsightsSheet({
             Dismiss
           </Button>
           <Button
-            disabled={pending || reviewed}
-            onClick={() => run(async () => { await markSubmissionReviewed(postId, submissionId); router.refresh(); close(); })}
+            disabled={pending}
+            onClick={() => run(async () => { await markSubmissionReviewed(postId, submissionId, !reviewed); router.refresh(); if (!reviewed) close(); })}
             className={`${paceButtonBase} ${paceButtonStyles.green} h-[52px] flex-1 md:h-10 md:flex-none`}
           >
-            {reviewed ? "Reviewed" : <><span className="md:hidden">Mark reviewed</span><span className="hidden md:inline">Mark as reviewed</span></>}
+            {reviewed ? "Reviewed · Undo" : <><span className="md:hidden">Mark reviewed</span><span className="hidden md:inline">Mark as reviewed</span></>}
           </Button>
         </div>
       </SheetContent>
