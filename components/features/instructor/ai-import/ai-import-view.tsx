@@ -23,7 +23,7 @@ export function AiImportView({ classId, className }: { classId: string; classNam
         onScanAgain={() => { draft.dropFromFile(); setReviewing(false); }} />
     );
   return (
-    <UploadStep file={flow.file} settings={flow.settings} error={flow.error} cancelHref={draft.items.length ? "#" : backHref}
+    <UploadStep file={flow.file} settings={flow.settings} error={flow.error} cancelHref={backHref} onCancel={draft.items.length ? () => setReviewing(true) : undefined}
       onFile={flow.choose} onSettings={flow.setSettings} onExtract={flow.start} />
   );
 }

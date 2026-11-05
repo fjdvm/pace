@@ -11,12 +11,13 @@ type Props = {
   settings: ImportSettings;
   error: string | null;
   cancelHref: string;
+  onCancel?: () => void;
   onFile: (file: File | null) => void;
   onSettings: (next: ImportSettings) => void;
   onExtract: () => void;
 };
 
-export function UploadStep({ file, settings, error, cancelHref, onFile, onSettings, onExtract }: Props) {
+export function UploadStep({ file, settings, error, cancelHref, onCancel, onFile, onSettings, onExtract }: Props) {
   return (
     <div className="flex flex-1 justify-center px-4 py-6 md:pt-10">
       <div className="flex h-fit w-full max-w-[720px] flex-col gap-5 rounded-[12px] border border-pace-line bg-white p-5 md:p-8">
@@ -28,7 +29,11 @@ export function UploadStep({ file, settings, error, cancelHref, onFile, onSettin
         {file ? <UploadedFileRow file={file} onRemove={() => onFile(null)} /> : <FileDropZone onFile={onFile} />}
         <ImportSettingsFields value={settings} onChange={onSettings} />
         <div className="flex justify-end gap-3">
-          <Link href={cancelHref} className="inline-flex h-[52px] items-center rounded-full px-7 text-[15px] font-bold">Cancel</Link>
+          {onCancel ? (
+            <button type="button" onClick={onCancel} className="inline-flex h-[52px] items-center rounded-full px-7 text-[15px] font-bold">Cancel</button>
+          ) : (
+            <Link href={cancelHref} className="inline-flex h-[52px] items-center rounded-full px-7 text-[15px] font-bold">Cancel</Link>
+          )}
           <Button disabled={!file} onClick={onExtract} className={`h-[52px] rounded-full px-7 text-[15px] font-bold ${paceButtonStyles.green}`}>✦ Extract with AI</Button>
         </div>
       </div>
