@@ -7,7 +7,7 @@ import type { ChatMessage } from "@/components/features/assignments/workspace-ch
 import { hintLevelForMessage, hintLevelName } from "./hint-levels";
 
 type TutorMessagesProps = {
-  messages: ChatMessage[];
+  messages: (ChatMessage & { hintLevel?: number })[];
   isLoading: boolean;
   isStreaming: boolean;
   children?: React.ReactNode;

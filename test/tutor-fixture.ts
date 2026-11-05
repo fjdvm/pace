@@ -29,7 +29,7 @@ beforeEach(() => {
     $queryRaw: mocks.query, heartsState: mocks.hearts,
     submission: { findUnique: mocks.submission }, chatMessage: mocks.messages,
   }));
-  mocks.stream.mockReturnValue({ toUIMessageStreamResponse: (options: ResponseInit) => new Response("stream", options) });
+  mocks.stream.mockReturnValue({ toUIMessageStreamResponse: vi.fn((options: ResponseInit) => new Response("stream", options)) });
 });
 
 export { mocks };

@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { Chat, useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import { toast } from "sonner";
 import { startAssignment } from "@/app/actions/start-assignment";
 import { useItemHearts } from "./use-item-hearts";
@@ -20,12 +20,12 @@ export function useWorkspaceTutor({ props, items, activeId, code, runResults, su
   const { assignment } = props;
   const { hearts, timeToRegen, refillMinutes, updateHearts } = useItemHearts(props, activeId);
   const [inputs, setInputs] = useState<Record<string, string>>({});
-  const [chats] = useState(() => Object.fromEntries(items.map((item) => [item.id, new Chat({
+  const [chats] = useState(() => Object.fromEntries(items.map((item) => [item.id, new Chat<UIMessage<{ hintLevel: number }>>({
     id: item.id,
     messages: (props.initialTutorStates?.[item.id]?.messages ?? props.initialChatMessages).map((msg) => ({
       id: msg.id, role: msg.role, parts: [{ type: "text" as const, text: msg.content }],
     })),
-    transport: new DefaultChatTransport({
+    transport: new DefaultChatTransport<UIMessage<{ hintLevel: number }>>({
       fetch: async (url, options) => {
         const response = await fetch(url, options);
         const state = response.headers.get("X-Hearts-State");
@@ -46,6 +46,7 @@ export function useWorkspaceTutor({ props, items, activeId, code, runResults, su
   const chatMessages = useMemo(() => messages.map((message) => ({
     id: message.id,
     role: message.role as "user" | "assistant",
+    hintLevel: message.metadata?.hintLevel,
     content: message.parts.filter((part) => part.type === "text").map((part) => part.text).join(""),
   })), [messages]);
 

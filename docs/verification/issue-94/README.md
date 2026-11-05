@@ -47,8 +47,11 @@ Verified in the browser:
 - Regeneration restores a heart and unlocks the composer.
 - Concurrent requests for the last heart allow one request and reject the other.
 - A foreign Item is rejected. Browser page errors: none.
+- Hint captions use server-supplied tiers, including after a failed or rejected
+  request. Regression tests cover both cases. Post statistics sum all Item
+  spending and dashboard balances explicitly select the first workspace Item.
 
-The full test suite, TypeScript, Prisma validation and lint pass. Lint retains
+The full suite (446 tests), TypeScript, Prisma validation, production build and lint pass. Lint retains
 three existing warnings in app/layout.tsx, lib/encryption.ts and lib/gamification.ts.
 
 ## Migration

@@ -16,6 +16,8 @@ it("streams the selected Item's instructions, live code and isolated history", a
     where: { studentId: "student", assignmentId: "post", itemId: "two" }, orderBy: { createdAt: "asc" },
   });
   const options = mocks.stream.mock.calls[0][0];
+  const responseOptions = mocks.stream.mock.results[0].value.toUIMessageStreamResponse.mock.calls[0][0];
+  expect(responseOptions.messageMetadata({ part: { type: "start" } })).toEqual({ hintLevel: 1 });
   expect(options.system).toContain("Second instructions");
   expect(options.system).toContain("print(0)");
   expect(options.system).not.toContain("First instructions");

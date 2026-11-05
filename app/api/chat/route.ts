@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
       },
     });
     return result.toUIMessageStreamResponse({
+      messageMetadata: ({ part }) => part.type === "start" ? { hintLevel: tier } : undefined,
       headers: {
         "X-Accel-Buffering": "no",
         "Cache-Control": "no-cache, no-transform",
