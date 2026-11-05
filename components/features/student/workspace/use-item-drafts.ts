@@ -61,6 +61,7 @@ export function useItemDrafts(
   useEffect(() => {
     flushRef.current = flush;
   });
+  useEffect(() => () => { void flushRef.current(); }, []);
   useEffect(() => {
     if (submitted) return;
     const timer = setTimeout(() => {

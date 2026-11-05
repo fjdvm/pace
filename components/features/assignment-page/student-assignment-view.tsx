@@ -16,7 +16,7 @@ export function StudentAssignmentView({ data }: { data: StudentAssignmentData })
         <AssignmentHeader data={data} />
         <MobileTags language={data.language} hearts={data.heartsMax} />
         <div className="flex flex-col gap-2.5 md:pl-14">
-          <ItemsList items={data.items} hrefFor={() => workHref} />
+          <ItemsList items={data.items} hrefFor={(item) => `${workHref}?item=${encodeURIComponent(item.id)}`} />
           {data.comments && <ClassComments data={data.comments} />}
         </div>
       </div>

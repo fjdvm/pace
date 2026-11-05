@@ -104,11 +104,11 @@ export async function submitCode(
       });
       return created;
     });
-    revalidatePath("/dashboard", "layout");
-    const heartsState = await prisma.heartsState.findUnique({ where: key });
-    const totalHintsUsed = heartsState?.totalSpent || 0;
     let reward;
     try {
+      revalidatePath("/dashboard", "layout");
+      const heartsState = await prisma.heartsState.findUnique({ where: key });
+      const totalHintsUsed = heartsState?.totalSpent || 0;
       const events = await awardSubmissionXp(
         user.id,
         assignmentId,

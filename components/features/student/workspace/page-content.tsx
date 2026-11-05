@@ -5,13 +5,15 @@ import { getOrRegenerateHearts } from "@/lib/hearts";
 import { StudentWorkspaceView } from "@/components/features/student/workspace/student-workspace-view";
 
 interface PageProps {
+  searchParams?: Promise<{ item?: string }>;
   params: Promise<{
     id: string;
   }>;
 }
 
-export async function AssignmentWorkspacePage({ params }: PageProps) {
+export async function AssignmentWorkspacePage({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const requestedItemId = (await searchParams)?.item;
 
   const supabase = await createClient();
   const {
@@ -162,6 +164,8 @@ export async function AssignmentWorkspacePage({ params }: PageProps) {
 
   return (
     <StudentWorkspaceView
+      key={`${assignment.id}:${requestedItemId ?? "first"}`}
+      initialItemId={requestedItemId}
       items={items}
       assignment={formattedAssignment}
       className={enrollment.class.name}

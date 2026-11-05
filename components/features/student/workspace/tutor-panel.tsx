@@ -13,6 +13,7 @@ type TutorPanelProps = {
   hearts: number;
   maxHearts: number;
   regenMinutes?: number;
+  failedTest?: number;
   heartsSpent: number;
   timeToRegen: string;
   chatInput: string;
@@ -41,11 +42,7 @@ export function TutorPanel(props: TutorPanelProps) {
             <p className="text-[11px] font-bold uppercase tracking-[0.66px] text-pace-muted">
               Try asking
             </p>
-            {[
-              "Explain what my code does",
-              "What concept does this use?",
-              "How do I start?",
-            ].map((text) => (
+            {(props.failedTest ? [`Why is test ${props.failedTest} failing?`, "Explain what my code does", "What concept does this use?"] : ["Explain what my code does", "What concept does this use?", "How do I start?"]).map((text) => (
               <Button
                 key={text}
                 variant="outline"

@@ -50,6 +50,7 @@ export interface WorkspaceItem {
 }
 
 export interface WorkspaceViewProps {
+  initialItemId?: string;
   items?: WorkspaceItem[];
   assignment: AssignmentData;
   className: string;

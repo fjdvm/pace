@@ -1,3 +1,4 @@
+import { itemComplete } from "./item-completion";
 import { Button } from "@/components/ui/button";
 import type {
   WorkspaceItem,
@@ -21,7 +22,7 @@ export function ItemStrip({
   onSelect,
 }: Props) {
   const done = items.filter(
-    (i) => !!results[i.id]?.length && results[i.id]!.every((r) => r.passed),
+    (i) => itemComplete(results[i.id]),
   ).length;
   return (
     <nav
@@ -45,10 +46,10 @@ export function ItemStrip({
               "flex size-6 items-center justify-center rounded-full border-[1.5px] border-pace-line-strong bg-white text-[11px] text-pace-muted",
               activeId === item.id &&
                 "border-2 border-pace-green bg-pace-green-tint text-pace-green-deep",
-              submitted && "border-pace-green bg-pace-green text-white",
+              (submitted || itemComplete(results[item.id])) && "border-pace-green bg-pace-green text-white",
             )}
           >
-            {submitted ? "✓" : index + 1}
+            {submitted || itemComplete(results[item.id]) ? "✓" : index + 1}
           </span>
           {item.title}
           <span className="text-[11px] font-bold uppercase tracking-[0.66px] text-pace-muted">

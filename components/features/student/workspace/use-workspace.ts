@@ -25,7 +25,7 @@ export function useWorkspace(props: WorkspaceViewProps) {
     props;
   const router = useRouter();
   const items = useMemo(() => workspaceItems(props), [props]);
-  const [activeId, setActiveId] = useState(items[0].id);
+  const [activeId, setActiveId] = useState(items.some((i) => i.id === props.initialItemId) ? props.initialItemId! : items[0].id);
   const activeItem = items.find((i) => i.id === activeId)!;
   const [submission, setSubmission] = useState<SubmissionData | null>(
     initialSubmission,
@@ -168,7 +168,7 @@ export function useWorkspace(props: WorkspaceViewProps) {
     items,
     activeItem,
     activeId,
-    setActiveId,
+    setActiveId(id: string) { setActiveId(id); setConsoleOutput(""); setRanAt(null); },
     itemResults,
     confirmOpen,
     setConfirmOpen,
