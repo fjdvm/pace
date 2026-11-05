@@ -16,6 +16,7 @@ type CommentSectionProps = {
   initialComments: CommentData[];
   className?: string;
   headingClassName?: string;
+  feedback?: React.ReactNode;
 };
 
 export function CommentSection({
@@ -27,6 +28,7 @@ export function CommentSection({
   instructor,
   initialComments,
   className,
+  feedback,
   headingClassName = "text-[15px] leading-[1.55] text-pace-ink-2",
 }: CommentSectionProps) {
   const [comments, setComments] = useState(initialComments);
@@ -54,6 +56,7 @@ export function CommentSection({
   return (
     <section className={className}>
       <h2 className={`font-bold ${headingClassName}`}>{title}</h2>
+      {feedback}
       {open ? (
         <div className="mt-2">
           <CommentFeed

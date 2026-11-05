@@ -10,7 +10,7 @@ import { describeReward, type SubmitReward } from "./reward";
 type ResultModalProps = {
   open: boolean;
   onClose: () => void;
-  score: number;
+  score: number | null;
   passed: number;
   total: number;
   reward: SubmitReward | null;
@@ -46,7 +46,7 @@ export function ResultModal({ open, onClose, score, passed, total, reward, backH
           {perfect ? "Your work has been turned in. Nice work." : "Your Instructor can review your work."}
         </DialogDescription>
         <div className="flex w-full gap-3">
-          <Stat value={`${Math.round(score)}%`} label="Score" tone="bg-pace-canvas" />
+          {score !== null && <Stat value={String(score)} label="Grade" tone="bg-pace-canvas" />}
           {reward && <Stat value={String(reward.heartsUsed)} label="Hearts used" tone="bg-pace-canvas" />}
           {info && <Stat value={`+${info.earned}`} label="XP earned" tone="bg-pace-amber-tint" />}
         </div>

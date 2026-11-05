@@ -24,6 +24,10 @@ model Submission {
   score             Float
   testResults       Json       @map("test_results")
   behavioralSignals Json       @map("behavioral_signals")
+  status            SubmissionStatus @default(turned_in)
+  finalGrade        Float? @map("final_grade")
+  feedback          String?
+  returnedAt        DateTime? @map("returned_at")
   submittedAt       DateTime   @default(now()) @map("submitted_at")
   student           User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
   assignment        Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
@@ -74,6 +78,7 @@ model SubmissionAnswer {
   itemId String @map("item_id")
   code String
   score Float
+  grade Float?
   testResults Json @map("test_results")
   submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
@@ -81,4 +86,24 @@ model SubmissionAnswer {
   @@id([submissionId, itemId])
   @@index([itemId])
   @@map("submission_answers")
+}
+
+enum SubmissionStatus {
+  turned_in
+  graded
+  returned
+}
+
+model SubmissionRevision {
+  id String @id
+  studentId String @map("student_id")
+  assignmentId String @map("assignment_id")
+  snapshot Json
+  withdrawnAt DateTime @default(now()) @map("withdrawn_at")
+  student User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@index([assignmentId, studentId, withdrawnAt])
+  @@index([studentId])
+  @@map("submission_revisions")
 }

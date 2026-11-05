@@ -24,7 +24,7 @@ export interface TestCaseData {
 export interface SubmissionData {
   id: string;
   code: string;
-  score: number;
+  score: number | null;
   testResults: unknown;
   submittedAt: string;
 }

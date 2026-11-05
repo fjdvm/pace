@@ -17,6 +17,7 @@ type DashboardShellProps = DashboardClasses & {
 
 export function DashboardShell({ children, teaching, enrolled, isAdmin, userEmail, userName, studentXp }: DashboardShellProps) {
   const pathname = usePathname();
+  if (/^\/dashboard\/submissions\/[^/]+\/[^/]+$/.test(pathname) && !pathname.endsWith("/compare")) return <>{children}</>;
   if (/^\/dashboard\/assignments\/(new|[^/]+\/(edit|work))$/.test(pathname)) return <>{children}</>;
 
   return (

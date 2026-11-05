@@ -7,6 +7,7 @@ export type SubmissionStudentRow = {
   name: string;
   email: string;
   status: StudentStatus;
+  submissionStatus?: import("@/lib/submission-state").SubmissionStatus;
   score: number | null;
   hearts: number;
   flags: { label: string; tone: FlagTone }[];

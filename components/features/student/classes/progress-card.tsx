@@ -3,8 +3,9 @@ import type { StudentAssignment } from "@/components/features/student/types";
 
 export function ProgressCard({ assignments }: { assignments: StudentAssignment[] }) {
   const submitted = assignments.filter((a) => a.status === "submitted");
-  const average = submitted.length
-    ? Math.round(submitted.reduce((sum, a) => sum + (a.score ?? 0), 0) / submitted.length)
+  const returned = submitted.filter((a) => a.score !== null);
+  const average = returned.length
+    ? Math.round(returned.reduce((sum, a) => sum + (a.score ?? 0), 0) / returned.length)
     : null;
 
   return (

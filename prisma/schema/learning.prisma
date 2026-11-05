@@ -19,6 +19,7 @@ model Assignment {
   testCases              TestCase[]
   heartsStates           HeartsState[]
   submissions            Submission[]
+  submissionRevisions    SubmissionRevision[]
   chatMessages           ChatMessage[]
   codeDrafts             CodeDraft[]
 

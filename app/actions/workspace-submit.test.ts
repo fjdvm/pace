@@ -21,12 +21,10 @@ it("rejects incomplete, duplicate and foreign answers before executing", async (
   }
   expect(fetch).not.toHaveBeenCalled(); expect(db.submission.create).not.toHaveBeenCalled();
 });
-it("rejects repeated, late and unauthorized turn-in", async () => {
+it("rejects repeated and unauthorized turn-in", async () => {
   db.submission.findUnique.mockResolvedValue({ id: "already" });
   expect((await submitCode("post", "", signals)).success).toBe(false);
   db.submission.findUnique.mockResolvedValue(null);
-  db.assignment.findUnique.mockResolvedValue({ ...post, dueDate: new Date("2000-01-01") });
-  expect((await submitCode("post", "", signals)).success).toBe(false);
   db.assignment.findUnique.mockResolvedValue(post); auth.userId = "instructor";
   expect((await submitCode("post", "", signals)).success).toBe(false);
   auth.userId = null; expect((await submitCode("post", "", signals)).success).toBe(false);
@@ -53,4 +51,12 @@ it("reports success after commit even if cache invalidation or hearts lookup fai
   const { revalidatePath } = await import("next/cache");
   vi.mocked(revalidatePath).mockImplementationOnce(() => { throw new Error("cache unavailable"); });
   expect((await submitCode("post", "print(7)", signals)).success).toBe(true);
+});
+
+it("accepts late work while keeping the automatic grade private", async () => {
+  db.assignment.findUnique.mockResolvedValue({ ...post, dueDate: new Date("2000-01-01") });
+  const result = await submitCode("post", "print(7)", signals);
+  expect(result.success).toBe(true);
+  expect(result.submission?.score).toBeNull();
+  expect(result.reward).toBeUndefined();
 });

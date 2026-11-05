@@ -1,3 +1,4 @@
+import { gradePercent } from "./submission-state";
 import { prisma } from "./prisma";
 import { createNotification } from "./notifications";
 import { computeLevel } from "./levels";
@@ -78,11 +79,15 @@ export async function awardSubmissionXp(studentId: string, assignmentId: string,
 }
 
 async function checkAndAwardBadges(studentId: string) {
-  const submissionCount = await prisma.submission.count({ where: { studentId } });
-  const perfectCount = await prisma.submission.count({ where: { studentId, score: 100 } });
-  const noHintsSubmissions = await prisma.submission.count({
-    where: { studentId, score: { gt: 0 } },
+  const returned = await prisma.submission.findMany({
+    where: { studentId, status: "returned" },
+    select: { finalGrade: true, assignment: { select: { items: { select: { points: true } } } } },
   });
+  const submissionCount = returned.length;
+  const perfectCount = returned.filter((submission) => gradePercent(
+    submission.finalGrade ?? 0,
+    submission.assignment.items.reduce((sum, item) => sum + item.points, 0),
+  ) >= 100).length;
   const streak = await prisma.streak.findUnique({ where: { studentId } });
   const totalXp = await getTotalXp(studentId);
 

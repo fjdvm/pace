@@ -1,3 +1,4 @@
+import { gradePercent } from "@/lib/submission-state";
 import { prisma } from "@/lib/prisma";
 import { computeLevel, getTotalXp } from "@/lib/gamification";
 import type { StudentAssignmentStatus, StudentClass, StudentHomeData } from "@/components/features/student/types";
@@ -24,7 +25,7 @@ export async function getStudentClasses(studentId: string): Promise<StudentClass
             include: {
               assignment: {
                 include: {
-                  items: { orderBy: { position: "asc" }, take: 1, select: { id: true } },
+                  items: { orderBy: { position: "asc" }, select: { id: true, points: true } },
                   heartsStates: { where: { studentId } },
                   submissions: { where: { studentId } },
                 },
@@ -58,7 +59,10 @@ export async function getStudentClasses(studentId: string): Promise<StudentClass
         classIndex,
         heartsLeft: hearts ? hearts.currentCount : a.heartsCount,
         heartsMax: a.heartsCount,
-        score: submission ? submission.score : null,
+        score: submission?.status === "returned" && submission.finalGrade != null
+          ? Math.round(gradePercent(submission.finalGrade, a.items.reduce((sum, i) => sum + (i.points ?? 100), 0)) * 100) / 100
+          : null,
+        submissionStatus: submission?.status ?? null,
         submittedAt: submission ? submission.submittedAt.toISOString() : null,
       };
     }),
