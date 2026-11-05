@@ -18,7 +18,7 @@ type Props = {
 
 export function useWorkspaceTutor({ props, items, activeId, code, runResults, submitted }: Props) {
   const { assignment } = props;
-  const { hearts, timeToRegen, updateHearts } = useItemHearts(props, activeId);
+  const { hearts, timeToRegen, refillMinutes, updateHearts } = useItemHearts(props, activeId);
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [chats] = useState(() => Object.fromEntries(items.map((item) => [item.id, new Chat({
     id: item.id,
@@ -50,7 +50,7 @@ export function useWorkspaceTutor({ props, items, activeId, code, runResults, su
   })), [messages]);
 
   return {
-    hearts, timeToRegen,
+    hearts, timeToRegen, refillMinutes,
     chatInput: inputs[activeId] ?? "",
     setChatInput: (value: string) => setInputs((previous) => ({ ...previous, [activeId]: value })),
     chatMessages, isLoading, isStreaming: status === "streaming",

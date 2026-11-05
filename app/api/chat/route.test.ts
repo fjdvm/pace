@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import { NextRequest } from "next/server";
 import { mocks } from "../../../test/tutor-fixture";
+import { WorkspaceError } from "@/lib/workspace/workspace-error";
 import { POST } from "./route";
 const request = (extra = {}) => POST(new NextRequest("http://localhost/api/chat", {
   method: "POST", body: JSON.stringify({ assignmentId: "post", itemId: "two", currentCode: "print(0)",
@@ -31,9 +32,9 @@ it("rejects unauthenticated Users and invalid input before spending hearts", asy
   expect(mocks.transaction).not.toHaveBeenCalled();
 });
 it("rejects outsiders, Instructors, Draft Posts and foreign Items before writing", async () => {
-  mocks.access.mockRejectedValueOnce(new Error("Only an enrolled Student can work on this Post"));
+  mocks.access.mockRejectedValueOnce(new WorkspaceError("Only an enrolled Student can work on this Post", 403));
   expect((await request()).status).toBe(403);
-  mocks.access.mockRejectedValueOnce(new Error("Post not found"));
+  mocks.access.mockRejectedValueOnce(new WorkspaceError("Post not found", 404));
   expect((await request()).status).toBe(404);
   expect((await request({ itemId: "foreign" })).status).toBe(404);
   expect(mocks.transaction).not.toHaveBeenCalled();

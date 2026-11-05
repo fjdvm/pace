@@ -1,4 +1,5 @@
 import { isAssignmentInstructor } from "@/lib/assignment-instructor";
+import { heartsSpentByStudent } from "@/lib/hearts-summary";
 import { prisma } from "@/lib/prisma";
 import { getDisplayName } from "@/lib/display-name";
 import { splitClassName } from "@/lib/class-name";
@@ -52,8 +53,7 @@ export async function getAssignmentOverview(
     }
   }
 
-  const heartsBy = new Map<string, number>();
-  for (const state of heartsStates) heartsBy.set(state.studentId, (heartsBy.get(state.studentId) ?? 0) + state.totalSpent);
+  const heartsBy = heartsSpentByStudent(heartsStates);
   const submissionBy = new Map(submissions.map((s) => [s.studentId, s]));
   const started = new Set([...heartsStates.map((h) => h.studentId), ...drafts.map((d) => d.studentId)]);
 

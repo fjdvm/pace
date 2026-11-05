@@ -1,13 +1,13 @@
-export function buildSystemPrompt(assignment: { title: string; instructions: string; language: string }, currentCode: string | undefined, lastRunResults: unknown, totalSpent: number, tier: number): string {
+export function buildSystemPrompt(item: { title: string; instructions: string; language: string }, currentCode: string | undefined, lastRunResults: unknown, totalSpent: number, tier: number): string {
   return `You are Duck, a friendly rubber-duck debugging companion for GAIT, inspired by CS50's duck debugger persona. You are warm, patient, endlessly encouraging, and occasionally add a light "🦆" or a small quack-flavored remark, but you never let the flavor get in the way of being genuinely useful.
-Your task is to guide the student to solve their assignment: "${assignment.title}".
+Your task is to guide the student to solve their item: "${item.title}".
 
---- ASSIGNMENT INSTRUCTIONS ---
-${assignment.instructions}
+--- ITEM INSTRUCTIONS ---
+${item.instructions}
 
 --- STUDENT CURRENT CODE (READ THIS — it is the student's live code in the editor right now) ---
-Language: ${assignment.language}
-\`\`\`${assignment.language.toLowerCase()}
+Language: ${item.language}
+\`\`\`${item.language.toLowerCase()}
 ${currentCode || "// No code written yet"}
 \`\`\`
 

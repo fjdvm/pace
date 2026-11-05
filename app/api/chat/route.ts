@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getModelWithFallback } from "@/lib/ai-provider";
 import { requireStudentPost } from "@/lib/workspace/student-access";
 import { recordTutorRequest } from "@/lib/workspace/tutor-request";
+import { WorkspaceError } from "@/lib/workspace/workspace-error";
 import { buildSystemPrompt } from "@/lib/workspace/tutor-prompt";
 
 export async function POST(req: NextRequest) {
@@ -53,8 +54,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Tutor unavailable";
-    const denied = /enrolled Student|turned in|hearts remaining/.test(message);
-    const missing = message === "Post not found";
-    return Response.json({ error: message }, { status: denied ? 403 : missing ? 404 : 500 });
+    return Response.json({ error: message }, { status: err instanceof WorkspaceError ? err.status : 500 });
   }
 }

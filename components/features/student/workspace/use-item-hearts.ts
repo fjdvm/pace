@@ -23,5 +23,5 @@ export function useItemHearts(props: WorkspaceViewProps, activeId: string) {
   const seconds = Math.max(0, Math.ceil((regenerated.lastRegenAt.getTime() + props.assignment.heartsRegenMinutes * 60_000 - now) / 1000));
   const timeToRegen = regenerated.currentCount >= props.assignment.heartsCount ? "" :
     `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
-  return { hearts: { ...regenerated, lastRegenAt: regenerated.lastRegenAt.toISOString() }, timeToRegen, updateHearts };
+  return { hearts: { ...regenerated, lastRegenAt: regenerated.lastRegenAt.toISOString() }, timeToRegen, refillMinutes: regenerated.currentCount >= props.assignment.heartsCount ? null : Math.ceil(seconds / 60), updateHearts };
 }

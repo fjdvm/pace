@@ -5,6 +5,7 @@ type Props = {
   isLoading: boolean;
   isSubmitted: boolean;
   timeToRegen: string;
+  refillMinutes: number | null;
   regenMinutes: number;
   value: string;
   onChange: (value: string) => void;
@@ -43,7 +44,7 @@ export function TutorComposer(props: Props) {
       </form>
       <p className="text-[11px] font-bold uppercase leading-[1.3] tracking-[0.66px] text-pace-muted">
         <span className="hidden lg:inline">Uses 1 heart · Hearts refill every {props.regenMinutes} min</span>
-        <span className="lg:hidden">Uses 1 heart · {props.hearts} left · {props.timeToRegen ? `next refill in ${Math.ceil(Number(props.timeToRegen.split(":")[0]) + Number(props.timeToRegen.split(":")[1]) / 60)} min` : "hearts full"}</span>
+        <span className="lg:hidden">Uses 1 heart · {props.hearts} left · {props.refillMinutes !== null ? `next refill in ${props.refillMinutes} min` : "hearts full"}</span>
       </p>
     </div>
   );

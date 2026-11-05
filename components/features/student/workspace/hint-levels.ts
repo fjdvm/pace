@@ -15,3 +15,8 @@ export function nextHintLevel(heartsSpent: number) {
 export function hintLevelName(level: number) {
   return HINT_LEVEL_NAMES[Math.min(MAX_HINT_LEVEL, Math.max(1, level)) - 1];
 }
+
+export function hintLevelForMessage(messages: { role: string }[], index: number) {
+  return Math.min(MAX_HINT_LEVEL, Math.max(1,
+    messages.slice(0, index + 1).filter((message) => message.role === "user").length));
+}

@@ -24,6 +24,7 @@ export async function getStudentClasses(studentId: string): Promise<StudentClass
             include: {
               assignment: {
                 include: {
+                  items: { orderBy: { position: "asc" }, take: 1, select: { id: true } },
                   heartsStates: { where: { studentId } },
                   submissions: { where: { studentId } },
                 },
@@ -44,8 +45,8 @@ export async function getStudentClasses(studentId: string): Promise<StudentClass
     archived: e.archived || e.class.archived,
     assignments: e.class.assignments.map(({ assignment: a }) => {
       const submission = a.submissions[0];
-      const hearts = a.heartsStates[0];
-      const status: StudentAssignmentStatus = submission ? "submitted" : hearts ? "in progress" : "not started";
+      const hearts = a.heartsStates.find((state) => state.itemId === a.items[0]?.id);
+      const status: StudentAssignmentStatus = submission ? "submitted" : a.heartsStates.length ? "in progress" : "not started";
       return {
         id: a.id,
         title: a.title,

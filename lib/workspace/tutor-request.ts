@@ -1,3 +1,4 @@
+import { WorkspaceError } from "./workspace-error";
 import { prisma } from "@/lib/prisma";
 import { regenerateItemHearts } from "@/lib/hearts";
 
@@ -12,9 +13,9 @@ export async function recordTutorRequest(
     const submission = await tx.submission.findUnique({
       where: { studentId_assignmentId: { studentId, assignmentId: post.id } },
     });
-    if (submission) throw new Error("Post already turned in. Chat is read-only.");
+    if (submission) throw new WorkspaceError("Post already turned in. Chat is read-only.", 403);
     const state = await regenerateItemHearts(tx, studentId, post, itemId);
-    if (state.currentCount <= 0) throw new Error("0 hearts remaining. Wait for regeneration.");
+    if (state.currentCount <= 0) throw new WorkspaceError("0 hearts remaining. Wait for regeneration.", 403);
     const hearts = await tx.heartsState.update({
       where: { studentId_itemId: { studentId, itemId } },
       data: {

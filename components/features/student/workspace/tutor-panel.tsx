@@ -16,6 +16,7 @@ type TutorPanelProps = {
   failedTest?: number;
   heartsSpent: number;
   timeToRegen: string;
+  refillMinutes: number | null;
   chatInput: string;
   onChatInputChange: (value: string) => void;
   onSend: (text: string) => void;
@@ -59,6 +60,7 @@ export function TutorPanel(props: TutorPanelProps) {
       </TutorMessages>
       <TutorComposer
         hearts={props.hearts}
+        refillMinutes={props.refillMinutes}
         disabled={outOfHearts}
         isLoading={props.isLoading}
         isSubmitted={props.isSubmitted}

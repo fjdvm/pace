@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { ChatMessage } from "@/components/features/assignments/workspace-chat/chat-bubble";
-import { MAX_HINT_LEVEL, hintLevelName } from "./hint-levels";
+import { hintLevelForMessage, hintLevelName } from "./hint-levels";
 
 type TutorMessagesProps = {
   messages: ChatMessage[];
@@ -29,7 +29,7 @@ export function TutorMessages({ messages, isLoading, isStreaming, children }: Tu
         </p>
       )}
       {visible.map((m, i) => {
-        const hintCount = visible.slice(0, i + 1).filter((x) => x.role === "assistant").length;
+        const hintCount = hintLevelForMessage(visible, i);
         if (m.role === "user") {
           return (
             <div key={m.id || i} className="flex shrink-0 justify-end lg:justify-start">
@@ -42,7 +42,7 @@ export function TutorMessages({ messages, isLoading, isStreaming, children }: Tu
         return (
           <div key={m.id || i} className="flex w-[294px] max-w-full shrink-0 flex-col gap-1.5 rounded-[12px] bg-pace-purple-tint px-3 py-2.5 lg:w-[274px]">
             <span className="text-[11px] font-bold uppercase leading-[1.3] tracking-[0.66px] text-pace-purple">
-              Hint level {Math.min(hintCount, MAX_HINT_LEVEL)} · {hintLevelName(hintCount)}
+              Hint level {hintCount} · {hintLevelName(hintCount)}
             </span>
             <div className="text-[13px] leading-normal text-pace-ink break-words [&_code]:rounded [&_code]:bg-white/70 [&_code]:px-1 [&_p]:my-1 [&_pre]:overflow-x-auto [&_pre]:rounded-[8px] [&_pre]:bg-white/70 [&_pre]:p-2 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
