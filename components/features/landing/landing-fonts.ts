@@ -5,6 +5,7 @@ import {
   JetBrains_Mono,
   Newsreader,
   Inter,
+  Geist_Mono,
 } from "next/font/google";
 
 const funnelSans = Funnel_Sans({
@@ -40,6 +41,11 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
 export const landingFontClasses = [
   funnelSans.variable,
   funnelDisplay.variable,
@@ -47,4 +53,5 @@ export const landingFontClasses = [
   jetBrainsMono.variable,
   newsreader.variable,
   inter.variable,
+  geistMono.variable,
 ].join(" ");
