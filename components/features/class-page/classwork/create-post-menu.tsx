@@ -35,9 +35,10 @@ export function CreatePostMenu({ classId }: { classId: string }) {
           className="w-[300px] max-w-[calc(100vw-32px)] rounded-[8px] border-0 bg-white px-0 py-2 shadow-[0_4px_16px_0_rgba(0,0,0,.16)]"
         >
           <DropdownMenuItem
-            disabled
-            className={`${row} bg-pace-purple-tint data-disabled:opacity-100`}
-            title="File import is coming in a separate ticket"
+            className={`${row} bg-pace-purple-tint`}
+            render={
+              <Link href={`/dashboard/assignments/import?classId=${classId}`} />
+            }
           >
             <Image src="/post/folder.svg" alt="" width={24} height={24} />
             <MenuCopy

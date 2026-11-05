@@ -1,6 +1,7 @@
 import { jsonSchema } from "ai";
+import type { JSONSchema7 } from "json-schema";
 
-const testCase = {
+const testCase: JSONSchema7 = {
   type: "object",
   properties: {
     input: { type: "string" },
@@ -11,7 +12,7 @@ const testCase = {
   required: ["input", "expectedOutput", "visible", "fromExample"],
 };
 
-const item = {
+const item: JSONSchema7 = {
   type: "object",
   properties: {
     kind: { type: "string", enum: ["coding", "multiple_choice", "short_answer"] },

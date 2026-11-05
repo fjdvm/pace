@@ -20,12 +20,14 @@ export function imageMediaType(name: string, type: string) {
     : "image/jpeg";
 }
 
-export function checkImportFile(file: { name: string; type: string; size: number }) {
-  if (file.size === 0) return { error: "That file is empty." } as const;
+export type FileCheck = { kind: ImportFileKind } | { error: string };
+
+export function checkImportFile(file: { name: string; type: string; size: number }): FileCheck {
+  if (file.size === 0) return { error: "That file is empty." };
   if (file.size > MAX_IMPORT_BYTES)
-    return { error: "That file is over 20 MB. Choose a smaller file." } as const;
+    return { error: "That file is over 20 MB. Choose a smaller file." };
   const kind = importFileKind(file.name, file.type);
   if (!kind)
-    return { error: "Use a PDF, Word (.docx), JPG or PNG file." } as const;
-  return { kind } as const;
+    return { error: "Use a PDF, Word (.docx), JPG or PNG file." };
+  return { kind };
 }
