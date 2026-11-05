@@ -96,7 +96,7 @@ export async function loadStudentAssignment(
     items: assignment.items.map((item) => ({
       id: item.id,
       title: item.title,
-      kind: "coding",
+      kind: item.kind,
       points: item.points,
       grade:
         submission?.status === "returned"

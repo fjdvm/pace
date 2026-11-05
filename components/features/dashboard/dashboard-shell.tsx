@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardSessionProvider } from "./dashboard-session";
 import { usePathname } from "next/navigation";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { DashboardClasses } from "@/lib/dashboard-classes";
@@ -15,18 +16,55 @@ type DashboardShellProps = DashboardClasses & {
   children: React.ReactNode;
 };
 
-export function DashboardShell({ children, teaching, enrolled, isAdmin, userEmail, userName, studentXp }: DashboardShellProps) {
+export function DashboardShell({
+  children,
+  teaching,
+  enrolled,
+  isAdmin,
+  userEmail,
+  userName,
+  studentXp,
+}: DashboardShellProps) {
   const pathname = usePathname();
-  if (/^\/dashboard\/submissions\/[^/]+\/[^/]+$/.test(pathname) && !pathname.endsWith("/compare")) return <>{children}</>;
-  if (/^\/dashboard\/assignments\/(new|[^/]+\/(edit|work))$/.test(pathname)) return <>{children}</>;
+  if (
+    /^\/dashboard\/submissions\/[^/]+\/[^/]+$/.test(pathname) &&
+    !pathname.endsWith("/compare")
+  )
+    return <>{children}</>;
+  if (/^\/dashboard\/assignments\/(new|[^/]+\/(edit|work))$/.test(pathname))
+    return (
+      <DashboardSessionProvider
+        value={{
+          classes: [...teaching, ...enrolled],
+          userEmail,
+          userName,
+          isInstructor: teaching.length > 0 && enrolled.length === 0,
+          studentXp,
+        }}
+      >
+        {children}
+      </DashboardSessionProvider>
+    );
 
   return (
     <SidebarProvider className="h-svh min-h-0 flex-col overflow-hidden bg-pace-canvas">
       <ClassTitleProvider>
-        <TopBar classes={[...teaching, ...enrolled]} userEmail={userEmail} userName={userName} isInstructor={teaching.length > 0 && enrolled.length === 0} studentXp={studentXp} />
+        <TopBar
+          classes={[...teaching, ...enrolled]}
+          userEmail={userEmail}
+          userName={userName}
+          isInstructor={teaching.length > 0 && enrolled.length === 0}
+          studentXp={studentXp}
+        />
         <div className="flex min-h-0 flex-1">
-          <AppSidebar teaching={teaching} enrolled={enrolled} isAdmin={isAdmin} />
-          <SidebarInset className="min-w-0 overflow-y-auto bg-pace-canvas">{children}</SidebarInset>
+          <AppSidebar
+            teaching={teaching}
+            enrolled={enrolled}
+            isAdmin={isAdmin}
+          />
+          <SidebarInset className="min-w-0 overflow-y-auto bg-pace-canvas">
+            {children}
+          </SidebarInset>
         </div>
       </ClassTitleProvider>
     </SidebarProvider>

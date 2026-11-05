@@ -57,6 +57,7 @@ enum PostLabel {
 }
 
 enum ItemKind {
+  multiple_choice
   coding
 }
 
@@ -68,6 +69,8 @@ model Item {
   title        String
   instructions String
   language     String
+  options      String[]      @default([])
+  correctOption Int?         @map("correct_option")
   starterCode  String        @default("") @map("starter_code")
   points       Float         @default(100)
   assignment   Assignment    @relation(fields: [assignmentId], references: [id], onDelete: Cascade)

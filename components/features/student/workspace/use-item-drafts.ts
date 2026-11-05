@@ -15,7 +15,7 @@ export function useItemDrafts(
     Object.fromEntries(
       items.map((i) => [
         i.id,
-        i.code ?? (i.starterCode || DEFAULT_CODE_TEMPLATES[i.language] || ""),
+        i.code ?? (i.kind === "multiple_choice" ? "" : (i.starterCode || DEFAULT_CODE_TEMPLATES[i.language] || "")),
       ]),
     ),
   );

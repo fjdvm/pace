@@ -1,5 +1,6 @@
 "use client";
 
+import { ChoiceItems } from "./choice-items";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -12,7 +13,6 @@ import { DetailsSection } from "./details-section";
 import { FormHeader } from "./form-header";
 import { PostSettings } from "./post-settings";
 import { MonitoringSettings } from "./monitoring-settings";
-import { ItemsSummary } from "./items-summary";
 import { StarterCodeSection } from "./starter-code-section";
 import { CodingTests } from "./coding-tests";
 import { MobilePostForm } from "./mobile-post-form";
@@ -66,10 +66,47 @@ export function AssignmentFormView({
         onPreview={() => setPreview(true)}
         onDelete={requestDelete}
       />
-      {desktop ? (
+      {form.id ? (
+        <ChoiceItems
+          form={form}
+          locked={locked}
+          settings={
+            <>
+              <PostSettings
+                values={form.values}
+                classes={classes}
+                locked={locked}
+                onChange={form.patch}
+              />
+              <MonitoringSettings />
+            </>
+          }
+          codingEditor={
+            <>
+              <DetailsSection
+                values={form.values}
+                onTitleChange={form.changeTitle}
+                onInstructionsChange={form.changeInstructions}
+              />
+              <StarterCodeSection
+                values={form.values}
+                locked={locked}
+                onChange={form.patch}
+              />
+              <CodingTests
+                testCases={form.values.testCases}
+                points={form.values.points ?? 100}
+                locked={locked}
+                onChange={form.changeTestCase}
+                onAdd={form.addTestCase}
+                onRemove={form.removeTestCase}
+              />
+            </>
+          }
+        />
+      ) : desktop ? (
         <div className="flex flex-1 items-stretch">
           <main className="flex min-w-0 flex-1 flex-col gap-5 px-10 py-8">
-            <ItemsSummary values={form.values} />
             <DetailsSection
               values={form.values}
               onTitleChange={form.changeTitle}

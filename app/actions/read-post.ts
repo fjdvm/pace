@@ -22,7 +22,7 @@ export async function readPost(assignmentId: string) {
       id: post.id, title: post.title, label: post.label, isDraft: post.isDraft,
       dueDate: post.dueDate, createdAt: post.createdAt,
       heartsCount: post.heartsCount, heartsRegenMinutes: post.heartsRegenMinutes,
-      items: post.items.map((item) => ({ ...item, testCases: item.testCases.filter((tc) => isInstructor || tc.visible) })),
+      items: post.items.map((item) => ({ ...item, correctOption: isInstructor ? item.correctOption : undefined, testCases: item.testCases.filter((tc) => isInstructor || tc.visible) })),
       totalPoints: post.items.reduce((sum, item) => sum + item.points, 0),
     } };
   } catch (error) {

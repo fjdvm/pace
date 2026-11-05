@@ -111,6 +111,8 @@ export async function AssignmentWorkspacePage({ params, searchParams }: PageProp
     const answer = submission?.answers.find((a) => a.itemId === item.id);
     return {
       id: item.id,
+      kind: item.kind,
+      options: item.options,
       title: item.title,
       instructions: item.instructions,
       language: item.language,

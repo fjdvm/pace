@@ -48,3 +48,10 @@ it.each([{ points: -1 }, { points: NaN }, { kind: "multiple_choice" }, { languag
     expect(db.item.create).not.toHaveBeenCalled();
   },
 );
+
+it("creates a multiple-choice Item with its options and answer key", async () => {
+  const { createItem } = await import("./create-item");
+  expect(await createItem("post", { kind: "multiple_choice", title: "Which loop?", instructions: "", points: 10,
+    options: ["for", "do-while"], correctOption: 1 })).toMatchObject({ success: true,
+      item: { kind: "multiple_choice", options: ["for", "do-while"], correctOption: 1, position: 1 } });
+});

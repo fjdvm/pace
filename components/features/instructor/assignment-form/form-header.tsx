@@ -46,7 +46,7 @@ export function FormHeader({
         <Image src="/post/assignment.svg" alt="" width={24} height={24} />
       </span>
       <h1 className="min-w-0 flex-1 truncate text-base font-bold tracking-[-.08px] md:text-xl md:tracking-[-.2px]">
-        <span className="md:hidden">Coding assignment</span>
+        <span className="md:hidden">{values.label ?? "Activity"}</span>
         <span className="hidden items-center md:flex">
           <span>{values.label ?? "Activity"} · </span>
           <Input

@@ -28,11 +28,11 @@ export function ItemRow({ item, index, href }: ItemRowProps) {
           className={`text-[13px] ${item.status === "submitted" ? "text-pace-green-deep" : "text-pace-muted"}`}
         >
           {item.status === "submitted"
-            ? `${item.passed}/${item.tests} tests pass`
-            : `Coding · ${itemStatusLabel(item.status)}`}
+            ? (item.kind === "multiple_choice" ? "Answer turned in" : `${item.passed}/${item.tests} tests pass`)
+            : `${item.kind === "multiple_choice" ? "Multiple choice" : "Coding"} · ${itemStatusLabel(item.status)}`}
         </span>
       </div>
-      <PaceTag tone="blue">Coding</PaceTag>
+      <PaceTag tone={item.kind === "multiple_choice" ? "green" : "blue"}>{item.kind === "multiple_choice" ? "Multiple choice" : "Coding"}</PaceTag>
       <span className="shrink-0 text-[13px] font-bold text-pace-ink-2">
         {item.grade != null
           ? `${item.grade}/${item.points}`

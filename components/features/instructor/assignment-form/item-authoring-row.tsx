@@ -1,0 +1,41 @@
+import { Button } from "@/components/ui/button";
+export function ItemAuthoringRow(
+  state: { busy: boolean; editing: string | null },
+  select: (id: string | null) => void,
+
+  id: string,
+  title: string,
+  kind: string,
+  points: number,
+  index: number,
+) {
+  return (
+    <Button
+      variant="ghost"
+      disabled={
+        state.busy ||
+        (state.editing !== null &&
+          (state.editing !== id || kind === "multiple_choice"))
+      }
+      onClick={() => select(state.editing === id ? null : id)}
+      className="flex h-auto w-full justify-start gap-2.5 whitespace-normal rounded-none disabled:opacity-100 px-3.5 py-3 text-left"
+    >
+      <span aria-hidden className="text-[13px] text-pace-muted">
+        ⋮⋮
+      </span>
+      <span className="flex size-[26px] shrink-0 items-center justify-center rounded-full bg-pace-sunken text-[11px] font-bold">
+        {index + 1}
+      </span>
+      <span className="min-w-0 flex-1 text-[15px] font-bold">{title}</span>
+      <span
+        className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${kind === "coding" ? "bg-pace-blue-tint text-pace-blue" : "bg-pace-green-tint text-pace-green-deep"}`}
+      >
+        {kind === "coding" ? "Coding" : "Multiple choice"}
+      </span>
+      <span className="shrink-0 text-[13px]">{points} pts</span>
+      <span className="text-pace-muted">
+        {state.editing === id ? "▴" : "▾"}
+      </span>
+    </Button>
+  );
+}

@@ -47,3 +47,13 @@ it("keeps Instructor analytics out of the Student Post response", async () => {
   expect(result.post).not.toHaveProperty("statsReportNarrative");
   expect(result.post).not.toHaveProperty("statsReportGeneratedAt");
 });
+
+it("does not disclose the multiple-choice answer key to a Student", async () => {
+  db.assignment.findFirst.mockResolvedValue({ id: "post", classes: [], items: [
+    { id: "choice", kind: "multiple_choice", points: 10, options: ["for", "while"], correctOption: 1, testCases: [] },
+  ] });
+  const { readPost } = await import("./read-post");
+  const result = await readPost("post");
+  expect(result.post?.items[0].options).toEqual(["for", "while"]);
+  expect(result.post?.items[0].correctOption).toBeUndefined();
+});

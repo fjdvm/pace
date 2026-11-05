@@ -44,6 +44,8 @@ export async function getSubmissionReview(
         id: item.id,
         title: item.title,
         kind: item.kind,
+        options: item.options,
+        correctOption: item.correctOption,
         points: item.points,
         language: item.language,
         code:
