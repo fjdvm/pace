@@ -20,3 +20,23 @@ Standards: 1 remaining hard violation and 2 nonblocking smell judgments. The sav
 No scope creep found. Core scoring, key privacy, role-checked CRUD and review rendering appear implemented.
 
 Spec: 1 remaining finding; Figma fidelity/comparisons are the blocker. Correctness and validation gaps are resolved. All 490 tests pass after corrections.
+
+## Playwright follow-up review
+
+Follow-up fixed point: `69b71f4`; implementation: `07d187e`. Both axes reviewed the new diff independently.
+
+### Standards
+
+No blocking findings. The prior shell violation is resolved: the workspace now reuses the existing `TopBar` and CLI-installed shadcn `Sidebar` through `DashboardSessionProvider`. Item loading/mutations, rows, menu, editor, preview and navigation have focused files under 200 lines. Save-time controls remain disabled and completion reuses `itemComplete`. The string-based selection representation remains a nonblocking design judgment.
+
+Standards: **0 blocking findings**.
+
+### Spec
+
+No new blocking findings. Unified authoring preserves Coding form state, blocks Post persistence while a choice Item is unfinished, prevents switching away from an active choice editor and freezes controls during writes. CRUD updates the list and clears editing state; totals and preview include the active draft. Existing key-race and privacy protections are retained.
+
+The documented Playwright flows and all four comparisons resolve the previous visual-verification blocker. Differences are explicitly listed with reasons. No scope creep found.
+
+Spec: **0 blocking findings**.
+
+Production build completed successfully after both reviews were requested. Typecheck, lint and all 490 tests pass. Earlier draft blockers above are superseded by this follow-up.
