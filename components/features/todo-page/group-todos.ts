@@ -25,7 +25,7 @@ function byDue(a: StudentAssignment, b: StudentAssignment) {
 }
 
 export function tabOf(assignment: StudentAssignment, now = new Date()): TodoTab {
-  if (assignment.status === "submitted") return "done";
+  if (assignment.submissionStatus || assignment.status === "submitted") return "done";
   return new Date(assignment.dueDate).getTime() < now.getTime() ? "missing" : "assigned";
 }
 

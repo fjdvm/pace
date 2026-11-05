@@ -145,7 +145,7 @@ export async function AssignmentWorkspacePage({ params, searchParams }: PageProp
     ? {
         id: submission.id,
         code: submission.code,
-        score: submission.score,
+        score: submission.status === "returned" ? submission.finalGrade : null,
         testResults: items[0].testResults,
         submittedAt: submission.submittedAt.toISOString(),
       }

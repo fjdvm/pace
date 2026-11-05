@@ -24,7 +24,7 @@ export async function getStudentClasses(studentId: string): Promise<StudentClass
             include: {
               assignment: {
                 include: {
-                  items: { orderBy: { position: "asc" }, take: 1, select: { id: true } },
+                  items: { orderBy: { position: "asc" }, select: { id: true, points: true } },
                   heartsStates: { where: { studentId } },
                   submissions: { where: { studentId } },
                 },
@@ -58,7 +58,10 @@ export async function getStudentClasses(studentId: string): Promise<StudentClass
         classIndex,
         heartsLeft: hearts ? hearts.currentCount : a.heartsCount,
         heartsMax: a.heartsCount,
-        score: submission ? submission.score : null,
+        score: submission?.status === "returned" && submission.finalGrade != null
+          ? Math.round(submission.finalGrade / Math.max(1, a.items.reduce((sum, i) => sum + (i.points ?? 100), 0)) * 10000) / 100
+          : null,
+        submissionStatus: submission?.status ?? null,
         submittedAt: submission ? submission.submittedAt.toISOString() : null,
       };
     }),

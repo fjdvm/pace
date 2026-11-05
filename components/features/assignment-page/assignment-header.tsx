@@ -13,12 +13,23 @@ export function AssignmentHeader({ data }: { data: StudentAssignmentData }) {
           {data.title}
         </h1>
         <p className="text-[13px] text-pace-muted">
-          Prof. {data.instructorName.replace(/^prof\.?\s+/i, "")} · {formatMonthDay(data.postedAt)}
+          Prof. {data.instructorName.replace(/^prof\.?\s+/i, "")} ·{" "}
+          {formatMonthDay(data.postedAt)}
+          {data.submission?.returnedAt &&
+            ` (Returned ${formatMonthDay(data.submission.returnedAt)})`}
         </p>
         <p className="border-b border-pace-line pb-3 text-right text-[13px] font-bold text-pace-ink md:[border-bottom-color:var(--color-pace-green-deep)] md:text-[15px]">
+          <span className="float-left">
+            {data.submission?.status === "returned"
+              ? `${data.submission.grade}/${data.totalPoints}`
+              : `${data.totalPoints ?? 100} points`}
+          </span>
           {formatDueSentence(data.dueDate)}
+          {data.submission?.late && " · Late"}
         </p>
-        <p className="whitespace-pre-wrap text-[15px] leading-[1.55] text-pace-ink">{data.instructions}</p>
+        <p className="whitespace-pre-wrap text-[15px] leading-[1.55] text-pace-ink">
+          {data.instructions}
+        </p>
       </div>
     </div>
   );

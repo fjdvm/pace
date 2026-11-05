@@ -11,6 +11,7 @@ export interface StudentAssignment {
   classIndex: number;
   heartsLeft: number;
   heartsMax: number;
+  submissionStatus?: import("@/lib/submission-state").SubmissionStatus | null;
   score: number | null;
   submittedAt: string | null;
 }

@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSubmissionDetail } from "@/lib/submission-detail-data";
-import { SubmissionDetailView } from "@/components/features/instructor/submissions/detail/submission-detail-view";
+import { SubmissionReviewView } from "@/components/features/submission-review/submission-review-view";
+import { getSubmissionReview } from "@/lib/submission-review-data";
 
 type PageProps = { params: Promise<{ assignmentId: string; studentId: string }> };
 
@@ -14,5 +15,7 @@ export async function SubmissionDetailPage({ params }: PageProps) {
   const detail = await getSubmissionDetail(user.id, assignmentId, studentId);
   if (!detail) redirect("/dashboard/submissions");
 
-  return <SubmissionDetailView detail={detail} />;
+  const review = await getSubmissionReview(assignmentId, studentId, user.id);
+  if (!review) return <p className="p-6">No Submission yet.</p>;
+  return <SubmissionReviewView detail={detail} review={review} />;
 }

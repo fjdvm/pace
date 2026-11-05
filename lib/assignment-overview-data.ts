@@ -24,6 +24,7 @@ export async function getAssignmentOverview(
   const assignment = await prisma.assignment.findUnique({
     where: { id: assignmentId },
     include: {
+      items: { select: { points: true } },
       testCases: { orderBy: { id: "asc" } },
       classes: {
         include: {
@@ -35,11 +36,19 @@ export async function getAssignmentOverview(
   if (!assignment) return null;
 
   const activeClasses = assignment.classes.map((l) => l.class).filter((c) => !c.archived);
-  const [submissions, heartsStates, drafts] = await Promise.all([
+  const [automaticSubmissions, heartsStates, drafts] = await Promise.all([
     prisma.submission.findMany({ where: { assignmentId } }),
     prisma.heartsState.findMany({ where: { assignmentId } }),
     prisma.codeDraft.findMany({ where: { assignmentId }, select: { studentId: true } }),
   ]);
+
+  const totalPoints = assignment.items.reduce((sum, item) => sum + item.points, 0);
+  const submissions = automaticSubmissions.map((submission) => ({
+    ...submission,
+    score: submission.finalGrade !== null
+      ? (totalPoints ? submission.finalGrade / totalPoints * 100 : 0)
+      : submission.score,
+  }));
 
   const roster = Array.from(
     new Map(activeClasses.flatMap((c) => c.enrollments.map((e) => [e.student.id, e.student] as const))).values(),
@@ -65,6 +74,7 @@ export async function getAssignmentOverview(
       name: names.get(student.id) ?? student.email,
       email: student.email,
       status: studentStatus({ submitted: !!submission, started: started.has(student.id) }),
+      submissionStatus: submission?.status,
       score: submission ? submission.score : null,
       hearts: heartsBy.get(student.id) ?? 0,
       flags: submission

@@ -135,7 +135,7 @@ export function StudentWorkspaceView(props: WorkspaceViewProps) {
       <ResultModal
         open={ws.resultOpen}
         onClose={() => ws.setResultOpen(false)}
-        score={ws.submission?.score ?? 0}
+        score={ws.submission?.score ?? null}
         passed={passed}
         total={results.length}
         reward={ws.reward}

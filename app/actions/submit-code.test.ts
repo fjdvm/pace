@@ -120,6 +120,8 @@ describe("submitCode behavioral signals", () => {
 
     expect(result.success).toBe(true);
     // score is driven entirely by test-case pass rate (mocked Judge0 always "Accepted"), not by risk
-    expect(result.submission!.score).toBe(100);
+    expect(result.submission!.score).toBeNull();
+    const stored = await prisma.submission.findUnique({ where: { studentId_assignmentId: { studentId, assignmentId } } });
+    expect(stored!.score).toBe(100);
   });
 });

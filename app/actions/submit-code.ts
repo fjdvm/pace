@@ -4,8 +4,6 @@ import { revalidatePath } from "next/cache";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
-import { awardSubmissionXp, getTotalXp } from "@/lib/gamification";
-import { createNotification } from "@/lib/notifications";
 import { computeRiskScore } from "@/lib/risk-score";
 import type { BehavioralSignals } from "@/lib/types/behavioral-signals";
 import { requireStudentPost } from "@/lib/workspace/student-access";
@@ -37,8 +35,6 @@ export async function submitCode(
     };
     if (await prisma.submission.findUnique({ where: key }))
       throw new Error("You have already turned in this Post");
-    if (new Date() > post.dueDate)
-      throw new Error("The submission deadline has passed");
     const answers = validateAnswers(
       post.items.map((i) => i.id),
       itemAnswers ?? [{ itemId: post.items[0].id, code }],
@@ -104,32 +100,8 @@ export async function submitCode(
       });
       return created;
     });
-    let reward;
-    try {
-      revalidatePath("/dashboard", "layout");
-      const heartsStates = await prisma.heartsState.findMany({ where: { studentId: user.id, assignmentId } });
-      const totalHintsUsed = heartsStates.reduce((sum, state) => sum + state.totalSpent, 0);
-      const events = await awardSubmissionXp(
-        user.id,
-        assignmentId,
-        score,
-        totalHintsUsed,
-      );
-      reward = {
-        events,
-        totalXp: await getTotalXp(user.id),
-        heartsUsed: totalHintsUsed,
-      };
-      await createNotification({
-        userId: user.id,
-        type: "submission_graded",
-        title: `${post.title} graded`,
-        message: `You scored ${score}%.`,
-        link: `/dashboard/assignments/${assignmentId}`,
-      });
-    } catch (error) {
-      console.error("Submission saved; reward notification failed:", error);
-    }
+    try { revalidatePath("/dashboard", "layout"); }
+    catch (error) { console.error("Submission saved; cache refresh failed:", error); }
     const visibleAnswers = graded.map((a) => ({
       itemId: a.itemId,
       code: a.code,
@@ -140,12 +112,12 @@ export async function submitCode(
       submission: {
         id: submission.id,
         code: first.code,
-        score,
+        score: null,
         testResults: visibleAnswers[0].testResults,
         submittedAt: submission.submittedAt.toISOString(),
       },
       answers: visibleAnswers,
-      reward,
+      reward: undefined,
     };
   } catch (err) {
     return {

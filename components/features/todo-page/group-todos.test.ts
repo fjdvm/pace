@@ -42,3 +42,10 @@ describe("groupAssigned", () => {
     expect(groups.later.map((a) => a.id)).toEqual(["later"]);
   });
 });
+
+it("keeps Turned in, Graded and Returned work Done, and unsubmitted overdue work Missing", () => {
+  for (const submissionStatus of ["turned_in", "graded", "returned"] as const) {
+    expect(tabOf({ ...item("post", new Date(2026, 9, 10)), submissionStatus }, now)).toBe("done");
+  }
+  expect(tabOf({ ...item("post", new Date(2026, 9, 10), "in progress"), submissionStatus: null }, now)).toBe("missing");
+});

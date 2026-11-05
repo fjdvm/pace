@@ -7,6 +7,10 @@ export type AssignmentItem = {
   title: string;
   kind: "coding";
   status: ItemStatus;
+  points?: number;
+  grade?: number | null;
+  passed?: number;
+  tests?: number;
 };
 
 export type AssignmentCommentsData = {
@@ -30,6 +34,18 @@ export type StudentAssignmentData = {
   instructorName: string;
   heartsLeft: number;
   heartsMax: number;
+  totalPoints?: number;
+  submission?: {
+    status: import("@/lib/submission-state").SubmissionStatus;
+    submittedAt: string;
+    returnedAt: string | null;
+    late: boolean;
+    grade: number | null;
+    feedback: string | null;
+    heartsUsed: number;
+    visiblePassed: number;
+    visibleTotal: number;
+  } | null;
   items: AssignmentItem[];
   comments: AssignmentCommentsData | null;
 };
