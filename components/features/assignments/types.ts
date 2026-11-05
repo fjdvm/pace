@@ -1,6 +1,7 @@
 export interface AssignmentData {
   id: string;
   title: string;
+  overviewInstructions?: string;
   instructions: string;
   language: string;
   dueDate: string;

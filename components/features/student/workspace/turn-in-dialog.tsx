@@ -17,6 +17,7 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   items: WorkspaceItem[];
+  statuses: Record<string, string>;
   results: Record<string, TestRunResult[] | null>;
   heartsUsed: number;
   maxHearts: number;
@@ -24,6 +25,7 @@ type Props = {
   onConfirm: () => void;
 };
 export function TurnInDialog(props: Props) {
+  const unanswered = props.items.filter((item) => props.statuses[item.id] === "not-started");
   return (
     <Dialog
       open={props.open}
@@ -63,8 +65,9 @@ export function TurnInDialog(props: Props) {
               {props.heartsUsed} of {props.maxHearts}
             </p>
           </div>
+          {unanswered.length > 0 && <p role="alert" className="rounded-lg bg-pace-amber-tint p-3 text-[13px]">{unanswered.length} unanswered {unanswered.length === 1 ? "Item" : "Items"}: {unanswered.map((item) => `Item ${props.items.indexOf(item) + 1}`).join(", ")}. You can go back to finish or turn in anyway.</p>}
           <DialogDescription className="text-[13px] leading-normal text-pace-muted">
-            You can only turn in once. Check your work before you continue.
+            Turn in all answers together for this Post. Check your work before you continue.
           </DialogDescription>
           <div className="flex justify-end gap-2">
             <Button

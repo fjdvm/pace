@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { itemComplete } from "./item-completion";
 import type { useWorkspace } from "./use-workspace";
 export function ChoiceNavigation({
   ws,
@@ -10,11 +9,6 @@ export function ChoiceNavigation({
   index: number;
   mobile: boolean;
 }) {
-  const done = ws.items.filter((item) =>
-    item.kind === "multiple_choice" || item.kind === "short_answer"
-      ? !!ws.codes[item.id]?.trim()
-      : itemComplete(ws.itemResults[item.id]),
-  ).length;
   return (
     <>
       <Button
@@ -26,7 +20,7 @@ export function ChoiceNavigation({
         ‹ Item {index}
       </Button>
       <span className="hidden flex-1 text-right text-[13px] text-pace-muted lg:block">
-        {done} of {ws.items.length} done
+        {ws.done} of {ws.items.length} done
       </span>
       {index < ws.items.length - 1 && (
         <Button

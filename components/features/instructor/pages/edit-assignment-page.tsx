@@ -24,7 +24,7 @@ export async function EditAssignmentPage({ params }: PageProps) {
     where: { id },
     include: {
       classes: { select: { classId: true } },
-      items: { orderBy: { position: "asc" }, take: 1, include: { testCases: { orderBy: { id: "asc" } } } },
+      items: { where: { kind: "coding" }, orderBy: { position: "asc" }, take: 1, include: { testCases: { orderBy: { id: "asc" } } } },
       _count: { select: { submissions: true, codeDrafts: true, heartsStates: true, chatMessages: true } },
     },
   });
@@ -39,6 +39,7 @@ export async function EditAssignmentPage({ params }: PageProps) {
       initialSavedAt={assignment.isDraft ? assignment.updatedAt.toISOString() : undefined}
       locked={hasStudentWork(assignment._count)}
       initial={{
+        itemId: assignment.items[0]?.id,
         isDraft: assignment.isDraft,
         label: assignment.label,
         starterCode: assignment.items[0]?.starterCode ?? "",
