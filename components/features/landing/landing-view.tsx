@@ -1,6 +1,7 @@
 import { landingFontClasses } from "./landing-fonts";
 import { LandingNav } from "./nav/landing-nav";
 import { LandingHero } from "./hero/landing-hero";
+import { MeetSparkSection } from "./meet-spark/meet-spark-section";
 import { WhatIsPace } from "./what-is-pace/what-is-pace";
 import { ProblemSection } from "./problem/problem-section";
 import { ApproachSection } from "./approach/approach-section";
@@ -20,6 +21,7 @@ export function LandingView() {
       <LandingNav />
       <main className="flex flex-col">
         <LandingHero />
+        <MeetSparkSection />
         <WhatIsPace />
         <ProblemSection />
         <ApproachSection />
