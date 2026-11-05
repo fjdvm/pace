@@ -3,6 +3,8 @@ import {
   Funnel_Display,
   Libre_Caslon_Text,
   JetBrains_Mono,
+  Newsreader,
+  Inter,
 } from "next/font/google";
 
 const funnelSans = Funnel_Sans({
@@ -26,9 +28,23 @@ const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  weight: "500",
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
 export const landingFontClasses = [
   funnelSans.variable,
   funnelDisplay.variable,
   libreCaslon.variable,
   jetBrainsMono.variable,
+  newsreader.variable,
+  inter.variable,
 ].join(" ");
