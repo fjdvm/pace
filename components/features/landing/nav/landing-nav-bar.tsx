@@ -16,7 +16,7 @@ export function LandingNavBar({ account }: { account: LandingAccount }) {
   const { scrolled, targetGone } = useScrollState("[data-hero-actions]");
 
   return (
-    <header className="fixed inset-x-0 top-8 z-50 px-4 sm:px-7">
+    <header className="fixed left-1/2 top-6 z-50 w-full max-w-full -translate-x-1/2 px-4 sm:top-8 sm:px-7">
       <div
         data-scrolled={scrolled}
         className={cn(

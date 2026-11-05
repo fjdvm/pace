@@ -15,7 +15,7 @@ import { LandingFooter } from "./footer/landing-footer";
 export function LandingView() {
   return (
     <div
-      className={`${landingFontClasses} pace-landing flex min-h-screen flex-col bg-pace-canvas font-pace-sans text-pace-ink`}
+      className={`${landingFontClasses} pace-landing flex min-h-screen overflow-x-clip flex-col bg-pace-canvas font-pace-sans text-pace-ink`}
     >
       <LandingNav />
       <main className="flex flex-col">

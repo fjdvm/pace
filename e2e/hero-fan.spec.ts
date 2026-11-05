@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("desktop fan has 7 cards in 3D with perspective 1400 and rotateY -22", async ({ page }) => {
+test("desktop fan has 7 cards in 3D with perspective 1400 and rotateY 22", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
   const fan = page.locator("[data-hero-fan]");
