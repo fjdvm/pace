@@ -1,11 +1,12 @@
 "use client";
 
+import { useRef } from "react";
+import { Button } from "@/components/ui/button";
+import type { editor } from "monaco-editor";
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
-import { PaceIcon } from "@/components/features/student/shared/pace-icon";
+import { PaceTag } from "@/components/features/student/shared/pace-tag";
 import type { TestRunResult } from "@/components/features/assignments/types";
-import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ConsolePanel } from "./console-panel";
-import { WorkspaceResizeHandle } from "./workspace-resize-handle";
 
 const MONACO_LANGUAGE_MAP: Record<string, string> = {
   Python: "python",
@@ -14,24 +15,35 @@ const MONACO_LANGUAGE_MAP: Record<string, string> = {
   "C#": "csharp",
 };
 
-const FILE_EXTENSIONS: Record<string, string> = { Python: "py", C: "c", JavaScript: "js", "C#": "cs" };
+const FILE_EXTENSIONS: Record<string, string> = {
+  Python: "py",
+  C: "c",
+  JavaScript: "js",
+  "C#": "cs",
+};
 
 const defineTheme: BeforeMount = (monaco) => {
-  monaco.editor.defineTheme("pace-dark", {
-    base: "vs-dark",
+  monaco.editor.defineTheme("pace-light", {
+    base: "vs",
     inherit: true,
-    rules: [],
+    rules: [
+      { token: "comment", foreground: "8a8a85" },
+      { token: "keyword", foreground: "8b5cf6" },
+      { token: "predefined", foreground: "5b7cfa" },
+    ],
     colors: {
-      "editor.background": "#141414",
-      "editor.lineHighlightBackground": "#2a2a27",
-      "editorLineNumber.foreground": "#5c5c58",
-      "editorLineNumber.activeForeground": "#e8e6e1",
+      "editor.background": "#ffffff",
+      "editor.lineHighlightBackground": "#ffffff",
+      "editorLineNumber.foreground": "#8a8a85",
+      "editorLineNumber.activeForeground": "#141414",
     },
   });
 };
 
 type EditorPanelProps = {
+  itemId?: string;
   language: string;
+  mobile?: boolean;
   code: string;
   isSubmitted: boolean;
   runResults: TestRunResult[] | null;
@@ -42,34 +54,44 @@ type EditorPanelProps = {
 };
 
 export function EditorPanel(props: EditorPanelProps) {
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const ext = FILE_EXTENSIONS[props.language] ?? "txt";
   return (
-    <div className="flex h-full w-full min-w-0 flex-col bg-pace-ink">
-      <div className="flex shrink-0 items-center gap-2 bg-[#1e1e1c] px-4 py-2.5 font-mono text-[13px] leading-[22px]">
-        <PaceIcon name="workspace/code-editor" size={14} />
-        <span className="text-[#e8e6e1]">main.{ext}</span>
-        <span className="flex-1" />
-        <span className="text-pace-muted">{props.language}</span>
+    <div className="flex h-full w-full min-w-0 flex-col bg-white">
+      <div className="flex shrink-0 items-center gap-2 border-b border-pace-line bg-white px-4 py-2.5 text-[13px] leading-[22px]">
+        <span className="font-mono font-bold text-pace-ink">main.{ext}</span>
+        <PaceTag tone="neutral">
+          {props.language === "Python" ? "Python 3" : props.language}
+        </PaceTag>
       </div>
-      <ResizablePanelGroup orientation="vertical" className="min-h-0 flex-1">
-        <ResizablePanel id="code" defaultSize="68" minSize="25">
-      <div className="h-full">
+      <div className="min-h-0 flex-1">
         <Editor
+          path={props.itemId ? `${props.itemId}/main.${ext}` : undefined}
           height="100%"
           language={MONACO_LANGUAGE_MAP[props.language]}
-          theme="pace-dark"
+          theme="pace-light"
           beforeMount={defineTheme}
           value={props.code}
           onChange={props.onCodeChange}
-          onMount={props.onEditorMount}
+          onMount={(instance, monaco) => {
+            editorRef.current = instance;
+            props.onEditorMount(instance, monaco);
+          }}
           options={{
             minimap: { enabled: false },
             fontSize: 13,
-            lineHeight: 22,
+            lineHeight: props.mobile ? 29 : 27.5,
             fontFamily: "var(--font-mono, monospace)",
             automaticLayout: true,
             padding: { top: 16, bottom: 12 },
             lineNumbers: "on",
+            lineNumbersMinChars: 2,
+            glyphMargin: false,
+            folding: false,
+            renderLineHighlight: "none",
+            guides: { indentation: false },
+            overviewRulerLanes: 0,
+            hideCursorInOverviewRuler: true,
             scrollBeyondLastLine: false,
             tabSize: 4,
             cursorBlinking: "smooth",
@@ -77,17 +99,41 @@ export function EditorPanel(props: EditorPanelProps) {
           }}
         />
       </div>
-        </ResizablePanel>
-        <WorkspaceResizeHandle />
-        <ResizablePanel id="console" defaultSize="32" minSize="10">
-        <ConsolePanel
-        results={props.runResults}
-        ranAt={props.ranAt}
-        output={props.consoleOutput}
-        isSubmitted={props.isSubmitted}
-      />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+      {!props.mobile && (
+        <div className="h-[250px] shrink-0">
+          <ConsolePanel
+            results={props.runResults}
+            ranAt={props.ranAt}
+            output={props.consoleOutput}
+            isSubmitted={props.isSubmitted}
+          />
+        </div>
+      )}
+      {props.mobile && (
+        <div className="flex shrink-0 gap-2 bg-pace-canvas px-3 py-2">
+          {["Tab", "(", ")", ":", "=", '\"', "+"].map((key) => (
+            <Button
+              key={key}
+              variant="ghost"
+              disabled={props.isSubmitted}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => {
+                const instance = editorRef.current;
+                const selection = instance?.getSelection();
+                if (instance && selection) {
+                  instance.executeEdits("keyboard", [
+                    { range: selection, text: key === "Tab" ? "    " : key },
+                  ]);
+                  instance.focus();
+                }
+              }}
+              className="h-auto rounded-md bg-white px-3 py-1.5 font-mono text-[13px] font-normal"
+            >
+              {key}
+            </Button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

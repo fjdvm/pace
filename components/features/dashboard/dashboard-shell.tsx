@@ -17,7 +17,7 @@ type DashboardShellProps = DashboardClasses & {
 
 export function DashboardShell({ children, teaching, enrolled, isAdmin, userEmail, userName, studentXp }: DashboardShellProps) {
   const pathname = usePathname();
-  if (/^\/dashboard\/assignments\/(new|[^/]+\/edit)$/.test(pathname)) return <>{children}</>;
+  if (/^\/dashboard\/assignments\/(new|[^/]+\/(edit|work))$/.test(pathname)) return <>{children}</>;
 
   return (
     <SidebarProvider className="h-svh min-h-0 flex-col overflow-hidden bg-pace-canvas">

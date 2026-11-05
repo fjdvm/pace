@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { mockAuthenticatedUser } from "../../test/mock-auth";
 import type { BehavioralSignals, StoredBehavioralSignals } from "@/lib/types/behavioral-signals";
 
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+
 describe("submitCode behavioral signals", () => {
   let studentId: string;
   let instructorId: string;
@@ -26,6 +28,7 @@ describe("submitCode behavioral signals", () => {
       data: { name: "Signals Test Class", instructorId, joinCode: randomUUID().slice(0, 6).toUpperCase() },
     });
     classId = cls.id;
+    await prisma.enrollment.create({ data: { studentId, classId } });
 
     const assignment = await prisma.assignment.create({
       data: {
@@ -38,6 +41,7 @@ describe("submitCode behavioral signals", () => {
       },
     });
     assignmentId = assignment.id;
+    await prisma.testCase.create({ data: { assignmentId, input: "", expectedOutput: "", visible: true } });
 
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,

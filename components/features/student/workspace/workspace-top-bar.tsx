@@ -1,69 +1,115 @@
+import { MobileItemMenu } from "./mobile-item-menu";
+import type { WorkspaceItem } from "@/components/features/assignments/types";
+import Image from "next/image";
 import Link from "next/link";
-import { PaceTag } from "@/components/features/student/shared/pace-tag";
-import { PaceIcon } from "@/components/features/student/shared/pace-icon";
-import { formatDueSentence, isUrgent } from "@/lib/student-dates";
+import { formatDueSentence } from "@/lib/student-dates";
 import type { AutosaveStatus } from "@/components/features/assignments/use-autosave";
-import { FeedbackButton } from "@/components/features/feedback/feedback-button";
 import { SaveIndicator } from "./save-indicator";
+import { WorkspaceActions } from "./workspace-actions";
 
-type WorkspaceTopBarProps = {
-  className: string;
+type Props = {
+  items: WorkspaceItem[];
+  activeId: string;
+  onSelect: (id: string) => void;
+  onBack: () => void;
   title: string;
-  language: string;
+  itemTitle: string;
+  itemIndex: number;
+  itemCount: number;
   dueDate: string;
   backHref: string;
   autosaveStatus: AutosaveStatus;
+  hearts: number;
+  maxHearts: number;
   isSubmitted: boolean;
   isRunning: boolean;
   isSubmitting: boolean;
   onRun: () => void;
   onSubmit: () => void;
 };
-
-export function WorkspaceTopBar(props: WorkspaceTopBarProps) {
-  const busy = props.isRunning || props.isSubmitting;
+export function WorkspaceTopBar(props: Props) {
   return (
-    <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-pace-line bg-white px-5 py-3">
+    <header className="flex h-[52px] shrink-0 items-center gap-2 border-b border-pace-line bg-white pl-1 pr-4 lg:h-16 lg:gap-4 lg:pl-3 lg:pr-5">
       <Link
         href={props.backHref}
+        onClick={(event) => {
+          if (!event.metaKey && !event.ctrlKey) {
+            event.preventDefault();
+            props.onBack();
+          }
+        }}
         aria-label="Back to class"
-        className="flex size-9 shrink-0 items-center justify-center rounded-full border-[1.5px] border-pace-line"
+        className="flex size-10 shrink-0 items-center justify-center rounded-full"
       >
-        <PaceIcon name="workspace/arrow-left" size={16} />
+        <Image
+          src="/student/workspace/back.svg"
+          alt=""
+          width={24}
+          height={24}
+        />
       </Link>
-      <div className="flex min-w-0 flex-col gap-0.5">
-        <span className="truncate text-[13px] leading-normal text-pace-muted">{props.className}</span>
-        <span className="truncate text-base font-bold leading-snug tracking-[-0.005em] text-pace-ink">
-          {props.title}
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-base font-bold leading-[1.35] tracking-[-0.08px]">
+          <span className="lg:hidden">
+            <MobileItemMenu
+              items={props.items}
+              activeId={props.activeId}
+              onSelect={props.onSelect}
+              disabled={props.isRunning || props.isSubmitting}
+            />
+          </span>
+          <span className="hidden lg:inline">{props.title}</span>
+        </p>
+        <div className="flex items-center gap-1 text-[11px] font-bold uppercase leading-[1.3] tracking-[0.66px] text-pace-muted lg:text-[13px] lg:font-normal lg:normal-case lg:leading-normal lg:tracking-normal">
+          <span className="shrink-0">
+            Item {props.itemIndex + 1} of {props.itemCount} ·
+          </span>{" "}
+          <span className="lg:hidden">
+            <SaveIndicator
+              status={props.autosaveStatus}
+              isSubmitted={props.isSubmitted}
+            />
+          </span>
+          <span className="hidden truncate lg:inline">
+            {props.itemTitle} · {formatDueSentence(props.dueDate)}
+          </span>
+        </div>
+      </div>
+      <div className="hidden lg:block">
+        <SaveIndicator
+          status={props.autosaveStatus}
+          isSubmitted={props.isSubmitted}
+        />
+      </div>
+      <div className="flex items-center gap-2 rounded-[14px] bg-pace-red-tint px-2.5 py-[5px] text-[13px] font-bold text-pace-red lg:rounded-[16px] lg:px-3 lg:py-1.5">
+        <span className="hidden lg:block">
+          <span className="flex gap-1">
+            {Array.from({ length: props.maxHearts }, (_, i) => (
+              <Image
+                key={i}
+                src={
+                  i < props.hearts
+                    ? "/student/workspace/heart-full.svg"
+                    : "/auth/heart-empty.svg"
+                }
+                alt=""
+                width={18}
+                height={18}
+              />
+            ))}
+          </span>
+        </span>
+        <span className="lg:hidden">♥</span>
+        <span className="lg:hidden">
+          {props.hearts}/{props.maxHearts}
+        </span>
+        <span className="hidden lg:inline">
+          {props.hearts} of {props.maxHearts}
         </span>
       </div>
-      <PaceTag tone="neutral">{props.language}</PaceTag>
-      <PaceTag tone="red" className={isUrgent(props.dueDate) ? "" : "bg-pace-sunken text-pace-ink-2"}>
-        {formatDueSentence(props.dueDate)}
-      </PaceTag>
-      <div className="flex-1" />
-      <SaveIndicator status={props.autosaveStatus} isSubmitted={props.isSubmitted} />
-      <FeedbackButton inline />
-      {!props.isSubmitted && (
-        <>
-          <button
-            type="button"
-            onClick={props.onRun}
-            disabled={busy}
-            className="h-10 cursor-pointer rounded-full border-[1.5px] border-pace-line-strong bg-white px-[18px] text-sm font-bold text-pace-ink shadow-[0_3px_0_var(--color-pace-line-strong)] disabled:opacity-60"
-          >
-            {props.isRunning ? "Running…" : "Run tests"}
-          </button>
-          <button
-            type="button"
-            onClick={props.onSubmit}
-            disabled={busy}
-            className="h-10 cursor-pointer rounded-full bg-pace-green px-[18px] text-sm font-bold text-white shadow-[0_3px_0_var(--color-pace-green-deep)] disabled:opacity-60"
-          >
-            {props.isSubmitting ? "Submitting…" : "Submit"}
-          </button>
-        </>
-      )}
+      <div className="hidden items-center gap-4 lg:flex">
+        <WorkspaceActions {...props} />
+      </div>
     </header>
   );
 }

@@ -43,7 +43,7 @@ export function ResultModal({ open, onClose, score, passed, total, reward, backH
           {perfect ? `Submitted! All ${total} tests passed.` : `Submitted! ${passed} of ${total} tests passed.`}
         </DialogTitle>
         <DialogDescription className="max-w-[420px] text-center text-[15px] leading-[1.55] text-pace-ink-2">
-          {perfect ? "Including the hidden tests. Nice work." : "Your instructor can see exactly where it went wrong."}
+          {perfect ? "Your work has been turned in. Nice work." : "Your Instructor can review your work."}
         </DialogDescription>
         <div className="flex w-full gap-3">
           <Stat value={`${Math.round(score)}%`} label="Score" tone="bg-pace-canvas" />

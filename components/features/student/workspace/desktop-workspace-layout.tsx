@@ -38,15 +38,15 @@ export function DesktopWorkspaceLayout({ instructions, editor, tutor }: DesktopW
       onLayoutChanged={layout.onLayoutChanged}
       className="min-h-0 flex-1"
     >
-      <ResizablePanel id="instructions" defaultSize="24" minSize="15" maxSize="40">
+      <ResizablePanel id="instructions" defaultSize="320px" minSize="15" maxSize="40">
         {instructions}
       </ResizablePanel>
       <WorkspaceResizeHandle />
-      <ResizablePanel id="editor" defaultSize="50" minSize="28">
+      <ResizablePanel id="editor" defaultSize="760px" minSize="28">
         {editor}
       </ResizablePanel>
       <WorkspaceResizeHandle />
-      <ResizablePanel id="tutor" defaultSize="26" minSize="18" maxSize="42">
+      <ResizablePanel id="tutor" defaultSize="360px" minSize="18" maxSize="42">
         {tutor}
       </ResizablePanel>
     </ResizablePanelGroup>

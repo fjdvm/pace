@@ -1,9 +1,14 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireStudentPost } from "@/lib/workspace/student-access";
 import { createClient } from "@/lib/supabase/server";
 
-export async function saveDraft(assignmentId: string, code: string) {
+export async function saveDraft(
+  assignmentId: string,
+  code: string,
+  itemId?: string,
+) {
   try {
     if (!assignmentId) {
       throw new Error("Assignment ID is required");
@@ -21,36 +26,38 @@ export async function saveDraft(assignmentId: string, code: string) {
       throw new Error("Unauthorized: You must be logged in");
     }
 
-    const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId, isDraft: false }, select: { id: true } });
-    if (!assignment) throw new Error("Assignment not found");
+    const post = await requireStudentPost(assignmentId, user.id);
+    const item = itemId
+      ? post.items.find((i) => i.id === itemId)
+      : post.items[0];
+    if (!item) throw new Error("Item not found in this Post");
 
-    const existingSubmission = await prisma.submission.findUnique({
-      where: {
-        studentId_assignmentId: {
+    const draft = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM assignments WHERE id = ${assignmentId} FOR UPDATE`;
+      const existingSubmission = await tx.submission.findUnique({
+        where: {
+          studentId_assignmentId: {
+            studentId: user.id,
+            assignmentId,
+          },
+        },
+        select: { id: true },
+      });
+
+      if (existingSubmission) {
+        throw new Error("Assignment already submitted. Code is read-only.");
+      }
+
+      return tx.codeDraft.upsert({
+        where: { studentId_itemId: { studentId: user.id, itemId: item.id } },
+        update: { code },
+        create: {
           studentId: user.id,
           assignmentId,
+          itemId: item.id,
+          code,
         },
-      },
-      select: { id: true },
-    });
-
-    if (existingSubmission) {
-      throw new Error("Assignment already submitted. Code is read-only.");
-    }
-
-    const draft = await prisma.codeDraft.upsert({
-      where: {
-        studentId_assignmentId: {
-          studentId: user.id,
-          assignmentId,
-        },
-      },
-      update: { code },
-      create: {
-        studentId: user.id,
-        assignmentId,
-        code,
-      },
+      });
     });
 
     return { success: true, updatedAt: draft.updatedAt.toISOString() };

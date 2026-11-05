@@ -36,7 +36,22 @@ export interface ChatMessageData {
   createdAt: string;
 }
 
+export interface WorkspaceItem {
+  id: string;
+  title: string;
+  instructions: string;
+  language: string;
+  starterCode: string;
+  points: number;
+  testCases: TestCaseData[];
+  hiddenTestCount: number;
+  code: string | null;
+  testResults: TestRunResult[] | null;
+}
+
 export interface WorkspaceViewProps {
+  initialItemId?: string;
+  items?: WorkspaceItem[];
   assignment: AssignmentData;
   className: string;
   classId: string;

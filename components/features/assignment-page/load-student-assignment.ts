@@ -10,7 +10,7 @@ export async function loadStudentAssignment(
 ): Promise<StudentAssignmentData | null> {
   const assignment = await prisma.assignment.findUnique({
     where: { id: assignmentId, isDraft: false },
-    include: { items: { orderBy: { position: "asc" }, take: 1 }, instructor: { select: { id: true, email: true, name: true } }, classes: { select: { classId: true } } },
+    include: { items: { orderBy: { position: "asc" } }, instructor: { select: { id: true, email: true, name: true } }, classes: { select: { classId: true } } },
   });
   if (!assignment) return null;
 
@@ -20,15 +20,15 @@ export async function loadStudentAssignment(
   });
   if (!enrollment) return null;
 
-  const [hearts, submission, draft, post] = await Promise.all([
+  const [hearts, submission, drafts, post] = await Promise.all([
     getOrRegenerateHearts(userId, assignmentId),
     prisma.submission.findUnique({
       where: { studentId_assignmentId: { studentId: userId, assignmentId } },
       select: { id: true },
     }),
-    prisma.codeDraft.findUnique({
-      where: { studentId_assignmentId: { studentId: userId, assignmentId } },
-      select: { studentId: true },
+    prisma.codeDraft.findMany({
+      where: { studentId: userId, assignmentId },
+      select: { itemId: true },
     }),
     prisma.post.findFirst({
       where: { assignmentId, classId: enrollment.classId },
@@ -59,14 +59,9 @@ export async function loadStudentAssignment(
     instructorName,
     heartsLeft: hearts.currentCount,
     heartsMax: assignment.heartsCount,
-    items: [
-      {
-        id: codingItem.id,
-        title: codingItem.title,
-        kind: "coding",
-        status: deriveItemStatus(!!submission, !!draft),
-      },
-    ],
+    items: assignment.items.map((item) => ({
+      id: item.id, title: item.title, kind: "coding", status: deriveItemStatus(!!submission, drafts.some((d) => d.itemId === item.id)),
+    })),
     comments: post
       ? {
           postId: post.id,
