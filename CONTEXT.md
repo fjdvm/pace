@@ -53,5 +53,9 @@ The two lists on a User's single dashboard: Classes where they are the Instructo
 _Avoid_: My classes, joined classes
 
 **Spark buddy**:
-The PACE mascot, shown in the sign-in modal and used as the favicon.
+The PACE mascot, shown in the sign-in modal, on the landing page and used as the favicon.
 _Avoid_: Logo, mark
+
+**Hearts**:
+The limited allowance of AI help a Student spends to ask for a hint. The Instructor sets how many Hearts a Post gives, and they refill after a cooldown.
+_Avoid_: Lives, credits, tokens

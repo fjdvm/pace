@@ -27,6 +27,30 @@
   --color-pace-red-tint: #fde9eb;
   --color-pace-purple-tint: #f2ecff;
 
+  --color-lp-canvas: #f4f3f1;
+  --color-lp-band: #ffffff;
+  --color-lp-ink: #111111;
+  --color-lp-ink-2: #444444;
+  --color-lp-muted: #6b6b6b;
+  --color-lp-faint: #8a8a8a;
+  --color-lp-line: #e6e4e0;
+  --color-lp-line-soft: #efeeeb;
+  --color-lp-teal: #12a089;
+  --color-lp-teal-soft: #5cc8b4;
+  --color-lp-green: #22c55e;
+  --color-lp-green-deep: #16a34a;
+  --color-lp-green-ink: #14532d;
+  --color-lp-green-tint: #e8f8ec;
+  --color-lp-violet: #5b3fd6;
+  --color-lp-violet-tint: #eeeafe;
+  --color-lp-amber: #f59e0b;
+  --color-lp-amber-ink: #b45309;
+  --color-lp-amber-tint: #fef3c7;
+  --color-lp-red: #ef4444;
+
+  --font-lp-serif: var(--font-newsreader), Georgia, serif;
+  --font-lp-sans: var(--font-inter), system-ui, sans-serif;
+
   --font-pace-sans: var(--font-funnel-sans), system-ui, sans-serif;
   --font-pace-display: var(--font-funnel-display), system-ui, sans-serif;
   --font-pace-serif: var(--font-caslon), Georgia, serif;
