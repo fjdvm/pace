@@ -28,14 +28,8 @@ export function SignInContent() {
       <Suspense>
         <LoginError />
       </Suspense>
-      <p className="w-full text-center text-xs leading-[17px] text-pace-ink-2">
-        While you work on an activity, PACE records typing, pasting, and tab switches so your instructor can see how your code was made.
-      </p>
       <p className="w-full text-center text-[11.5px] leading-4 text-pace-muted">
         By continuing, you agree to the <Link href="/terms" className="hover:underline">Terms of Use</Link> and <Link href="/privacy" className="hover:underline">Privacy Policy</Link>.
-      </p>
-      <p className="w-full text-center text-[11.5px] leading-4 text-pace-muted">
-        Undergraduate research prototype · PUP Quezon City
       </p>
     </div>
   );
