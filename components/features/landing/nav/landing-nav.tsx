@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { SignInLink } from "@/components/features/auth/sign-in/sign-in-link";
 import { Wordmark } from "../shared/wordmark";
 import { getLandingAccount } from "@/lib/landing-account";
 import { LandingMobileNav } from "./landing-mobile-nav";
 import { navLinks } from "./nav-links";
+
+const signInButtonClass =
+  "pace-press pace-body rounded-full border-[1.5px] border-pace-line bg-white px-[22px] py-3 font-semibold text-pace-ink transition-colors hover:bg-pace-canvas";
 
 export async function LandingNav({ homeHref = "" }: { homeHref?: string }) {
   const account = await getLandingAccount();
@@ -24,12 +28,13 @@ export async function LandingNav({ homeHref = "" }: { homeHref?: string }) {
           ))}
         </nav>
         <div className="flex w-[200px] items-center justify-end gap-2">
-          <Link
-            href="/login"
-            className="pace-press pace-body rounded-full border-[1.5px] border-pace-line bg-white px-[22px] py-3 font-semibold text-pace-ink transition-colors hover:bg-pace-canvas"
-          >
-            {account?.label ?? "Sign in"}
-          </Link>
+          {account ? (
+            <Link href={account.href} className={signInButtonClass}>
+              {account.label}
+            </Link>
+          ) : (
+            <SignInLink className={signInButtonClass}>Sign in</SignInLink>
+          )}
           <LandingMobileNav homeHref={homeHref} account={account} />
         </div>
       </div>

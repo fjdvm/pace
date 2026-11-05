@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SignInLink } from "@/components/features/auth/sign-in/sign-in-link";
 import { LandingIcon } from "../shared/landing-icon";
 import { CtaShapes } from "./cta-shapes";
 
@@ -13,19 +13,17 @@ export function CtaSection() {
           questionnaire. Your feedback shapes the next version of PACE.
         </p>
         <div className="flex flex-col gap-3.5 pt-2 sm:flex-row">
-          <Link
-            href="/login"
+          <SignInLink
             className="pace-press pace-body flex items-center justify-center gap-2.5 rounded-2xl bg-pace-ink px-[26px] py-4 font-semibold leading-[1.2] text-white shadow-[0_4px_0_0_black] transition-transform hover:-translate-y-0.5"
           >
             Sign in to PACE
             <LandingIcon name="icon-arrow-cta" size={18} />
-          </Link>
-          <Link
-            href="/login"
+          </SignInLink>
+          <SignInLink
             className="pace-press pace-body flex items-center justify-center rounded-2xl border-[1.5px] border-pace-line bg-white px-[26px] py-4 font-semibold leading-[1.2] text-pace-ink shadow-[0_4px_0_0_#d9d5cc] transition-transform hover:-translate-y-0.5"
           >
             Start teaching
-          </Link>
+          </SignInLink>
         </div>
         <CtaShapes />
       </div>

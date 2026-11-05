@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Fredoka, Space_Mono, Funnel_Display } from "next/fon
 import { Toaster } from "@/components/ui/sonner";
 import { FeedbackButton } from "@/components/features/feedback/feedback-button";
 import { NavigationLoader } from "@/components/features/navigation/navigation-loader";
+import { SignInProvider } from "@/components/features/auth/sign-in/sign-in-context";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -42,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-full flex flex-col overflow-x-hidden">
-        {children}
+        <SignInProvider>{children}</SignInProvider>
         <FeedbackButton />
         <NavigationLoader />
         <Toaster />

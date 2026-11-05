@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { SignInLink } from "@/components/features/auth/sign-in/sign-in-link";
 import { MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,9 @@ import {
 } from "@/components/ui/sheet";
 import type { LandingAccount } from "@/lib/landing-account";
 import { navLinks } from "./nav-links";
+
+const startClass =
+  "pace-press rounded-full bg-pace-green px-6 py-2.5 text-center text-sm font-semibold text-white shadow-[0_3px_0_var(--color-pace-green-deep)]";
 
 export function LandingMobileNav({ homeHref = "", account }: { homeHref?: string; account: LandingAccount }) {
   const [open, setOpen] = useState(false);
@@ -57,10 +61,11 @@ export function LandingMobileNav({ homeHref = "", account }: { homeHref?: string
           <SheetClose
             nativeButton={false}
             render={
-              <Link
-                href="/login"
-                className="pace-press rounded-full bg-pace-green px-6 py-2.5 text-center text-sm font-semibold text-white shadow-[0_3px_0_var(--color-pace-green-deep)]"
-              />
+              account ? (
+                <Link href={account.href} className={startClass} />
+              ) : (
+                <SignInLink className={startClass} />
+              )
             }
           >
             {account ? account.label : "Start learning"}
