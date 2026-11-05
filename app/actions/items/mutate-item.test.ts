@@ -72,3 +72,19 @@ it.each([0, 1])("preserves omitted starter code when editing text (started=%s)",
     success: true, item: { starterCode: "print('start')", points: 30 },
   });
 });
+
+const choice = { kind: "multiple_choice" as const, title: "Which loop?", instructions: "", language: "", starterCode: "", points: 10, options: ["for", "do-while"], correctOption: 1 };
+it("updates multiple-choice options before work starts", async () => {
+  db.item.findUnique.mockResolvedValue({ id: "item", ...choice });
+  const { updateItem } = await import("./update-item");
+  expect(await updateItem("post", "item", { ...choice, options: ["while", "do-while"] })).toMatchObject({ success: true });
+});
+it("locks multiple-choice keys, option identities and kind after work starts", async () => {
+  db.assignment.findUnique.mockResolvedValue({ _count: { ...counts, codeDrafts: 1 }, classes: [{ class: { instructorId: "instructor" } }] });
+  db.item.findUnique.mockResolvedValue({ id: "item", ...choice });
+  const { updateItem } = await import("./update-item");
+  for (const change of [{ correctOption: 0 }, { options: ["while", "do-while"] }])
+    expect(await updateItem("post", "item", { ...choice, ...change })).toMatchObject({ success: false });
+  expect(await updateItem("post", "item", input)).toMatchObject({ success: false });
+  expect(await updateItem("post", "item", { ...choice, title: "Updated prompt", points: 20 })).toMatchObject({ success: true });
+});

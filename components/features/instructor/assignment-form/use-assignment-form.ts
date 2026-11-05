@@ -29,6 +29,7 @@ export function useAssignmentForm({
   const busy = useRef(false);
   const revision = useRef(0);
   const [id, setId] = useState(assignmentId);
+  const [itemEditing, setItemEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<string | undefined>(initialSavedAt);
   const [dirty, setDirty] = useState(false);
@@ -68,6 +69,7 @@ export function useAssignmentForm({
   };
   const persist = async (isDraft: boolean) => {
     if (busy.current) return;
+    if (itemEditing) return toast.error("Finish editing the Item with Done before saving or assigning the Post");
     const payload = {
       ...values,
       isDraft,
@@ -125,6 +127,7 @@ export function useAssignmentForm({
     dirty,
     savedAt,
     isSaving,
+    setItemEditing,
     patch,
     changeTitle: (title: string) => patch(codingItemTitlePatch(values, title)),
     changeInstructions: (instructions: string) =>

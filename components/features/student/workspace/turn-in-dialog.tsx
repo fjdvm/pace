@@ -49,8 +49,8 @@ export function TurnInDialog(props: Props) {
                   <span
                     className={`size-2 shrink-0 rounded-full ${results && passed === results.length ? "bg-pace-green" : "bg-pace-line-strong"}`}
                   />
-                  Item {i + 1} · Coding:{" "}
-                  {results
+                  Item {i + 1} · {item.kind === "multiple_choice" ? "Multiple choice" : "Coding"}:{" "}
+                  {item.kind === "multiple_choice" ? "Auto-scored on turn-in" : results
                     ? `${passed} of ${results.length} visible tests pass`
                     : "not run"}
                 </p>

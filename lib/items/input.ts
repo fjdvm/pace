@@ -20,6 +20,7 @@ export function codingItemData(input: CodingItemInput) {
   ))) throw new Error("Invalid test cases");
   return {
     title: input.title.trim(), instructions: input.instructions.trim(), language: input.language,
+    options: [] as string[], correctOption: null,
     starterCode: input.starterCode ?? "", points: input.points, kind: "coding" as const,
   };
 }

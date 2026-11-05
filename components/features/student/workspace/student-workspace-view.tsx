@@ -2,6 +2,7 @@
 
 import { JetBrains_Mono } from "next/font/google";
 import type { WorkspaceViewProps } from "@/components/features/assignments/types";
+import { ChoiceWorkspace } from "./choice-workspace";
 import { WorkspaceTopBar } from "./workspace-top-bar";
 import { InstructionsPanel } from "./instructions-panel";
 import { EditorPanel } from "./editor-panel";
@@ -71,6 +72,7 @@ export function StudentWorkspaceView(props: WorkspaceViewProps) {
     <div
       className={`${workspaceMono.variable} flex h-dvh flex-col overflow-hidden bg-white text-pace-ink`}
     >
+      {ws.activeItem.kind === "multiple_choice" ? <ChoiceWorkspace ws={ws} title={assignment.title} className={props.className} onBack={() => ws.leave(backHref)} /> : <>
       <WorkspaceTopBar
         items={ws.items}
         activeId={ws.activeId}
@@ -122,6 +124,7 @@ export function StudentWorkspaceView(props: WorkspaceViewProps) {
           onSubmit={() => ws.setConfirmOpen(true)}
         />
       )}
+      </>}
       <TurnInDialog
         open={ws.confirmOpen}
         onOpenChange={ws.setConfirmOpen}

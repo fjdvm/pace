@@ -5,7 +5,7 @@ export type ItemStatus = "not-started" | "in-progress" | "submitted";
 export type AssignmentItem = {
   id: string;
   title: string;
-  kind: "coding";
+  kind: "coding" | "multiple_choice";
   status: ItemStatus;
   points?: number;
   grade?: number | null;

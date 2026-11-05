@@ -1,5 +1,6 @@
 "use client";
 
+import { ChoiceItems } from "./choice-items";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -88,6 +89,7 @@ export function AssignmentFormView({
               onAdd={form.addTestCase}
               onRemove={form.removeTestCase}
             />
+            <ChoiceItems postId={form.id} locked={locked} onEditingChange={form.setItemEditing} />
           </main>
           <aside className="flex w-[300px] shrink-0 flex-col gap-4 border-l border-pace-line bg-white px-6 py-8 xl:w-[380px]">
             <PostSettings

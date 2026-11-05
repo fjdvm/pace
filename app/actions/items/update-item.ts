@@ -1,25 +1,31 @@
 "use server";
 
+import { multipleChoiceData, type MultipleChoiceInput } from "@/lib/items/multiple-choice";
 import { prisma } from "@/lib/prisma";
 import { codingItemData, type CodingItemInput } from "@/lib/items/input";
 import { currentUserId, requireItemInstructor } from "@/lib/items/permissions";
 import { hasStudentWork } from "@/lib/items/started";
 
-export async function updateItem(assignmentId: string, itemId: string, input: CodingItemInput) {
+export async function updateItem(assignmentId: string, itemId: string, input: CodingItemInput | MultipleChoiceInput) {
   try {
     const userId = await currentUserId();
-    const data = codingItemData(input);
+    const data = input.kind === "multiple_choice" ? multipleChoiceData(input as MultipleChoiceInput) : codingItemData(input as CodingItemInput);
     const item = await prisma.$transaction(async (tx) => {
       const assignment = await requireItemInstructor(tx, assignmentId, userId);
       const existing = await tx.item.findUnique({ where: { id: itemId, assignmentId } });
       if (!existing) throw new Error("Item not found");
-      const updatedData = { ...data, starterCode: input.starterCode ?? existing.starterCode };
       if (hasStudentWork(assignment._count) && (
-        input.testCases !== undefined || data.language !== existing.language || updatedData.starterCode !== existing.starterCode
+        data.kind !== (existing.kind ?? "coding") ||
+        (data.kind === "multiple_choice" && (data.correctOption !== existing.correctOption ||
+          JSON.stringify(data.options) !== JSON.stringify(existing.options)))
+      )) throw new Error("Cannot change Item kind or answer key after a Student has started");
+      const updatedData = { ...data, starterCode: data.kind === "multiple_choice" ? "" : ((input as CodingItemInput).starterCode ?? existing.starterCode) };
+      if (hasStudentWork(assignment._count) && (
+        (input as CodingItemInput).testCases !== undefined || data.language !== existing.language || updatedData.starterCode !== existing.starterCode
       )) throw new Error("Cannot change coding configuration after a Student has started");
-      if (input.testCases !== undefined) {
+      if ((input as CodingItemInput).testCases !== undefined) {
         await tx.testCase.deleteMany({ where: { itemId, assignmentId } });
-        await tx.testCase.createMany({ data: input.testCases.map((tc) => ({ ...tc, itemId, assignmentId })) });
+        await tx.testCase.createMany({ data: (input as CodingItemInput).testCases!.map((tc) => ({ ...tc, itemId, assignmentId })) });
       }
       return tx.item.update({ where: { id: itemId, assignmentId }, data: updatedData });
     });

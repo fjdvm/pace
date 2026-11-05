@@ -11,9 +11,9 @@ export async function readItems(assignmentId: string) {
       const items = await tx.item.findMany({
         where: { assignmentId }, orderBy: { position: "asc" }, include: { testCases: true },
       });
-      return { success: true, items, totalPoints: items.reduce((sum, item) => sum + item.points, 0) };
+      return { success: true as const, items, totalPoints: items.reduce((sum, item) => sum + item.points, 0) };
     });
   } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : "Unable to read Items" };
+    return { success: false as const, error: error instanceof Error ? error.message : "Unable to read Items" };
   }
 }

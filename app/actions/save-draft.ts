@@ -1,5 +1,6 @@
 "use server";
 
+import { validateChoice } from "@/lib/items/multiple-choice";
 import { prisma } from "@/lib/prisma";
 import { requireStudentPost } from "@/lib/workspace/student-access";
 import { createClient } from "@/lib/supabase/server";
@@ -31,6 +32,8 @@ export async function saveDraft(
       ? post.items.find((i) => i.id === itemId)
       : post.items[0];
     if (!item) throw new Error("Item not found in this Post");
+
+    if (item.kind === "multiple_choice") validateChoice(code, item.options);
 
     const draft = await prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT id FROM assignments WHERE id = ${assignmentId} FOR UPDATE`;

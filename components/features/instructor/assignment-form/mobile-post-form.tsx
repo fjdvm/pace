@@ -1,3 +1,4 @@
+import { ChoiceItems } from "./choice-items";
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -109,6 +110,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
       <div className="py-1">
         <MonitoringSettings mobile />
       </div>
+      <ChoiceItems postId={form.id} locked={locked} onEditingChange={form.setItemEditing} />
       <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
         <Button variant="outline" onClick={() => setPanel("settings")}>
           Post settings &amp; starter code

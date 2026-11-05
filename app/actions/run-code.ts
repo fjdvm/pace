@@ -67,6 +67,7 @@ export async function runCode(
       ? post.items.find((i) => i.id === itemId)
       : post.items[0];
     if (!item) throw new Error("Item not found in this Post");
+    if (item.kind === "multiple_choice") throw new Error("Only Coding Items can run code");
     const results = await executeTests(
       item.language,
       code,
