@@ -1,7 +1,7 @@
 import { PaceTag } from "@/components/features/student/shared/pace-tag";
 import { buildItemActivity } from "@/lib/insights/activity";
 import { formatClock } from "@/lib/insights/format";
-import { itemRisk } from "@/lib/insights/item-risk";
+import { flagLabel, flagTone, itemRisk } from "@/lib/insights/item-risk";
 import type { SubmissionDetail } from "@/components/features/instructor/submissions/detail/types";
 import { ActivityStat } from "./insights/activity-stat";
 import { LogDot } from "./insights/log-dot";
@@ -32,14 +32,13 @@ export function ReviewActivity({
     finalCodeLength: item.code.length,
   });
   const flag = itemRisk(events, item.id, firstItemId, item.code.length, activity.typed).flag;
-  const times = activity.tabLeaves;
   return (
     <section className="flex flex-col gap-2.5 rounded-[8px] border border-pace-line bg-white px-3.5 py-3 md:gap-3.5 md:px-5 md:pb-6 md:pt-5">
       <div className="flex items-center justify-between">
         <h2 className="text-[15px] font-bold md:text-base">How this code was written</h2>
         <span className="hidden md:block">
-          <PaceTag tone={flag === "High" ? "red" : flag === "Medium" ? "amber" : "neutral"}>
-            Activity: {flag === "Medium" ? "Med" : flag}
+          <PaceTag tone={flagTone(flag)}>
+            Activity: {flagLabel(flag)}
           </PaceTag>
         </span>
       </div>
@@ -50,7 +49,7 @@ export function ReviewActivity({
           label={<><span className="md:hidden">pasted</span><span className="hidden md:inline">characters pasted ({activity.pastePercent}%)</span></>}
         />
         <ActivityStat
-          value={String(times)}
+          value={String(activity.tabLeaves)}
           label={<><span className="md:hidden">tab switches</span><span className="hidden md:inline">times left the tab</span></>}
         />
         <ActivityStat
@@ -74,7 +73,7 @@ export function ReviewActivity({
         <span className="md:hidden">Worth a closer look, not proof of copying.</span>
         <span className="hidden md:inline">
           A flag means this work is worth a closer look. It is not proof of
-          copying. Ask the student to explain their code if you have doubts.
+          copying. Ask the Student to explain their code if you have doubts.
         </span>
       </p>
     </section>

@@ -1,4 +1,4 @@
-import { computeRiskScore, type RiskScoreResult } from "@/lib/risk-score";
+import { computeRiskScore, type RiskFlag, type RiskScoreResult } from "@/lib/risk-score";
 import type { BehavioralEvent } from "@/lib/types/behavioral-signals";
 import { eventsForItem } from "./activity";
 
@@ -15,6 +15,10 @@ export function itemRisk(
   });
 }
 
-export function flagLabel(flag: "Low" | "Medium" | "High") {
+export function flagLabel(flag: RiskFlag) {
   return flag === "Medium" ? "Med" : flag;
+}
+
+export function flagTone(flag: RiskFlag) {
+  return flag === "High" ? "red" : flag === "Medium" ? "amber" : "neutral";
 }

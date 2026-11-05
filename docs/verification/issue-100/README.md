@@ -24,5 +24,5 @@ The live Gemini call and the signed-in flow were not exercised locally (no key o
 - "Ask her to explain her code" and other copy use "{first name}" and "their", since pronouns are not stored.
 - Mobile activity card shows the same log wording and clock format as desktop (frame trims "PM" and shortens the paste line).
 - The sheet's log merges open and typing into one line and omits test runs, as in the frame; "hint level" on the tutor line is omitted because it is not recorded.
-- Mobile bottom bar keeps the existing Comment and Return buttons; the sheet's backdrop uses 30% black (frame 32%).
+- Mobile bottom bar keeps the existing Comment and Return buttons; the sheet's backdrop uses 32% black and no blur (shared Sheet, so every sheet changes).
 - Open similarity check goes to the compare view when a 80%+ match exists, otherwise to the Post's submissions list.

@@ -1,6 +1,6 @@
 import { PaceTag } from "@/components/features/student/shared/pace-tag";
 import { Skeleton } from "@/components/ui/skeleton";
-import { flagLabel } from "@/lib/insights/item-risk";
+import { flagLabel, flagTone } from "@/lib/insights/item-risk";
 import { NOT_PROOF_NOTE } from "@/lib/insights/next-steps";
 import type { InsightsResult } from "@/app/actions/insights/get-insights";
 import { InsightsLog } from "./insights-log";
@@ -29,7 +29,7 @@ export function InsightsBody({
   if (!result.success) return <p role="alert" className="text-[13px] text-pace-red">{result.error}</p>;
   const first = name.split(" ")[0];
   const steps = (result as Ok).steps;
-  const tone = result.flag === "High" ? "red" : result.flag === "Medium" ? "amber" : "neutral";
+  const tone = flagTone(result.flag);
   const bannerBg = result.flag === "High" ? "bg-pace-red-tint" : result.flag === "Medium" ? "bg-pace-amber-tint" : "bg-pace-sunken";
   const compare = result.similarStudentId
     ? `/dashboard/submissions/${postId}/compare?a=${studentId}&b=${result.similarStudentId}`

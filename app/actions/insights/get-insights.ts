@@ -4,12 +4,13 @@ import { requireGradingInstructor } from "@/lib/submission-access";
 import { loadItemInsight } from "@/lib/insights/load-insight";
 import { generateNextSteps, MissingKeyError, type NextSteps } from "@/lib/insights/next-steps";
 import { formatClock } from "@/lib/insights/format";
+import type { RiskFlag } from "@/lib/risk-score";
 import type { LogEntry } from "@/lib/insights/activity";
 
 export type InsightsResult =
   | {
       success: true;
-      flag: "Low" | "Medium" | "High";
+      flag: RiskFlag;
       itemNumber: number;
       log: (LogEntry & { time: string })[];
       pastePercent: number;
