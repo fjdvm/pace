@@ -11,9 +11,9 @@ const project: FooterLink[] = [
 ];
 
 const prototype: FooterLink[] = [
-  { label: "Sign in", href: "/login" },
-  { label: "Start learning", href: "/login" },
-  { label: "Start teaching", href: "/login" },
+  { label: "Sign in", href: "/login", signIn: true },
+  { label: "Start learning", href: "/login", signIn: true },
+  { label: "Start teaching", href: "/login", signIn: true },
 ];
 
 const research: FooterLink[] = [
