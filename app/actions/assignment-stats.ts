@@ -1,5 +1,6 @@
 "use server";
 
+import { heartsSpentByStudent } from "@/lib/hearts-summary";
 import { prisma } from "@/lib/prisma";
 import { isAssignmentInstructor } from "@/lib/assignment-instructor";
 import { createClient } from "@/lib/supabase/server";
@@ -43,7 +44,7 @@ export async function getAssignmentStats(assignmentId: string) {
 
     const submissions = await prisma.submission.findMany({ where: { assignmentId } });
     const heartsStates = await prisma.heartsState.findMany({ where: { assignmentId } });
-    const hintsByStudent = new Map(heartsStates.map((h) => [h.studentId, h.totalSpent]));
+    const hintsByStudent = heartsSpentByStudent(heartsStates);
 
     const scores = submissions.map((s) => s.score);
     const totalSubmissions = submissions.length;

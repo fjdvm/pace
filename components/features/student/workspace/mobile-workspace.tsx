@@ -102,9 +102,9 @@ export function MobileWorkspace(props: Props) {
           {props.tutor}
         </TabsContent>
       </Tabs>
-      <footer className="flex shrink-0 gap-3 border-t border-pace-line px-4 pb-7 pt-3">
+      {tab !== "tutor" && <footer className="flex shrink-0 gap-3 border-t border-pace-line px-4 pb-7 pt-3">
         <WorkspaceActions {...props} mobile />
-      </footer>
+      </footer>}
     </>
   );
 }

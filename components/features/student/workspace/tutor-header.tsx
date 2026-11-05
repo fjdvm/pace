@@ -7,7 +7,7 @@ type Props = {
 };
 export function TutorHeader({ heartsSpent }: Props) {
   return (
-    <div className="flex shrink-0 items-center gap-2.5 border-b border-pace-line px-4 py-3.5">
+    <div className="hidden shrink-0 items-center lg:flex gap-2.5 border-b border-pace-line px-4 py-3.5">
       <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-pace-purple text-[11px] font-bold text-white">
         ✦
       </span>
@@ -18,7 +18,7 @@ export function TutorHeader({ heartsSpent }: Props) {
         </p>
       </div>
       <span className="rounded-full bg-pace-purple-tint px-2.5 py-1 text-xs font-bold text-pace-purple">
-        Hint level {nextHintLevel(heartsSpent)}
+        Hint level {nextHintLevel(heartsSpent)} next
       </span>
     </div>
   );

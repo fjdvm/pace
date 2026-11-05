@@ -7,7 +7,6 @@ import { useWorkspaceTutor } from "./use-workspace-tutor";
 import { toast } from "sonner";
 import { runCode } from "@/app/actions/run-code";
 import { submitCode } from "@/app/actions/submit-code";
-import { useHeartsTimer } from "@/components/features/assignments/use-hearts-timer";
 import { useItemDrafts } from "./use-item-drafts";
 import { useBehavioralTracking } from "@/components/features/assignments/tracking/use-behavioral-tracking";
 
@@ -21,8 +20,7 @@ import type { SubmitReward } from "./reward";
 type RunResponseResult = TestRunResult;
 
 export function useWorkspace(props: WorkspaceViewProps) {
-  const { assignment, initialHearts, initialSubmission, initialChatMessages } =
-    props;
+  const { assignment, initialSubmission } = props;
   const router = useRouter();
   const items = useMemo(() => workspaceItems(props), [props]);
   const [activeId, setActiveId] = useState(items.some((i) => i.id === props.initialItemId) ? props.initialItemId! : items[0].id);
@@ -49,21 +47,8 @@ export function useWorkspace(props: WorkspaceViewProps) {
   const [reward, setReward] = useState<SubmitReward | null>(null);
   const [resultOpen, setResultOpen] = useState(false);
 
-  const { hearts, timeToRegen, spendHeart } = useHeartsTimer({
-    initialHearts,
-    maxHearts: assignment.heartsCount,
-    regenMinutes: assignment.heartsRegenMinutes,
-  });
   const autosaveStatus = drafts.status;
-  const tutor = useWorkspaceTutor({
-    assignment,
-    initialChatMessages,
-    code,
-    runResults,
-    submitted: !!submission,
-    hearts: hearts.currentCount,
-    spendHeart,
-  });
+  const tutor = useWorkspaceTutor({ props, items, activeId, code, runResults, submitted: !!submission });
   const {
     handleEditorMount,
     recordKeystroke,
@@ -173,8 +158,6 @@ export function useWorkspace(props: WorkspaceViewProps) {
     confirmOpen,
     setConfirmOpen,
     code,
-    hearts,
-    timeToRegen,
     autosaveStatus,
     submission,
     runResults,

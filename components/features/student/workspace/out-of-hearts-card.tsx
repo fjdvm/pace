@@ -1,30 +1,19 @@
-import { PaceIcon } from "@/components/features/student/shared/pace-icon";
+import { Card } from "@/components/ui/card";
+import { HeartsRow } from "@/components/features/student/shared/hearts-row";
 
-const tips = [
-  ["workspace/book", "Re-read the instructions and examples"],
-  ["workspace/play", "Run your tests and compare the output"],
-  ["workspace/sparkles-14-b", "Revisit the tutor’s last hint above"],
-];
-
-export function OutOfHeartsCard({ timeToRegen }: { timeToRegen: string }) {
+export function OutOfHeartsCard({ timeToRegen, maxHearts }: { timeToRegen: string; maxHearts: number }) {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl bg-pace-red-tint p-[18px]">
-      <div className="flex items-center gap-2">
-        <PaceIcon name="workspace/clock-red" size={18} />
-        <span className="text-base font-bold leading-snug tracking-[-0.005em] text-pace-ink">
-          Out of hearts for now
-        </span>
-      </div>
-      <p className="text-[13px] leading-normal text-pace-ink-2">
-        {timeToRegen ? `Your next heart arrives in ${timeToRegen}. ` : ""}A short break often helps more than another
-        hint. Meanwhile:
+    <Card role="status" className="flex shrink-0 flex-col items-center gap-2 rounded-[12px] bg-pace-red-tint px-4 py-3.5 text-center ring-0">
+      <HeartsRow left={0} max={maxHearts} />
+      <p className="text-base font-bold leading-[1.35] tracking-[-0.08px] text-pace-red">
+        You&apos;re out of hearts
       </p>
-      {tips.map(([icon, text]) => (
-        <div key={text} className="flex items-center gap-2 text-[13px] leading-normal text-pace-ink">
-          <PaceIcon name={icon} size={14} />
-          {text}
-        </div>
-      ))}
-    </div>
+      <p className="text-[22px] font-bold leading-[1.25] tracking-[-0.22px]">
+        Next heart in {timeToRegen}
+      </p>
+      <p className="text-[13px] leading-normal text-pace-ink-2">
+        While you wait: re-read the failing test, trace line 5 by hand, and run your tests again.
+      </p>
+    </Card>
   );
 }

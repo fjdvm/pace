@@ -9,8 +9,8 @@ model HeartsState {
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   item         Item       @relation(fields: [itemId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
 
-  @@id([studentId, assignmentId])
-  @@unique([studentId, itemId])
+  @@id([studentId, itemId])
+  @@index([assignmentId])
   @@index([itemId, assignmentId])
   @@map("hearts_states")
 }
@@ -49,6 +49,7 @@ model ChatMessage {
   item         Item       @relation(fields: [itemId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
 
   @@index([itemId, assignmentId])
+  @@index([studentId, itemId, createdAt])
   @@map("chat_messages")
 }
 

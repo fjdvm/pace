@@ -60,6 +60,7 @@ export function StudentWorkspaceView(props: WorkspaceViewProps) {
       maxHearts={assignment.heartsCount}
       heartsSpent={ws.hearts.totalSpent}
       timeToRegen={ws.timeToRegen}
+      refillMinutes={ws.refillMinutes}
       chatInput={ws.chatInput}
       onChatInputChange={ws.setChatInput}
       onSend={ws.sendToTutor}

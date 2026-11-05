@@ -1,6 +1,6 @@
 export const HINT_LEVEL_NAMES = [
-  "Gentle nudge",
-  "Concept hint",
+  "Concept",
+  "Where to look",
   "Specific steps",
   "Guided walkthrough",
   "Near-pseudocode",
@@ -14,4 +14,10 @@ export function nextHintLevel(heartsSpent: number) {
 
 export function hintLevelName(level: number) {
   return HINT_LEVEL_NAMES[Math.min(MAX_HINT_LEVEL, Math.max(1, level)) - 1];
+}
+
+export function hintLevelForMessage(messages: { role: string; hintLevel?: number }[], index: number) {
+  if (messages[index]?.hintLevel !== undefined) return Math.min(MAX_HINT_LEVEL, Math.max(1, messages[index].hintLevel));
+  return Math.min(MAX_HINT_LEVEL, Math.max(1,
+    messages.slice(0, index + 1).filter((message) => message.role === "user").length));
 }

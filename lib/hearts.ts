@@ -1,63 +1,30 @@
 import { prisma } from "./prisma";
+import { regenerateHearts } from "./hearts-logic";
+import { requireStudentPost } from "./workspace/student-access";
+import type { Prisma } from "@/lib/generated/prisma/client";
 
-export async function getOrRegenerateHearts(studentId: string, assignmentId: string) {
-  const assignment = await prisma.assignment.findUnique({
-    where: { id: assignmentId, isDraft: false },
+export async function regenerateItemHearts(
+  tx: Prisma.TransactionClient,
+  studentId: string,
+  post: { id: string; heartsCount: number; heartsRegenMinutes: number },
+  itemId: string,
+) {
+  const key = { studentId_itemId: { studentId, itemId } };
+  await tx.heartsState.upsert({
+    where: key, update: {},
+    create: { studentId, assignmentId: post.id, itemId, currentCount: post.heartsCount },
   });
-
-  if (!assignment) {
-    throw new Error("Assignment not found");
-  }
-
-  let heartsState = await prisma.heartsState.findUnique({
-    where: {
-      studentId_assignmentId: {
-        studentId,
-        assignmentId,
-      },
-    },
+  await tx.$queryRaw`SELECT student_id FROM hearts_states WHERE student_id = ${studentId} AND item_id = ${itemId} FOR UPDATE`;
+  const state = await tx.heartsState.findUniqueOrThrow({ where: key });
+  return tx.heartsState.update({
+    where: key,
+    data: regenerateHearts(state, post.heartsCount, post.heartsRegenMinutes),
   });
+}
 
-  if (!heartsState) {
-    heartsState = await prisma.heartsState.create({
-      data: {
-        studentId,
-        assignmentId,
-        currentCount: assignment.heartsCount,
-        lastRegenAt: new Date(),
-        totalSpent: 0,
-      },
-    });
-    return heartsState;
-  }
-
-  if (heartsState.currentCount < assignment.heartsCount) {
-    const now = new Date();
-    const elapsedMs = now.getTime() - new Date(heartsState.lastRegenAt).getTime();
-    const cooldownMs = assignment.heartsRegenMinutes * 60 * 1000;
-
-    if (elapsedMs >= cooldownMs) {
-      const regeneratedHearts = Math.floor(elapsedMs / cooldownMs);
-      const newCount = Math.min(assignment.heartsCount, heartsState.currentCount + regeneratedHearts);
-      
-      const newRegenTime = new Date(heartsState.lastRegenAt.getTime() + regeneratedHearts * cooldownMs);
-      
-      const finalRegenTime = newCount === assignment.heartsCount ? now : newRegenTime;
-
-      heartsState = await prisma.heartsState.update({
-        where: {
-          studentId_assignmentId: {
-            studentId,
-            assignmentId,
-          },
-        },
-        data: {
-          currentCount: newCount,
-          lastRegenAt: finalRegenTime,
-        },
-      });
-    }
-  }
-
-  return heartsState;
+export async function getOrRegenerateHearts(studentId: string, assignmentId: string, itemId?: string) {
+  const post = await requireStudentPost(assignmentId, studentId);
+  const item = itemId ? post.items.find((i) => i.id === itemId) : post.items[0];
+  if (!item) throw new Error("Item not found in this Post");
+  return prisma.$transaction((tx) => regenerateItemHearts(tx, studentId, post, item.id));
 }

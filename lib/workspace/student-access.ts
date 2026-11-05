@@ -1,3 +1,4 @@
+import { WorkspaceError } from "./workspace-error";
 import { prisma } from "@/lib/prisma";
 
 export async function requireStudentPost(
@@ -11,9 +12,9 @@ export async function requireStudentPost(
       items: { orderBy: { position: "asc" }, include: { testCases: true } },
     },
   });
-  if (!post) throw new Error("Post not found");
+  if (!post) throw new WorkspaceError("Post not found", 404);
   if (post.createdBy === studentId)
-    throw new Error("Only an enrolled Student can work on this Post");
+    throw new WorkspaceError("Only an enrolled Student can work on this Post", 403);
   const enrollment = await prisma.enrollment.findFirst({
     where: {
       studentId,
@@ -22,6 +23,6 @@ export async function requireStudentPost(
     },
   });
   if (!enrollment)
-    throw new Error("Only an enrolled Student can work on this Post");
+    throw new WorkspaceError("Only an enrolled Student can work on this Post", 403);
   return post;
 }
