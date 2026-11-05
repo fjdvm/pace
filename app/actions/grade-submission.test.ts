@@ -71,3 +71,11 @@ it("deletes only a draft grade while retaining the Submission and its answers", 
     saveSubmissionGrade("post", "submission", [], null, ""),
   ).rejects.toThrow();
 });
+
+it("keeps a partial Short answer draft's final grade blank until all Items are graded", async () => {
+  db.submission.findUnique.mockResolvedValue({ ...submission,
+    assignment: { items: [{ id: "one", kind: "short_answer", points: 50 }, { id: "two", kind: "coding", points: 50 }] },
+  });
+  await saveSubmissionGrade("post", "submission", [{ itemId: "one", grade: null }, { itemId: "two", grade: 20 }], null, "Draft feedback");
+  expect(db.submission.update).toHaveBeenCalledWith({ where: { id: "submission" }, data: { status: "graded", finalGrade: null, feedback: "Draft feedback" } });
+});

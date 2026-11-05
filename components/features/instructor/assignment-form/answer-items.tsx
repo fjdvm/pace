@@ -5,10 +5,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { formControl } from "./form-field";
 import { Input } from "@/components/ui/input";
-import { ChoiceEditor } from "./choice-editor";
+import { AnswerEditor, type AnswerInput } from "./answer-editor";
+import { ShortAnswerPreview } from "./short-answer-preview";
 import { ChoicePreview } from "./choice-preview";
-import { usePostItems, emptyChoice } from "./use-post-items";
-import type { MultipleChoiceInput } from "@/lib/items/multiple-choice";
+import { usePostItems, emptyChoice, emptyShortAnswer } from "./use-post-items";
+
 import type { useAssignmentForm } from "./use-assignment-form";
 import type { ReactNode } from "react";
 
@@ -18,16 +19,17 @@ type Props = {
   settings: ReactNode;
   codingEditor: ReactNode;
 };
-export function ChoiceItems({ form, locked, settings, codingEditor }: Props) {
+export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
   const state = usePostItems(form.id, form.setItemEditing);
-  const [preview, setPreview] = useState<MultipleChoiceInput | null>(null);
-  const select = (id: string | null) => {
+  const [preview, setPreview] = useState<AnswerInput | null>(null);
+  const [newKind, setNewKind] = useState<"multiple_choice" | "short_answer">("multiple_choice");
+  const select = (id: string | null, kind = newKind) => {
     state.edit(id);
     const item = state.items.find((i) => i.id === id);
     setPreview(
       id === "new"
-        ? emptyChoice
-        : item?.kind === "multiple_choice"
+        ? (kind === "short_answer" ? emptyShortAnswer : emptyChoice)
+        : item?.kind === "short_answer" ? { ...item, kind: "short_answer" } : item?.kind === "multiple_choice"
           ? {
               ...item,
               kind: "multiple_choice",
@@ -98,12 +100,12 @@ export function ChoiceItems({ form, locked, settings, codingEditor }: Props) {
                 index,
               )}
               {state.editing === item.id &&
-                (item.kind === "multiple_choice" ? (
-                  <ChoiceEditor
+                (item.kind !== "coding" ? (
+                  <AnswerEditor
                     key={item.id}
                     initial={{
                       ...item,
-                      kind: "multiple_choice",
+                      kind: item.kind as "multiple_choice" | "short_answer",
                       correctOption: item.correctOption ?? -1,
                     }}
                     locked={locked}
@@ -134,13 +136,13 @@ export function ChoiceItems({ form, locked, settings, codingEditor }: Props) {
                 state,
                 select,
                 "new",
-                "New multiple choice item",
-                "multiple_choice",
+                newKind === "short_answer" ? "New short answer item" : "New multiple choice item",
+                newKind,
                 preview?.points ?? 10,
                 count - 1,
               )}
-              <ChoiceEditor
-                initial={emptyChoice}
+              <AnswerEditor
+                initial={newKind === "short_answer" ? emptyShortAnswer : emptyChoice}
                 locked={false}
                 busy={state.busy}
                 onPreviewChange={setPreview}
@@ -155,13 +157,13 @@ export function ChoiceItems({ form, locked, settings, codingEditor }: Props) {
           )}
           <AddChoiceMenu
             disabled={!state.loaded || state.busy || state.editing !== null}
-            onAdd={() => select("new")}
+            onAdd={(kind) => { setNewKind(kind); select("new", kind); }}
           />
         </section>
       </main>
       <aside className="min-w-0">
         {preview ? (
-          <ChoicePreview value={preview} index={activeIndex} total={count} />
+          preview.kind === "multiple_choice" ? <ChoicePreview value={preview} index={activeIndex} total={count} /> : <ShortAnswerPreview value={preview} index={activeIndex} total={count} />
         ) : (
           <div className="space-y-4 rounded-[12px] border border-pace-line bg-white p-5">
             <h2 className="text-base font-bold">Settings</h2>

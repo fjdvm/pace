@@ -44,6 +44,8 @@ export async function submitCode(
     const graded = await Promise.all(
       answers.map(async (answer, index) => {
         const item = post.items[index];
+        if (item.kind === "short_answer")
+          return { ...answer, results: [], points: item.points, score: null };
         if (item.kind === "multiple_choice") {
           validateChoice(answer.code, item.options);
           return { ...answer, results: [], points: item.points,

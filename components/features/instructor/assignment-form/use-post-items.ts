@@ -5,6 +5,7 @@ import { createItem } from "@/app/actions/items/create-item";
 import { updateItem } from "@/app/actions/items/update-item";
 import { deleteItem } from "@/app/actions/items/delete-item";
 import { readItems } from "@/app/actions/items/read-items";
+import type { AnswerInput } from "./answer-editor";
 import type { MultipleChoiceInput } from "@/lib/items/multiple-choice";
 
 export type AuthoringItem = {
@@ -24,6 +25,7 @@ export const emptyChoice: MultipleChoiceInput = {
   options: ["", "", "", ""],
   correctOption: -1,
 };
+export const emptyShortAnswer = { kind: "short_answer" as const, title: "", instructions: "", points: 10 };
 export function usePostItems(
   postId: string | undefined,
   onEditingChange: (editing: boolean) => void,
@@ -51,7 +53,7 @@ export function usePostItems(
     setEditingState(id);
     onEditingChange(id !== null && id !== items[0]?.id);
   };
-  const save = async (input: MultipleChoiceInput) => {
+  const save = async (input: AnswerInput) => {
     if (!postId || busy) return;
     setBusy(true);
     try {
@@ -60,7 +62,7 @@ export function usePostItems(
           ? await createItem(postId, input)
           : await updateItem(postId, editing!, input);
       if (!result.success || !result.item) return toast.error(result.error);
-      const saved = { ...input, id: result.item.id };
+      const saved = { ...input, options: result.item.options, correctOption: result.item.correctOption, id: result.item.id };
       setItems((prev) =>
         editing === "new"
           ? [...prev, saved]

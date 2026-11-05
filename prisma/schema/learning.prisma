@@ -57,6 +57,7 @@ enum PostLabel {
 }
 
 enum ItemKind {
+  short_answer
   multiple_choice
   coding
 }

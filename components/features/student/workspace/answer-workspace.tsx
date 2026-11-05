@@ -1,3 +1,4 @@
+import { itemKindLabel } from "@/lib/items/presentation";
 import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { useDashboardSession } from "@/components/features/dashboard/dashboard-session";
 import { TopBar } from "@/components/features/dashboard/top-bar/top-bar";
@@ -8,6 +9,7 @@ import {
 import { ChoiceNavigation } from "./choice-navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { ChoiceOptions } from "./choice-options";
 import type { useWorkspace } from "./use-workspace";
 
@@ -18,13 +20,15 @@ type Props = {
   classId: string;
   onBack: () => void;
 };
-export function ChoiceWorkspace({
+export function AnswerWorkspace({
   ws,
   title,
   className,
   classId,
   onBack,
 }: Props) {
+  const short = ws.activeItem.kind === "short_answer";
+  const label = itemKindLabel(ws.activeItem.kind);
   const session = useDashboardSession();
   const index = ws.items.findIndex((item) => item.id === ws.activeId);
   return (
@@ -58,7 +62,7 @@ export function ChoiceWorkspace({
             Item {index + 1} of {ws.items.length}
           </b>
           <p className="text-[11px] font-bold uppercase tracking-[.66px] text-pace-muted">
-            Multiple choice · {ws.activeItem.points} pts
+            {label} · {ws.activeItem.points} pts
           </p>
         </div>
         <span className="hidden font-[family-name:var(--font-funnel)] text-[28px] lg:inline">
@@ -87,9 +91,7 @@ export function ChoiceWorkspace({
               <span className="min-w-0">
                 <span className="block text-[13px]">{item.title}</span>
                 <span className="text-[11px] font-bold uppercase leading-[1.3] tracking-[.66px] text-pace-muted">
-                  {item.kind === "multiple_choice"
-                    ? "Multiple choice"
-                    : "Coding"}{" "}
+                  {itemKindLabel(item.kind)}{" "}
                   · {item.points} pts
                 </span>
               </span>
@@ -104,8 +106,8 @@ export function ChoiceWorkspace({
               </p>
               <b>{ws.activeItem.title}</b>
             </div>
-            <span className="rounded-full bg-pace-green-tint px-2.5 py-1 text-xs font-bold text-pace-green-deep">
-              Multiple choice · {ws.activeItem.points} pts
+            <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${short ? "bg-pace-amber-tint text-pace-ink" : "bg-pace-green-tint text-pace-green-deep"}`}>
+              {label} · {ws.activeItem.points} pts
             </span>
           </div>
           <nav aria-label="Items" className="flex gap-1.5 px-4 pt-3 lg:hidden">
@@ -125,14 +127,14 @@ export function ChoiceWorkspace({
               {ws.activeItem.title}
             </h1>
             <p className="mb-2.5 text-[13px] leading-[1.5] text-pace-muted lg:mb-3">
-              Choose one answer.
+              {short ? "Write your answer. Graded by your Instructor." : "Choose one answer."}
             </p>
-            <ChoiceOptions
+            {short ? <label className="block space-y-2 text-[13px] font-semibold"><span>Your answer</span><Textarea value={ws.code} disabled={!!ws.submission || ws.isSubmitting} onChange={(e) => ws.handleCodeChange(e.target.value)} placeholder="Type your answer" className="min-h-48 rounded-[12px] border-[1.5px] border-pace-line-strong p-4 text-[15px] font-normal leading-[1.55]" /></label> : <ChoiceOptions
               options={ws.activeItem.options ?? []}
               value={ws.code}
               disabled={!!ws.submission || ws.isSubmitting}
               onChange={ws.handleCodeChange}
-            />
+            />}
             <p
               aria-live="polite"
               className="mt-2.5 text-[11px] font-bold uppercase text-pace-green-deep lg:text-[13px] lg:font-normal lg:normal-case lg:text-pace-muted"

@@ -6,12 +6,13 @@ import {
   deleteSubmissionGrade,
 } from "@/app/actions/grade-submission";
 import { returnSubmissions } from "@/app/actions/return-submissions";
+import { validateGrade } from "@/lib/submission-state";
 import type { SubmissionReview } from "@/lib/submission-review-data";
 
 export function useGradeDraft(review: SubmissionReview, postId: string) {
   const [grades, setGrades] = useState<
     import("@/lib/submission-state").ItemGrade[]
-  >(review.items.map((i) => ({ itemId: i.id, grade: i.grade ?? i.autoGrade })));
+  >(review.items.map((i) => ({ itemId: i.id, grade: i.grade ?? (i.kind === "short_answer" ? null : i.autoGrade) })));
   const [finalGrade, setFinalGrade] = useState(
     review.finalGrade?.toString() ?? "",
   );
@@ -29,6 +30,10 @@ export function useGradeDraft(review: SubmissionReview, postId: string) {
         if (mode === "delete")
           await deleteSubmissionGrade(postId, review.submissionId);
         else {
+          if (mode === "return") validateGrade(
+            review.items.map((i) => ({ itemId: i.id, kind: i.kind, points: i.points })),
+            grades, finalGrade === "" ? null : Number(finalGrade), true,
+          );
           await saveSubmissionGrade(
             postId,
             review.submissionId,

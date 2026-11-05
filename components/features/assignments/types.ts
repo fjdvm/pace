@@ -37,7 +37,7 @@ export interface ChatMessageData {
 }
 
 export interface WorkspaceItem {
-  kind?: "coding" | "multiple_choice";
+  kind?: "coding" | "multiple_choice" | "short_answer";
   options?: string[];
   id: string;
   title: string;

@@ -88,3 +88,12 @@ it("locks multiple-choice keys, option identities and kind after work starts", a
   expect(await updateItem("post", "item", input)).toMatchObject({ success: false });
   expect(await updateItem("post", "item", { ...choice, title: "Updated prompt", points: 20 })).toMatchObject({ success: true });
 });
+
+it("updates a Short answer prompt and points after work starts", async () => {
+  const short = { kind: "short_answer" as const, title: "Explain a loop", instructions: "", points: 10, language: "", starterCode: "", options: [], correctOption: null };
+  db.assignment.findUnique.mockResolvedValue({ _count: { ...counts, codeDrafts: 1 }, classes: [{ class: { instructorId: "instructor" } }] });
+  db.item.findUnique.mockResolvedValue({ id: "item", ...short });
+  const { updateItem } = await import("./update-item");
+  expect(await updateItem("post", "item", { ...short, title: "Explain an infinite loop", points: 20 })).toMatchObject({ success: true, item: { points: 20, kind: "short_answer" } });
+  expect(await updateItem("post", "item", choice)).toMatchObject({ success: false });
+});

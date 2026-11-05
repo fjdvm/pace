@@ -57,3 +57,11 @@ it("requires the Class's Instructor", async () => {
   }
   expect(db.submission.updateMany).not.toHaveBeenCalled();
 });
+
+it("allows an explicitly zeroed Short answer to be Returned", async () => {
+  db.submission.findMany.mockResolvedValue([{ ...submission, status: "graded", finalGrade: 0,
+    assignment: { items: [{ id: "one", kind: "short_answer", points: 50 }] },
+    answers: [{ itemId: "one", grade: 0, score: null }],
+  }]);
+  await expect(returnSubmissions("post", ["submission"])).resolves.toEqual({ success: true });
+});

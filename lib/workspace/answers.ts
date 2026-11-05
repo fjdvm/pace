@@ -13,11 +13,11 @@ export function validateAnswers(itemIds: string[], answers: CodingAnswer[]) {
   return itemIds.map((id) => answers.find((a) => a.itemId === id)!);
 }
 
-export function postScore(answers: { score: number; points: number }[]) {
+export function postScore(answers: { score: number | null; points: number }[]) {
   const total = answers.reduce((sum, a) => sum + a.points, 0);
   return total === 0
     ? 0
     : Math.round(
-        (answers.reduce((sum, a) => sum + a.score * a.points, 0) / total) * 100,
+        (answers.reduce((sum, a) => sum + (a.score ?? 0) * a.points, 0) / total) * 100,
       ) / 100;
 }

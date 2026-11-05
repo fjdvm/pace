@@ -1,3 +1,4 @@
+import { itemKindLabel, itemKindTone } from "@/lib/items/presentation";
 import Link from "next/link";
 import { PaceTag } from "@/components/features/student/shared/pace-tag";
 import { itemStatusLabel } from "./item-status";
@@ -28,11 +29,11 @@ export function ItemRow({ item, index, href }: ItemRowProps) {
           className={`text-[13px] ${item.status === "submitted" ? "text-pace-green-deep" : "text-pace-muted"}`}
         >
           {item.status === "submitted"
-            ? (item.kind === "multiple_choice" ? "Answer turned in" : `${item.passed}/${item.tests} tests pass`)
-            : `${item.kind === "multiple_choice" ? "Multiple choice" : "Coding"} · ${itemStatusLabel(item.status)}`}
+            ? (item.kind !== "coding" ? "Answer turned in" : `${item.passed}/${item.tests} tests pass`)
+            : `${itemKindLabel(item.kind)} · ${itemStatusLabel(item.status)}`}
         </span>
       </div>
-      <PaceTag tone={item.kind === "multiple_choice" ? "green" : "blue"}>{item.kind === "multiple_choice" ? "Multiple choice" : "Coding"}</PaceTag>
+      <PaceTag tone={itemKindTone(item.kind)}>{itemKindLabel(item.kind)}</PaceTag>
       <span className="shrink-0 text-[13px] font-bold text-pace-ink-2">
         {item.grade != null
           ? `${item.grade}/${item.points}`

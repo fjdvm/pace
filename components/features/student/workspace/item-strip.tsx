@@ -1,3 +1,4 @@
+import { itemKindLabel } from "@/lib/items/presentation";
 import { itemComplete } from "./item-completion";
 import { Button } from "@/components/ui/button";
 import type {
@@ -53,7 +54,7 @@ export function ItemStrip({
           </span>
           {item.title}
           <span className="text-[11px] font-bold uppercase tracking-[0.66px] text-pace-muted">
-            {item.kind === "multiple_choice" ? "Multiple choice" : "Coding"}
+            {itemKindLabel(item.kind)}
           </span>
         </Button>
       ))}

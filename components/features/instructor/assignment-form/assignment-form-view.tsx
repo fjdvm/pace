@@ -1,6 +1,6 @@
 "use client";
 
-import { ChoiceItems } from "./choice-items";
+import { AnswerItems } from "./answer-items";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -67,7 +67,7 @@ export function AssignmentFormView({
         onDelete={requestDelete}
       />
       {form.id ? (
-        <ChoiceItems
+        <AnswerItems
           form={form}
           locked={locked}
           settings={
