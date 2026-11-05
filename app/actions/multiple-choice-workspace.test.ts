@@ -61,3 +61,12 @@ it("rejects forged selections, unenrolled Users and changes after turn-in", asyn
   auth.userId = null;
   expect((await submitCode("post", "2", signals)).success).toBe(false);
 });
+
+it("rejects a first save or turn-in when the answer key changes before the lock", async () => {
+  db.assignment.findUnique.mockResolvedValue({ ...post, items: [choice] });
+  db.item.findMany.mockResolvedValue([{ ...choice, options: ["do-while", "while", "for"], correctOption: 0 }]);
+  expect(await saveDraft("post", "2", "one")).toMatchObject({ success: false, error: expect.stringContaining("Items changed") });
+  expect(await submitCode("post", "2", signals)).toMatchObject({ success: false, error: expect.stringContaining("Items changed") });
+  expect(db.codeDraft.upsert).not.toHaveBeenCalled();
+  expect(db.submission.create).not.toHaveBeenCalled();
+});

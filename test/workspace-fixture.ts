@@ -2,6 +2,7 @@ import { beforeEach, vi } from "vitest";
 const auth = vi.hoisted(() => ({ userId: "student" as string | null }));
 const db = vi.hoisted(() => ({
   $queryRaw: vi.fn(),
+  item: { findMany: vi.fn() },
   assignment: { findUnique: vi.fn() }, enrollment: { findFirst: vi.fn() },
   submission: { findUnique: vi.fn(), create: vi.fn() },
   codeDraft: { findUnique: vi.fn(), upsert: vi.fn(), deleteMany: vi.fn() },
@@ -19,6 +20,7 @@ const item = { id: "one", title: "Sum", language: "Python", points: 30, testCase
 const post = { id: "post", title: "Coding Post", createdBy: "instructor", dueDate: new Date("2099-01-01"), classes: [{ classId: "class" }], items: [item] };
 beforeEach(() => {
   vi.clearAllMocks(); auth.userId = "student";
+  db.item.findMany.mockImplementation(async () => (await db.assignment.findUnique()).items);
   db.assignment.findUnique.mockResolvedValue(post); db.enrollment.findFirst.mockResolvedValue({ studentId: "student" });
   db.submission.findUnique.mockResolvedValue(null);
   db.codeDraft.upsert.mockResolvedValue({ updatedAt: new Date("2026-11-05") });

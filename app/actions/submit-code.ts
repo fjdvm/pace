@@ -1,5 +1,6 @@
 "use server";
 
+import { assertChoiceConfiguration } from "@/lib/items/choice-configuration";
 import { multipleChoiceScore, validateChoice } from "@/lib/items/multiple-choice";
 import { revalidatePath } from "next/cache";
 import type { Prisma } from "@/lib/generated/prisma/client";
@@ -71,6 +72,8 @@ export async function submitCode(
     const first = graded[0];
     const submission = await prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT id FROM assignments WHERE id = ${assignmentId} FOR UPDATE`;
+      const currentItems = await tx.item.findMany({ where: { assignmentId }, orderBy: { position: "asc" } });
+      assertChoiceConfiguration(post.items, currentItems);
       if (await tx.submission.findUnique({ where: key }))
         throw new Error("You have already turned in this Post");
       const created = await tx.submission.create({

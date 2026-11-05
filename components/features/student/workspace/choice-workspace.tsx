@@ -1,3 +1,4 @@
+import { itemComplete } from "./item-completion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ChoiceOptions } from "./choice-options";
@@ -14,7 +15,7 @@ export function ChoiceWorkspace({ ws, title, className, onBack }: Props) {
   const done = ws.items.filter((item) =>
     item.kind === "multiple_choice"
       ? ws.codes[item.id] !== ""
-      : ws.itemResults[item.id]?.every((r) => r.passed),
+      : itemComplete(ws.itemResults[item.id]),
   ).length;
   const navigation = (mobile: boolean) => (
     <>

@@ -4,10 +4,11 @@ Instructors can add multiple-choice Items to a saved Post, edit the prompt/optio
 
 ## Validation
 
+- A regression test changes the answer key between initial read and Post lock. Draft saving and turn-in reject stale Item configuration under the lock. Authoring controls freeze during save to preserve the saved snapshot.
 - Pure scoring tests cover full credit, wrong, unanswered and noncanonical selections.
 - Mocked actions cover choice creation/update, started-work locks, draft changes, invalid selections, permissions, turn-in scoring and answer-key privacy.
 - TypeScript, Prisma validation and production build pass. Lint has only the two existing warnings in `app/layout.tsx` and `lib/encryption.ts`; build retains the existing tokenizer tracing warning.
-- The first full-suite invocation lacked `DATABASE_URL`; integration tests could not connect. A disposable local PostgreSQL database was then created from the legacy schema and all migrations for a valid full-suite run.
+- The first full-suite invocation lacked `DATABASE_URL`; integration tests could not connect. A disposable local PostgreSQL database was then created from the legacy schema and all migrations for a valid full-suite run: **86 files and all 490 tests pass**.
 
 ## Migration
 
@@ -28,3 +29,7 @@ Known layout/flow differences requiring follow-up:
 - Multiple-choice points are summarized separately from the existing Coding summary; the full Post form preview still previews the existing Coding Item. Each multiple-choice editor has its own Student preview.
 - Desktop multiple-choice workspace uses the Class context; its global shell differs from the existing Coding workspace. Dynamic titles, roster/Item counts and point values replace the Figma sample content. The mobile OS status bar is not drawn in the web page.
 - Authoring preview is responsive and moves below the editor at narrower widths. The desktop matching and mobile wrapping still need visual verification.
+
+## Review
+
+Two independent code-review axes checked the diff from `913e7d6`. See [review findings](review.md). Correctness and input-validation findings were fixed and verified. The custom workspace shell and incomplete authoring/visual fidelity remain draft blockers. Copilot review was requested; GitHub reports insufficient remaining quota for that review.

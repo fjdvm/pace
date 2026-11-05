@@ -1,5 +1,6 @@
 "use server";
 
+import { assertChoiceConfiguration } from "@/lib/items/choice-configuration";
 import { validateChoice } from "@/lib/items/multiple-choice";
 import { prisma } from "@/lib/prisma";
 import { requireStudentPost } from "@/lib/workspace/student-access";
@@ -37,6 +38,8 @@ export async function saveDraft(
 
     const draft = await prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT id FROM assignments WHERE id = ${assignmentId} FOR UPDATE`;
+      const currentItems = await tx.item.findMany({ where: { assignmentId }, orderBy: { position: "asc" } });
+      assertChoiceConfiguration(post.items, currentItems);
       const existingSubmission = await tx.submission.findUnique({
         where: {
           studentId_assignmentId: {

@@ -32,6 +32,7 @@ export function ChoiceEditor({
         <label className="block space-y-2 text-[13px] font-semibold">
           <span>Question</span>
           <Input
+            disabled={busy}
             value={value.title}
             onChange={(e) => patch({ title: e.target.value })}
             placeholder="Write an Item prompt"
@@ -44,7 +45,7 @@ export function ChoiceEditor({
         <RadioGroup
           aria-label="Correct answer"
           value={String(value.correctOption)}
-          disabled={locked}
+          disabled={locked || busy}
           onValueChange={(v) => patch({ correctOption: Number(v) })}
           className="gap-3"
         >
@@ -60,7 +61,7 @@ export function ChoiceEditor({
               />
               <Input
                 aria-label={`Option ${index + 1}`}
-                disabled={locked}
+                disabled={locked || busy}
                 value={option}
                 onChange={(e) =>
                   patch({
@@ -80,7 +81,7 @@ export function ChoiceEditor({
                 variant="ghost"
                 size="icon"
                 aria-label={`Remove option ${index + 1}`}
-                disabled={locked || value.options.length <= 2}
+                disabled={locked || busy || value.options.length <= 2}
                 onClick={() =>
                   patch({
                     options: value.options.filter((_, n) => n !== index),
@@ -99,7 +100,7 @@ export function ChoiceEditor({
         </RadioGroup>
         <Button
           variant="ghost"
-          disabled={locked || value.options.length >= 20}
+          disabled={locked || busy || value.options.length >= 20}
           onClick={() => patch({ options: [...value.options, ""] })}
         >
           + Add option
@@ -113,7 +114,8 @@ export function ChoiceEditor({
           <label className="min-w-0 flex-1 space-y-2 text-[13px] font-semibold">
             <span>Points</span>
             <Input
-              aria-label="Points"
+              disabled={busy}
+            aria-label="Points"
               type="number"
               min={0}
               value={value.points}
