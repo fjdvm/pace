@@ -1,27 +1,23 @@
 import { SignInLink } from "@/components/features/auth/sign-in/sign-in-link";
 
+const base =
+  "flex h-[54px] w-full items-center justify-center rounded-2xl font-lp-sans text-base font-semibold transition-[transform,box-shadow] duration-100 active:translate-y-1 active:shadow-[0_0_0_0_transparent] sm:w-[218px]";
+
 export function HeroActions() {
   return (
-    <div data-hero-actions className="flex w-full flex-col items-center gap-4 pt-10 sm:w-auto sm:flex-row">
+    <div
+      data-hero-actions
+      className="flex w-full flex-col items-center gap-3 pb-1 sm:w-auto sm:flex-row"
+    >
       <SignInLink
-        className="pace-press group relative flex h-[66px] w-full items-center justify-center overflow-hidden rounded-[18px] bg-pace-green shadow-[0_5px_0_0_#11923a] transition-transform hover:-translate-y-0.5 sm:w-[300px]"
+        className={`${base} bg-[#2bc84e] text-white shadow-[0_4px_0_0_#178c33]`}
       >
-        <span
-          aria-hidden
-          className="absolute left-0 top-[-20px] h-[120px] w-[26px] animate-pace-sheen bg-white/20"
-        />
-        <span
-          aria-hidden
-          className="absolute left-9 top-[-20px] h-[120px] w-[26px] animate-pace-sheen bg-white/20 [animation-delay:150ms]"
-        />
-        <span className="relative text-xl font-semibold leading-[1.2] text-white">
-          I’m a student
-        </span>
+        I&apos;m a student
       </SignInLink>
       <SignInLink
-        className="pace-press flex h-[66px] w-full items-center justify-center rounded-[18px] border-[1.5px] border-pace-line bg-white text-xl font-semibold leading-[1.2] text-pace-ink shadow-[0_5px_0_0_#ddd9d0] transition-transform hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_1px_0_0_#ddd9d0] sm:w-[300px]"
+        className={`${base} bg-white text-lp-faint shadow-[0_4px_0_0_#dbd9d4]`}
       >
-        I’m an instructor
+        I&apos;m an instructor
       </SignInLink>
     </div>
   );
