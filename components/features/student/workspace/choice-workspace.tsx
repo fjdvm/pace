@@ -1,4 +1,11 @@
-import { itemComplete } from "./item-completion";
+import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
+import { useDashboardSession } from "@/components/features/dashboard/dashboard-session";
+import { TopBar } from "@/components/features/dashboard/top-bar/top-bar";
+import {
+  ClassTitleProvider,
+  SetClassTitle,
+} from "@/components/features/dashboard/top-bar/class-title-context";
+import { ChoiceNavigation } from "./choice-navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ChoiceOptions } from "./choice-options";
@@ -8,52 +15,31 @@ type Props = {
   ws: ReturnType<typeof useWorkspace>;
   title: string;
   className: string;
+  classId: string;
   onBack: () => void;
 };
-export function ChoiceWorkspace({ ws, title, className, onBack }: Props) {
+export function ChoiceWorkspace({
+  ws,
+  title,
+  className,
+  classId,
+  onBack,
+}: Props) {
+  const session = useDashboardSession();
   const index = ws.items.findIndex((item) => item.id === ws.activeId);
-  const done = ws.items.filter((item) =>
-    item.kind === "multiple_choice"
-      ? ws.codes[item.id] !== ""
-      : itemComplete(ws.itemResults[item.id]),
-  ).length;
-  const navigation = (mobile: boolean) => (
-    <>
-      <Button
-        variant="outline"
-        disabled={index === 0 || ws.isSubmitting}
-        onClick={() => ws.setActiveId(ws.items[index - 1].id)}
-        className={`rounded-full border-pace-line-strong bg-white font-bold shadow-[0_3px_0_#d6d3cb] ${mobile ? "h-[52px] flex-1" : "h-10"}`}
-      >
-        ‹ Item {index}
-      </Button>
-      <span className="hidden flex-1 text-right text-[13px] text-pace-muted lg:block">
-        {done} of {ws.items.length} done
-      </span>
-      {index < ws.items.length - 1 && (
-        <Button
-          variant={mobile ? "default" : "outline"}
-          disabled={ws.isSubmitting}
-          onClick={() => ws.setActiveId(ws.items[index + 1].id)}
-          className={`rounded-full font-bold ${mobile ? "h-[52px] flex-1 bg-pace-green text-white" : "h-10 bg-white"}`}
-        >
-          Item {index + 2} ›
-        </Button>
-      )}
-      {(!mobile || index === ws.items.length - 1) && (
-        <Button
-          disabled={!!ws.submission || ws.isSubmitting}
-          onClick={() => ws.setConfirmOpen(true)}
-          className="h-10 rounded-full bg-pace-green text-white"
-        >
-          Turn in
-        </Button>
-      )}
-    </>
-  );
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <header className="flex h-[52px] shrink-0 items-center gap-2 border-b border-pace-line px-4 lg:h-16">
+    <SidebarProvider className="min-h-0! flex-1 flex-col">
+      {session && (
+        <div className="hidden lg:block">
+          <ClassTitleProvider>
+            <SetClassTitle id={classId} name={className} />
+            <TopBar {...session} />
+          </ClassTitleProvider>
+        </div>
+      )}
+      <header
+        className={`flex h-[52px] shrink-0 items-center gap-2 border-b border-pace-line pl-1 pr-4 lg:h-16 ${session ? "lg:hidden" : ""}`}
+      >
         <Button
           variant="ghost"
           size="icon"
@@ -81,7 +67,7 @@ export function ChoiceWorkspace({ ws, title, className, onBack }: Props) {
         <span className="hidden text-lg lg:inline">› {className}</span>
       </header>
       <div className="flex min-h-0 flex-1">
-        <aside className="hidden w-[280px] shrink-0 flex-col gap-1 border-r border-pace-line bg-pace-canvas px-3 pt-4 lg:flex">
+        <Sidebar className="top-16 hidden h-[calc(100dvh-64px)] border-r border-pace-line bg-pace-canvas lg:flex [&_[data-slot=sidebar-inner]]:gap-1 [&_[data-slot=sidebar-inner]]:bg-pace-canvas [&_[data-slot=sidebar-inner]]:px-3 [&_[data-slot=sidebar-inner]]:pt-4">
           <p className="mb-1 text-[11px] font-bold uppercase tracking-[.66px] text-pace-muted">
             {title} · {ws.items.length} items
           </p>
@@ -91,14 +77,16 @@ export function ChoiceWorkspace({ ws, title, className, onBack }: Props) {
               variant="ghost"
               onClick={() => ws.setActiveId(item.id)}
               disabled={ws.isSubmitting}
-              className={`h-auto justify-start whitespace-normal rounded-lg p-2.5 text-left ${item.id === ws.activeId ? "border border-pace-line bg-white" : ""}`}
+              className={`h-auto justify-start gap-2.5 whitespace-normal rounded-[8px] p-2.5 text-left ${item.id === ws.activeId ? "border border-pace-line bg-white" : ""}`}
             >
-              <span className="flex size-6 shrink-0 items-center justify-center rounded-full border-2 border-pace-line-strong text-[11px]">
+              <span
+                className={`flex size-6 shrink-0 items-center justify-center rounded-full border-2 text-[11px] ${item.id === ws.activeId ? "border-pace-green bg-pace-green-tint text-pace-green-deep" : "border-pace-line-strong text-pace-muted"}`}
+              >
                 {n + 1}
               </span>
               <span className="min-w-0">
                 <span className="block text-[13px]">{item.title}</span>
-                <span className="text-[11px] uppercase text-pace-muted">
+                <span className="text-[11px] font-bold uppercase leading-[1.3] tracking-[.66px] text-pace-muted">
                   {item.kind === "multiple_choice"
                     ? "Multiple choice"
                     : "Coding"}{" "}
@@ -107,11 +95,11 @@ export function ChoiceWorkspace({ ws, title, className, onBack }: Props) {
               </span>
             </Button>
           ))}
-        </aside>
+        </Sidebar>
         <div className="flex min-w-0 flex-1 flex-col">
-          <div className="hidden items-center justify-between border-b border-pace-line px-6 py-3.5 lg:flex">
+          <div className="hidden items-center justify-between border-b border-pace-line px-6 py-3.5 leading-[1.35] lg:flex">
             <div>
-              <p className="text-[11px] font-bold uppercase text-pace-muted">
+              <p className="text-[11px] font-bold uppercase leading-[1.3] tracking-[.66px] text-pace-muted">
                 Item {index + 1} of {ws.items.length}
               </p>
               <b>{ws.activeItem.title}</b>
@@ -136,7 +124,7 @@ export function ChoiceWorkspace({ ws, title, className, onBack }: Props) {
             <h1 className="mb-2.5 text-[22px] font-bold leading-[1.25] tracking-[-.22px]">
               {ws.activeItem.title}
             </h1>
-            <p className="mb-2.5 text-[13px] text-pace-muted lg:mb-3">
+            <p className="mb-2.5 text-[13px] leading-[1.5] text-pace-muted lg:mb-3">
               Choose one answer.
             </p>
             <ChoiceOptions
@@ -156,20 +144,22 @@ export function ChoiceWorkspace({ ws, title, className, onBack }: Props) {
                   : ws.autosaveStatus === "saving"
                     ? "Saving…"
                     : "Saved"}
-              <span className="hidden lg:inline">
-                {" "}
-                · You can change your answer until you turn in.
-              </span>
+              {!ws.submission && (
+                <span className="hidden lg:inline">
+                  {" "}
+                  · You can change your answer until you turn in.
+                </span>
+              )}
             </p>
           </main>
           <footer className="flex gap-3 border-t border-pace-line px-4 pb-7 pt-3 lg:hidden">
-            {navigation(true)}
+            <ChoiceNavigation ws={ws} index={index} mobile />
           </footer>
           <footer className="hidden items-center gap-3 border-t border-pace-line px-6 py-3 lg:flex">
-            {navigation(false)}
+            <ChoiceNavigation ws={ws} index={index} mobile={false} />
           </footer>
         </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

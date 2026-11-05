@@ -1,182 +1,174 @@
 "use client";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { ItemAuthoringRow } from "./item-authoring-row";
+import { AddChoiceMenu } from "./add-choice-menu";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { createItem } from "@/app/actions/items/create-item";
-import { updateItem } from "@/app/actions/items/update-item";
-import { deleteItem } from "@/app/actions/items/delete-item";
-import { readItems } from "@/app/actions/items/read-items";
-import type { MultipleChoiceInput } from "@/lib/items/multiple-choice";
+import { formControl } from "./form-field";
+import { Input } from "@/components/ui/input";
 import { ChoiceEditor } from "./choice-editor";
+import { ChoicePreview } from "./choice-preview";
+import { usePostItems, emptyChoice } from "./use-post-items";
+import type { MultipleChoiceInput } from "@/lib/items/multiple-choice";
+import type { useAssignmentForm } from "./use-assignment-form";
+import type { ReactNode } from "react";
 
-type Choice = MultipleChoiceInput & { id: string };
-const empty: MultipleChoiceInput = {
-  kind: "multiple_choice",
-  title: "",
-  instructions: "",
-  points: 10,
-  options: ["", "", "", ""],
-  correctOption: -1,
-};
-export function ChoiceItems({
-  postId,
-  locked,
-  onEditingChange,
-}: {
-  postId?: string;
+type Props = {
+  form: ReturnType<typeof useAssignmentForm>;
   locked: boolean;
-  onEditingChange?: (editing: boolean) => void;
-}) {
-  const [items, setItems] = useState<Choice[]>([]);
-  const [editing, setEditingState] = useState<string | null>(null);
-  const setEditing = (id: string | null) => {
-    setEditingState(id);
-    onEditingChange?.(id !== null);
-  };
-  const [busy, setBusy] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  useEffect(() => {
-    let active = true;
-    if (postId)
-      void readItems(postId)
-        .then((result) => {
-          if (!active) return;
-          if (!result.success) {
-            toast.error(result.error);
-            return;
-          }
-          setItems(
-            (result.items ?? [])
-              .filter((i) => i.kind === "multiple_choice")
-              .map((i) => ({
-                ...i,
-                kind: "multiple_choice",
-                correctOption: i.correctOption ?? -1,
-              })),
-          );
-          setLoaded(true);
-        })
-        .catch(() => toast.error("Could not load Items"));
-    return () => {
-      active = false;
-    };
-  }, [postId]);
-  const save = async (input: MultipleChoiceInput) => {
-    if (!postId || busy) return;
-    setBusy(true);
-    try {
-      const result =
-        editing === "new"
-          ? await createItem(postId, input)
-          : await updateItem(postId, editing!, input);
-      if (!result.success || !result.item) return toast.error(result.error);
-      const saved = { ...input, id: result.item.id };
-      setItems((prev) =>
-        editing === "new"
-          ? [...prev, saved]
-          : prev.map((i) => (i.id === editing ? saved : i)),
-      );
-      setEditing(null);
-      toast.success("Item saved");
-    } catch {
-      toast.error("Could not save Item");
-    } finally {
-      setBusy(false);
-    }
-  };
-  const remove = async () => {
-    if (editing === "new") return setEditing(null);
-    if (!postId || !editing || busy) return;
-    setBusy(true);
-    try {
-      const result = await deleteItem(postId, editing);
-      if (!result.success) return toast.error(result.error);
-      setItems((prev) => prev.filter((i) => i.id !== editing));
-      setEditing(null);
-    } catch {
-      toast.error("Could not delete Item");
-    } finally {
-      setBusy(false);
-    }
-  };
-  return (
-    <section className="space-y-4" aria-label="Multiple-choice Items">
-      {items.map((item) =>
-        editing === item.id ? (
-          <ChoiceEditor
-            key={item.id}
-            initial={item}
-            locked={locked}
-            busy={busy}
-            onSave={save}
-            onDelete={remove}
-          />
-        ) : (
-          <Button
-            key={item.id}
-            variant="outline"
-            onClick={() => setEditing(item.id)}
-            disabled={busy || editing !== null}
-            className="h-auto w-full justify-between whitespace-normal rounded-xl border-pace-line bg-white p-4 text-left"
-          >
-            <span>{item.title}</span>
-            <span className="text-xs text-pace-green-deep">
-              Multiple choice · {item.points} pts
-            </span>
-          </Button>
-        ),
-      )}
-      {editing === "new" && (
-        <ChoiceEditor
-          initial={empty}
-          locked={false}
-          busy={busy}
-          onSave={save}
-          onDelete={remove}
-        />
-      )}
-      <div className="flex justify-center rounded-xl border border-dashed border-pace-line-strong p-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant="outline"
-                disabled={!postId || !loaded || busy || editing !== null}
-                className="rounded-full bg-white"
-              />
+  settings: ReactNode;
+  codingEditor: ReactNode;
+};
+export function ChoiceItems({ form, locked, settings, codingEditor }: Props) {
+  const state = usePostItems(form.id, form.setItemEditing);
+  const [preview, setPreview] = useState<MultipleChoiceInput | null>(null);
+  const select = (id: string | null) => {
+    state.edit(id);
+    const item = state.items.find((i) => i.id === id);
+    setPreview(
+      id === "new"
+        ? emptyChoice
+        : item?.kind === "multiple_choice"
+          ? {
+              ...item,
+              kind: "multiple_choice",
+              correctOption: item.correctOption ?? -1,
             }
-          >
-            + Add item
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => setEditing("new")}>
-              <span>
-                <b className="block">Multiple choice</b>
-                <span className="text-xs text-pace-muted">
-                  Options with one correct answer
-                </span>
-              </span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      {!postId && (
-        <p className="text-center text-[13px] text-pace-muted">
-          Save this Post as a draft to add multiple-choice Items.
-        </p>
-      )}
-      {items.length > 0 && (
-        <p className="text-[13px] text-pace-muted">
-          {items.length} multiple-choice Items ·{" "}
-          {items.reduce((sum, i) => sum + i.points, 0)} points
-        </p>
-      )}
-    </section>
+          : null,
+    );
+  };
+  const total =
+    state.items.reduce(
+      (sum, i, n) =>
+        sum +
+        (n === 0
+          ? (form.values.points ?? i.points)
+          : state.editing === i.id
+            ? (preview?.points ?? i.points)
+            : i.points),
+      0,
+    ) + (state.editing === "new" ? (preview?.points ?? 10) : 0);
+  const count = state.items.length + Number(state.editing === "new");
+  const activeIndex =
+    state.editing === "new"
+      ? count - 1
+      : state.items.findIndex((i) => i.id === state.editing);
+  return (
+    <div className="grid flex-1 items-start gap-6 px-4 py-4 lg:grid-cols-[minmax(0,1fr)_420px] lg:px-12 lg:py-6">
+      <main className="min-w-0 space-y-4">
+        <section className="space-y-3.5 rounded-[12px] border border-pace-line bg-white p-6">
+          <label className="block space-y-2 text-[13px] font-semibold">
+            <span className="block">Title</span>
+            <Input
+              value={form.values.title}
+              onChange={(e) => form.patch({ title: e.target.value })}
+              className={formControl}
+            />
+          </label>
+          <label className="block space-y-2 text-[13px] font-semibold">
+            <span className="block">Instructions (optional)</span>
+            <Input
+              value={form.values.instructions}
+              onChange={(e) => form.patch({ instructions: e.target.value })}
+              className={formControl}
+            />
+          </label>
+          <p className="text-[13px]">
+            <b>{count} items</b>
+            <span className="text-pace-muted">
+              {" "}
+              · {total} points total (added up from the items)
+            </span>
+          </p>
+        </section>
+        <section className="space-y-4" aria-label="Post Items">
+          {state.items.map((item, index) => (
+            <section
+              key={item.id}
+              className={`overflow-hidden rounded-[12px] border bg-white ${state.editing === item.id ? "border-2 border-pace-green" : "border-pace-line"}`}
+            >
+              {ItemAuthoringRow(
+                state,
+                select,
+                item.id,
+                index === 0
+                  ? (form.values.itemTitle ?? item.title)
+                  : item.title,
+                item.kind,
+                index === 0 ? (form.values.points ?? item.points) : item.points,
+                index,
+              )}
+              {state.editing === item.id &&
+                (item.kind === "multiple_choice" ? (
+                  <ChoiceEditor
+                    key={item.id}
+                    initial={{
+                      ...item,
+                      kind: "multiple_choice",
+                      correctOption: item.correctOption ?? -1,
+                    }}
+                    locked={locked}
+                    busy={state.busy}
+                    onPreviewChange={setPreview}
+                    onSave={async (input) => {
+                      if (await state.save(input)) setPreview(null);
+                    }}
+                    onDelete={async () => {
+                      if (await state.remove()) setPreview(null);
+                    }}
+                  />
+                ) : index === 0 ? (
+                  <div className="space-y-4 p-4">
+                    {codingEditor}
+                    <Button onClick={() => select(null)} variant="outline">
+                      Done editing Coding Item
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="px-4 pb-4 text-sm">{item.instructions}</p>
+                ))}
+            </section>
+          ))}
+          {state.editing === "new" && (
+            <section className="overflow-hidden rounded-[12px] border-2 border-pace-green bg-white">
+              {ItemAuthoringRow(
+                state,
+                select,
+                "new",
+                "New multiple choice item",
+                "multiple_choice",
+                preview?.points ?? 10,
+                count - 1,
+              )}
+              <ChoiceEditor
+                initial={emptyChoice}
+                locked={false}
+                busy={state.busy}
+                onPreviewChange={setPreview}
+                onSave={async (input) => {
+                  if (await state.save(input)) setPreview(null);
+                }}
+                onDelete={() => {
+                  select(null);
+                }}
+              />
+            </section>
+          )}
+          <AddChoiceMenu
+            disabled={!state.loaded || state.busy || state.editing !== null}
+            onAdd={() => select("new")}
+          />
+        </section>
+      </main>
+      <aside className="min-w-0">
+        {preview ? (
+          <ChoicePreview value={preview} index={activeIndex} total={count} />
+        ) : (
+          <div className="space-y-4 rounded-[12px] border border-pace-line bg-white p-5">
+            <h2 className="text-base font-bold">Settings</h2>
+            {settings}
+          </div>
+        )}
+      </aside>
+    </div>
   );
 }
