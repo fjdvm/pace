@@ -71,6 +71,7 @@ model Item {
   points       Float         @default(100)
   assignment   Assignment    @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   testCases    TestCase[]
+  answers      SubmissionAnswer[]
   submissions  Submission[]
   codeDrafts   CodeDraft[]
   heartsStates HeartsState[]

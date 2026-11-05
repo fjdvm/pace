@@ -30,7 +30,7 @@ export async function AssignmentWorkspacePage({ params }: PageProps) {
           email: true,
         },
       },
-      items: { orderBy: { position: "asc" }, take: 1, include: { testCases: true } },
+      items: { orderBy: { position: "asc" }, include: { testCases: true } },
     },
   });
 
@@ -108,31 +108,61 @@ export async function AssignmentWorkspacePage({ params }: PageProps) {
         assignmentId: id,
       },
     },
+    include: { answers: true },
   });
 
-  const draft = submission
-    ? null
-    : await prisma.codeDraft.findUnique({
-        where: {
-          studentId_assignmentId: {
-            studentId: user.id,
-            assignmentId: id,
-          },
-        },
+  const drafts = submission
+    ? []
+    : await prisma.codeDraft.findMany({
+        where: { studentId: user.id, assignmentId: id },
       });
+  const items = assignment.items.map((item) => {
+    const answer = submission?.answers.find((a) => a.itemId === item.id);
+    return {
+      id: item.id,
+      title: item.title,
+      instructions: item.instructions,
+      language: item.language,
+      starterCode: item.starterCode,
+      points: item.points,
+      testCases: item.testCases
+        .filter((t) => t.visible)
+        .map((t) => ({
+          id: t.id,
+          input: t.input,
+          expectedOutput: t.expectedOutput,
+        })),
+      hiddenTestCount: item.testCases.filter((t) => !t.visible).length,
+      code:
+        answer?.code ??
+        (submission?.itemId === item.id ? submission.code : null) ??
+        drafts.find((d) => d.itemId === item.id)?.code ??
+        null,
+      testResults:
+        (
+          (answer?.testResults ??
+            (submission?.itemId === item.id
+              ? submission.testResults
+              : null)) as
+            | import("@/components/features/assignments/types").TestRunResult[]
+            | null
+        )?.filter((r) => r.visible !== false) ?? null,
+    };
+  });
 
   const formattedSubmission = submission
     ? {
         id: submission.id,
         code: submission.code,
         score: submission.score,
-        testResults: submission.testResults,
+        testResults: items[0].testResults,
         submittedAt: submission.submittedAt.toISOString(),
       }
     : null;
 
   return (
     <StudentWorkspaceView
+      items={items}
       assignment={formattedAssignment}
       className={enrollment.class.name}
       classId={enrollment.class.id}
@@ -141,7 +171,7 @@ export async function AssignmentWorkspacePage({ params }: PageProps) {
       visibleTestCases={formattedTestCases}
       initialSubmission={formattedSubmission}
       initialChatMessages={formattedMessages}
-      initialDraftCode={draft?.code ?? (codingItem.starterCode || null)}
+      initialDraftCode={items[0].code ?? codingItem.starterCode}
     />
   );
 }

@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
@@ -7,188 +8,146 @@ import { awardSubmissionXp, getTotalXp } from "@/lib/gamification";
 import { createNotification } from "@/lib/notifications";
 import { computeRiskScore } from "@/lib/risk-score";
 import type { BehavioralSignals } from "@/lib/types/behavioral-signals";
-
-const LANGUAGE_MAP: Record<string, number> = {
-  Python: 100,      // Python (3.12.5)
-  C: 103,           // C (GCC 14.1.0)
-  JavaScript: 102,  // JavaScript (Node.js 22.08.0)
-  "C#": 51,         // C# (Mono 6.6.0.161)
-};
+import { requireStudentPost } from "@/lib/workspace/student-access";
+import { executeTests } from "@/lib/workspace/execute-tests";
+import {
+  postScore,
+  validateAnswers,
+  type CodingAnswer,
+} from "@/lib/workspace/answers";
 
 export async function submitCode(
   assignmentId: string,
   code: string,
-  behavioralSignals: BehavioralSignals
+  behavioralSignals: BehavioralSignals,
+  itemAnswers?: CodingAnswer[],
 ) {
   try {
-    if (!assignmentId) {
-      throw new Error("Assignment ID is required");
-    }
-    if (code === undefined || code === null) {
-      throw new Error("Code content is required");
-    }
-
+    if (!assignmentId || typeof code !== "string")
+      throw new Error("Post and code are required");
     const supabase = await createClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
-    if (!user) {
-      throw new Error("Unauthorized: You must be logged in");
-    }
-
-    const existingSubmission = await prisma.submission.findUnique({
-      where: {
-        studentId_assignmentId: {
+    if (!user) throw new Error("Unauthorized: You must be logged in");
+    const post = await requireStudentPost(assignmentId, user.id);
+    if (!post.items.length) throw new Error("Coding Item not found");
+    const key = {
+      studentId_assignmentId: { studentId: user.id, assignmentId },
+    };
+    if (await prisma.submission.findUnique({ where: key }))
+      throw new Error("You have already turned in this Post");
+    if (new Date() > post.dueDate)
+      throw new Error("The submission deadline has passed");
+    const answers = validateAnswers(
+      post.items.map((i) => i.id),
+      itemAnswers ?? [{ itemId: post.items[0].id, code }],
+    );
+    const graded = await Promise.all(
+      answers.map(async (answer, index) => {
+        const item = post.items[index];
+        const results = await executeTests(
+          item.language,
+          answer.code,
+          item.testCases,
+        );
+        if (results.some((r) => r.status.id === 13))
+          throw new Error(
+            "The test runner is unavailable. Your work has not been turned in; try again.",
+          );
+        return {
+          ...answer,
+          results,
+          points: item.points,
+          score: results.length
+            ? (results.filter((r) => r.passed).length / results.length) * 100
+            : 0,
+        };
+      }),
+    );
+    const score = postScore(graded);
+    const first = graded[0];
+    const submission = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM assignments WHERE id = ${assignmentId} FOR UPDATE`;
+      if (await tx.submission.findUnique({ where: key }))
+        throw new Error("You have already turned in this Post");
+      const created = await tx.submission.create({
+        data: {
           studentId: user.id,
           assignmentId,
-        },
-      },
-    });
-
-    if (existingSubmission) {
-      throw new Error("Duplicate Submission: You have already submitted this assignment.");
-    }
-
-    const assignment = await prisma.assignment.findUnique({
-      where: { id: assignmentId, isDraft: false },
-      include: {
-        items: { orderBy: { position: "asc" }, take: 1, include: { testCases: true } },
-      },
-    });
-
-    if (!assignment) {
-      throw new Error("Assignment not found");
-    }
-
-    const now = new Date();
-    if (now > new Date(assignment.dueDate)) {
-      throw new Error("Late Submission: The submission deadline has passed. Submissions are no longer accepted.");
-    }
-
-    const codingItem = assignment.items[0];
-    if (!codingItem) throw new Error("Coding Item not found");
-    const langId = LANGUAGE_MAP[codingItem.language];
-    if (!langId) {
-      throw new Error(`Unsupported programming language: ${assignment.language}`);
-    }
-
-    const testCasesToRun = codingItem.testCases.length > 0
-      ? codingItem.testCases
-      : [{ id: "default", input: "", expectedOutput: "", visible: true }];
-
-    const runPromises = testCasesToRun.map(async (tc) => {
-      try {
-        const response = await fetch("https://ce.judge0.com/submissions?wait=true&base64_encoded=false", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+          itemId: first.itemId,
+          code: first.code,
+          score,
+          testResults: first.results as unknown as Prisma.InputJsonValue,
+          behavioralSignals: {
+            ...behavioralSignals,
+            riskScore: computeRiskScore(behavioralSignals.events, {
+              finalCodeLength: answers.reduce(
+                (sum, a) => sum + a.code.length,
+                0,
+              ),
+              keystrokeCount: behavioralSignals.keystrokeCount,
+            }),
+          } as unknown as Prisma.InputJsonValue,
+          answers: {
+            create: graded.map((a) => ({
+              itemId: a.itemId,
+              code: a.code,
+              score: a.score,
+              testResults: a.results as unknown as Prisma.InputJsonValue,
+            })),
           },
-          body: JSON.stringify({
-            source_code: code,
-            language_id: langId,
-            stdin: tc.input || "",
-            expected_output: tc.expectedOutput || undefined,
-            cpu_time_limit: 10.0, // 10 seconds execution limit
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Judge0 responded with status: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        const stdout = result.stdout || "";
-        const stderr = result.stderr || "";
-        const compileOutput = result.compile_output || "";
-        const status = result.status || { id: 13, description: "Internal Error" };
-
-        let passed = false;
-        if (status.id === 3) {
-          const cleanActual = stdout.trim().replace(/\r\n/g, "\n");
-          const cleanExpected = (tc.expectedOutput || "").trim().replace(/\r\n/g, "\n");
-          passed = cleanActual === cleanExpected;
-        }
-
-        return {
-          testCaseId: tc.id,
-          input: tc.input,
-          expectedOutput: tc.expectedOutput,
-          actualOutput: stdout || stderr || compileOutput || "",
-          stderr,
-          compileOutput,
-          status,
-          passed,
-          visible: "visible" in tc ? tc.visible : true,
-        };
-      } catch (err) {
-        return {
-          testCaseId: tc.id,
-          input: tc.input,
-          expectedOutput: tc.expectedOutput,
-          actualOutput: err instanceof Error ? err.message : "Error executing test case",
-          stderr: err instanceof Error ? err.message : "Error",
-          compileOutput: "",
-          status: { id: 13, description: "Connection Error" },
-          passed: false,
-          visible: "visible" in tc ? tc.visible : true,
-        };
-      }
+        },
+      });
+      await tx.codeDraft.deleteMany({
+        where: { studentId: user.id, assignmentId },
+      });
+      return created;
     });
-
-    const results = await Promise.all(runPromises);
-
-    const passedCount = results.filter((r) => r.passed).length;
-    const totalCount = results.length;
-    const scoreFraction = totalCount > 0 ? passedCount / totalCount : 0.0;
-    const scorePercentage = Math.round(scoreFraction * 100 * 100) / 100; // Store as 0-100 score value
-
-    const submission = await prisma.submission.create({
-      data: {
-        studentId: user.id,
-        assignmentId,
-        code,
-        score: scorePercentage,
-        testResults: results,
-        behavioralSignals: {
-          ...behavioralSignals,
-          riskScore: computeRiskScore(behavioralSignals.events, {
-            finalCodeLength: code.length,
-            keystrokeCount: behavioralSignals.keystrokeCount,
-          }),
-        } as unknown as Prisma.InputJsonValue,
-      },
-    });
-
-    const heartsState = await prisma.heartsState.findUnique({
-      where: { studentId_assignmentId: { studentId: user.id, assignmentId } },
-    });
+    revalidatePath("/dashboard", "layout");
+    const heartsState = await prisma.heartsState.findUnique({ where: key });
     const totalHintsUsed = heartsState?.totalSpent || 0;
-    const xpEvents = await awardSubmissionXp(user.id, assignmentId, scorePercentage, totalHintsUsed);
-    const totalXp = await getTotalXp(user.id);
-
-    await createNotification({
-      userId: user.id,
-      type: "submission_graded",
-      title: `${assignment.title} graded`,
-      message: `You scored ${scorePercentage}% (${passedCount}/${totalCount} tests passed).`,
-      link: `/dashboard/assignments/${assignmentId}`,
-    });
-
+    let reward;
+    try {
+      const events = await awardSubmissionXp(
+        user.id,
+        assignmentId,
+        score,
+        totalHintsUsed,
+      );
+      reward = {
+        events,
+        totalXp: await getTotalXp(user.id),
+        heartsUsed: totalHintsUsed,
+      };
+      await createNotification({
+        userId: user.id,
+        type: "submission_graded",
+        title: `${post.title} graded`,
+        message: `You scored ${score}%.`,
+        link: `/dashboard/assignments/${assignmentId}`,
+      });
+    } catch (error) {
+      console.error("Submission saved; reward notification failed:", error);
+    }
+    const visibleAnswers = graded.map((a) => ({
+      itemId: a.itemId,
+      code: a.code,
+      testResults: a.results.filter((r) => r.visible !== false),
+    }));
     return {
       success: true,
       submission: {
         id: submission.id,
-        code: submission.code,
-        score: submission.score,
-        testResults: results,
+        code: first.code,
+        score,
+        testResults: visibleAnswers[0].testResults,
         submittedAt: submission.submittedAt.toISOString(),
       },
-      reward: { events: xpEvents, totalXp, heartsUsed: totalHintsUsed },
+      answers: visibleAnswers,
+      reward,
     };
   } catch (err) {
-    console.error("Code submission error:", err);
     return {
       success: false,
       error: err instanceof Error ? err.message : "Unknown error",

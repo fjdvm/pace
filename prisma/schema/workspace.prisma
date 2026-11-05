@@ -29,9 +29,11 @@ model Submission {
   assignment        Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   item              Item       @relation(fields: [itemId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
 
+  answers           SubmissionAnswer[]
+
   @@unique([studentId, assignmentId])
-  @@index([itemId, assignmentId])
   @@map("submissions")
+  @@index([itemId, assignmentId])
 }
 
 model ChatMessage {
@@ -60,8 +62,22 @@ model CodeDraft {
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   item         Item       @relation(fields: [itemId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
 
-  @@id([studentId, assignmentId])
-  @@unique([studentId, itemId])
+  @@id([studentId, itemId])
+  @@index([assignmentId])
   @@index([itemId, assignmentId])
   @@map("code_drafts")
+}
+
+model SubmissionAnswer {
+  submissionId String @map("submission_id")
+  itemId String @map("item_id")
+  code String
+  score Float
+  testResults Json @map("test_results")
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([submissionId, itemId])
+  @@index([itemId])
+  @@map("submission_answers")
 }
