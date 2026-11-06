@@ -1,8 +1,6 @@
 import {
   Funnel_Sans,
   Funnel_Display,
-  Libre_Caslon_Text,
-  JetBrains_Mono,
   Newsreader,
   Inter,
   Geist_Mono,
@@ -15,17 +13,6 @@ const funnelSans = Funnel_Sans({
 
 const funnelDisplay = Funnel_Display({
   variable: "--font-funnel-display",
-  subsets: ["latin"],
-});
-
-const libreCaslon = Libre_Caslon_Text({
-  variable: "--font-caslon",
-  weight: "400",
-  subsets: ["latin"],
-});
-
-const jetBrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains",
   subsets: ["latin"],
 });
 
@@ -49,8 +36,6 @@ const geistMono = Geist_Mono({
 export const landingFontClasses = [
   funnelSans.variable,
   funnelDisplay.variable,
-  libreCaslon.variable,
-  jetBrainsMono.variable,
   newsreader.variable,
   inter.variable,
   geistMono.variable,

@@ -1,39 +1,23 @@
 import Link from "next/link";
-import { SignInLink } from "@/components/features/auth/sign-in/sign-in-link";
-import { LandingIcon } from "../shared/landing-icon";
+import type { FooterColumnData } from "./footer-links";
 
-export type FooterLink = {
-  label: string;
-  href: string;
-  download?: boolean;
-  signIn?: boolean;
-};
+const linkClass = "text-base leading-6 text-white transition-opacity hover:opacity-70";
 
-type FooterColumnProps = {
-  title: string;
-  links: FooterLink[];
-};
-
-const linkClass =
-  "pace-body flex items-center gap-2 whitespace-nowrap font-medium text-pace-ink transition-colors hover:text-pace-green-deep";
-
-export function FooterColumn({ title, links }: FooterColumnProps) {
+export function FooterColumn({ title, links, homeHref }: FooterColumnData & { homeHref: string }) {
   return (
-    <div className="flex flex-col gap-3">
-      <p className="pace-eyebrow text-pace-muted">{title}</p>
-      {links.map((link) => {
-        const Component = link.signIn ? SignInLink : Link;
-        return (
-          <Component
-            key={link.label}
-            href={link.href}
-            className={linkClass}
-          >
+    <div className="flex w-[170px] flex-col gap-4">
+      <p className="text-[15px] leading-normal text-lp-faint">{title}</p>
+      {links.map((link) =>
+        link.external ? (
+          <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
             {link.label}
-            {link.download && <LandingIcon name="icon-download" size={15} />}
-          </Component>
-        );
-      })}
+          </a>
+        ) : (
+          <Link key={link.label} href={link.anchor ? `${homeHref}${link.href}` : link.href} className={linkClass}>
+            {link.label}
+          </Link>
+        ),
+      )}
     </div>
   );
 }
