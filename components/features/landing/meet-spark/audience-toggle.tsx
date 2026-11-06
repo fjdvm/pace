@@ -43,7 +43,7 @@ export function AudienceToggle() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: motionEnabled ? 0.25 : 0 }}
-          className="flex w-full flex-col"
+          className={active === "Students" ? "flex w-full flex-col pt-4" : "flex w-full flex-col"}
         >
           {active === "Students" ? <StudentsBands /> : <InstructorsBands />}
         </motion.div>
