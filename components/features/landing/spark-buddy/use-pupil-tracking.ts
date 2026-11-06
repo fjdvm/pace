@@ -7,17 +7,26 @@ import { PUPIL_RANGE, pupilOffset } from "./pupil-offset";
 const spring = { stiffness: 300, damping: 20 };
 const LOOK_AROUND_MS = 1800;
 
-export function usePupilTracking(target: RefObject<Element | null>, active: boolean) {
+export type Gaze = { x: number; y: number };
+
+export function usePupilTracking(target: RefObject<Element | null>, active: boolean, gaze?: Gaze) {
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
   const x = useSpring(rawX, spring);
   const y = useSpring(rawY, spring);
   const touching = useRef(false);
+  const gazeX = gaze?.x;
+  const gazeY = gaze?.y;
 
   useEffect(() => {
     if (!active) {
       rawX.set(0);
       rawY.set(0);
+      return;
+    }
+    if (gazeX !== undefined && gazeY !== undefined) {
+      rawX.set(gazeX);
+      rawY.set(gazeY);
       return;
     }
     const coarse = window.matchMedia("(pointer: coarse)").matches;
@@ -62,7 +71,7 @@ export function usePupilTracking(target: RefObject<Element | null>, active: bool
       window.removeEventListener("pointercancel", onEnd);
       if (wander) clearInterval(wander);
     };
-  }, [active, target, rawX, rawY]);
+  }, [active, target, rawX, rawY, gazeX, gazeY]);
 
   return { x, y };
 }

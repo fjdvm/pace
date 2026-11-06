@@ -5,18 +5,18 @@ import { motion } from "motion/react";
 import { usePauseOffScreen } from "../shared/use-pause-off-screen";
 import { useMotionEnabled } from "../shared/use-motion-enabled";
 import { sparkBuddyPaths as p } from "./spark-buddy-paths";
-import { usePupilTracking } from "./use-pupil-tracking";
+import { usePupilTracking, type Gaze } from "./use-pupil-tracking";
 import { useBlink } from "./use-blink";
 
 const center = { transformBox: "fill-box", transformOrigin: "center" } as const;
 const loop = { repeat: Infinity, ease: "easeInOut", repeatType: "mirror" } as const;
 
-export function SparkBuddy({ className }: { className?: string }) {
+export function SparkBuddy({ className, gaze }: { className?: string; gaze?: Gaze }) {
   const { ref, running } = usePauseOffScreen<HTMLDivElement>();
   const motionEnabled = useMotionEnabled();
   const squash = motionEnabled ? { scaleX: 1.06, scaleY: 0.94 } : { scaleX: 1, scaleY: 1 };
   const svgRef = useRef<SVGSVGElement>(null);
-  const pupil = usePupilTracking(svgRef, running);
+  const pupil = usePupilTracking(svgRef, running, gaze);
   const blink = useBlink(running);
 
   return (
