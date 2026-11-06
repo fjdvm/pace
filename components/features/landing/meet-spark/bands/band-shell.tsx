@@ -6,7 +6,7 @@ type BandShellProps = {
   title: [string, string];
   body: string;
   link: string;
-  card: ReactNode;
+  card?: ReactNode;
   cardFirst?: boolean;
   tone: "canvas" | "white";
 };
@@ -28,9 +28,11 @@ export function BandShell({ id, title, body, link, card, cardFirst, tone }: Band
         <p className="font-lp-sans text-base leading-[25px] text-[#5f5f5f]">{body}</p>
         <p className="font-lp-sans text-base font-medium text-lp-teal">{link}</p>
       </div>
-      <div className={cn("order-first", cardFirst ? "xl:order-0" : "xl:order-2")}>
-        {card}
-      </div>
+      {card && (
+        <div className={cn("order-first", cardFirst ? "xl:order-0" : "xl:order-2")}>
+          {card}
+        </div>
+      )}
     </section>
   );
 }
