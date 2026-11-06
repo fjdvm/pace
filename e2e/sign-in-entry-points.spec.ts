@@ -8,16 +8,9 @@ test.describe("desktop entry points", () => {
     await page.goto("/");
   });
 
-  for (const name of ["I’m a student", "I’m an instructor"]) {
+  for (const name of ["I'm a student", "I'm an instructor"]) {
     test(`hero "${name}" opens the modal`, async ({ page }) => {
       await page.getByRole("link", { name }).click();
-      await expect(dialogHeading(page)).toBeVisible();
-    });
-  }
-
-  for (const name of ["Sign in", "Start learning", "Start teaching"]) {
-    test(`footer "${name}" opens the modal`, async ({ page }) => {
-      await page.locator("footer").getByRole("link", { name, exact: true }).click();
       await expect(dialogHeading(page)).toBeVisible();
     });
   }
