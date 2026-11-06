@@ -60,19 +60,21 @@ test("instructors tab shows the four bands", async ({ page }) => {
   }
   await expect(section.locator("[data-band]")).toHaveCount(5);
   await expect(section.getByText("Importing an activity from a PDF or a photo is in development and is not part of the evaluation.")).toBeVisible();
-  await expect(section.getByRole("img", { name: /instructor and students/ })).toBeVisible();
 });
 
-test("lab photo shows without wipe under reduced motion", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
+test("instructors tab has no lab photo", async ({ page }) => {
   await page.goto("/");
-  const tab = page.locator("#meet-spark").getByRole("tab", { name: "Instructors" });
-  await expect(async () => {
-    await tab.click();
-    await expect(tab).toHaveAttribute("aria-selected", "true", { timeout: 1000 });
-  }).toPass();
-  const photo = page.locator("[data-lab-photo]");
-  await photo.scrollIntoViewIfNeeded();
-  await expect(photo).toBeVisible();
-  await expect(photo).toHaveCSS("clip-path", "none");
+  const section = page.locator("#meet-spark");
+  await section.getByRole("tab", { name: "Instructors" }).click();
+  await expect(section.locator("[data-lab-photo]")).toHaveCount(0);
 });
+
+for (const width of [1440, 390]) {
+  test(`meet spark does not overflow at ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: "Meet Spark, the pair programmer in PACE" })).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+}

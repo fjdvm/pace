@@ -1,6 +1,14 @@
 import type { CSSProperties, ReactNode } from "react";
 
-export function FanSlot({ index, children }: { index: number; children: ReactNode }) {
+export function FanSlot({
+  index,
+  fade,
+  children,
+}: {
+  index: number;
+  fade: boolean;
+  children: ReactNode;
+}) {
   const style = {
     "--i": index,
     animationDelay: `${index * 80}ms`,
@@ -8,14 +16,21 @@ export function FanSlot({ index, children }: { index: number; children: ReactNod
   return (
     <div
       style={style}
-      data-fan-slot className="absolute animate-pace-fan-rise [transform-style:preserve-3d] [left:calc(130px+var(--i)*172px)] [top:calc(135px-var(--i)*14px)] max-sm:[left:calc(-151px+var(--i)*118px)] max-sm:[top:calc(85px-var(--i)*12px)]"
+      data-fan-slot
+      className="absolute animate-pace-fan-rise [transform-style:preserve-3d] [left:calc(230px+var(--i)*138px)] [top:calc(170px-var(--i)*22px)] max-sm:[left:calc(22px+var(--i)*100px)] max-sm:[top:calc(52px-var(--i)*14px)]"
     >
       <div
         style={{ animationDuration: `${4.4 + (index % 4) * 0.7}s`, animationDelay: `${index * 0.4}s` }}
         className="group animate-pace-fan-float [transform-style:preserve-3d]"
       >
-        <div className="transition-transform duration-500 ease-out [transform-style:preserve-3d] [transform:rotateY(22deg)_rotateX(-6deg)] max-sm:[transform:rotateY(14deg)_rotateX(-6deg)] group-hover:[transform:rotateY(0deg)_rotateX(0deg)_scale(1.05)]">
+        <div className="relative origin-top-left transition-transform duration-500 ease-out [transform-style:preserve-3d] [transform:rotateX(8deg)_rotateY(28deg)_rotateZ(-4deg)] max-sm:scale-[0.625] max-sm:[transform:scale(0.625)_rotateX(8deg)_rotateY(14deg)_rotateZ(-4deg)] group-hover:[transform:rotateY(0deg)_scale(1.05)] max-sm:group-hover:[transform:scale(0.656)_rotateY(0deg)]">
           {children}
+          {fade && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute right-0 top-0 h-full w-[45%] rounded-r-[22px] bg-[linear-gradient(to_right,rgba(244,243,241,0),rgba(244,243,241,0.7)_60%,#f4f3f1)]"
+            />
+          )}
         </div>
       </div>
     </div>

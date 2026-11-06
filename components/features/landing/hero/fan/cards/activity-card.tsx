@@ -1,8 +1,8 @@
 import { FanCardShell } from "../fan-card-shell";
 
 const posts = [
-  { label: "New activity: Lab 2", dot: "bg-lp-green" },
-  { label: "Quiz 1 · 3 items", dot: "bg-lp-violet" },
+  { label: "New activity: Lab 2", dot: "bg-[#22c55e]" },
+  { label: "Quiz 1 · 3 items", dot: "bg-[#8b5cf6]" },
   { label: "Lab 1 returned", dot: "bg-[#3b82f6]" },
 ];
 
