@@ -22,7 +22,7 @@ export function LegalPageLayout({
         <p className="pace-small mb-10 text-pace-muted">Last updated: {updatedAt}</p>
         <div className="flex flex-col gap-4">{children}</div>
       </main>
-      <LandingFooter homeHref="/" />
+      <LandingFooter />
     </div>
   );
 }

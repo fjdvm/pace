@@ -39,9 +39,9 @@ test("footer links reach their targets", async ({ page }) => {
   await page.goto("/");
   const footer = page.locator("footer");
   await expect(footer.getByRole("link", { name: "Questionnaire" })).toHaveAttribute("href", "/research/questionnaire");
-  await expect(footer.getByRole("link", { name: "Privacy and data" })).toHaveAttribute("href", "/privacy");
+  await expect(footer.getByRole("link", { name: "Privacy and data" })).toHaveAttribute("href", "/privacy-and-data");
   await page.goto("/privacy");
-  await expect(page.locator("footer").getByRole("link", { name: "For students" })).toHaveAttribute("href", "/#meet-spark");
+  await expect(page.locator("footer").getByRole("link", { name: "For students" })).toHaveAttribute("href", "/students");
 });
 
 test("v3 sections are gone from the landing page", async ({ page }) => {
