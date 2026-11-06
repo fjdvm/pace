@@ -32,7 +32,7 @@ test("students tab shows the four bands and toggle swaps them", async ({ page })
   }
   await section.getByRole("tab", { name: "Instructors" }).click();
   await expect(section.getByRole("tab", { name: "Instructors" })).toHaveAttribute("aria-selected", "true");
-  await expect(section.locator("[data-band]")).toHaveCount(0);
+  await expect(section.locator("[data-band=\"create-class\"]")).toHaveCount(1);
   await section.getByRole("tab", { name: "Students" }).click();
   await expect(section.locator("[data-band]")).toHaveCount(4);
 });
@@ -44,4 +44,35 @@ test("band animations settle in view and reduced motion shows final state", asyn
   await unguided.scrollIntoViewIfNeeded();
   await expect(unguided.getByText("what should print when n is 0?")).toBeVisible();
   await expect(page.locator('[data-band="hearts"]').getByLabel("3 of 5 hearts")).toBeVisible();
+});
+
+test("instructors tab shows the four bands", async ({ page }) => {
+  await page.goto("/");
+  const section = page.locator("#meet-spark");
+  await section.getByRole("tab", { name: "Instructors" }).click();
+  for (const name of [
+    "Create a class and post activities",
+    "Read each student's conversation with Spark",
+    "Set how much AI help students get",
+    "Review activity flags and AI summaries",
+  ]) {
+    await expect(section.getByRole("heading", { name })).toHaveCount(1);
+  }
+  await expect(section.locator("[data-band]")).toHaveCount(5);
+  await expect(section.getByText("Importing an activity from a PDF or a photo is in development and is not part of the evaluation.")).toBeVisible();
+  await expect(section.getByRole("img", { name: /instructor and students/ })).toBeVisible();
+});
+
+test("lab photo shows without wipe under reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const tab = page.locator("#meet-spark").getByRole("tab", { name: "Instructors" });
+  await expect(async () => {
+    await tab.click();
+    await expect(tab).toHaveAttribute("aria-selected", "true", { timeout: 1000 });
+  }).toPass();
+  const photo = page.locator("[data-lab-photo]");
+  await photo.scrollIntoViewIfNeeded();
+  await expect(photo).toBeVisible();
+  await expect(photo).toHaveCSS("clip-path", "none");
 });
