@@ -11,11 +11,15 @@ export async function GET(request: Request) {
   const supabase = await createClient();
   try {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) return NextResponse.redirect(failure);
+    if (error) {
+      console.error("oauth exchange failed", error.message);
+      return NextResponse.redirect(failure);
+    }
 
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user?.email || !user.email_confirmed_at ||
         !user.identities?.some((identity) => identity.provider === "google")) {
+      console.error("oauth user rejected", userError?.message, user?.email_confirmed_at, user?.identities?.map((i) => i.provider));
       await supabase.auth.signOut();
       return NextResponse.redirect(failure);
     }
@@ -28,7 +32,8 @@ export async function GET(request: Request) {
       update: { email: user.email, name },
     });
     return NextResponse.redirect(new URL("/dashboard", url.origin));
-  } catch {
+  } catch (err) {
+    console.error("oauth callback threw", err);
     await supabase.auth.signOut();
     return NextResponse.redirect(failure);
   }
