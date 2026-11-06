@@ -22,13 +22,10 @@ test.describe("desktop entry points", () => {
     });
   }
 
-  for (const name of ["Sign in to PACE", "Start teaching"]) {
-    test(`call-to-action "${name}" opens the modal`, async ({ page }) => {
-      const cta = page.locator("section", { hasText: "Taking part in the study?" });
-      await cta.getByRole("link", { name }).click();
-      await expect(dialogHeading(page)).toBeVisible();
-    });
-  }
+  test("closing CTA button opens the modal", async ({ page }) => {
+    await page.locator("#get-started").getByRole("link", { name: "Sign in with Google" }).click();
+    await expect(dialogHeading(page)).toBeVisible();
+  });
 
   test("nav Sign in on the Privacy Policy page opens the modal on that page", async ({ page }) => {
     await page.goto("/privacy");

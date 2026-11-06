@@ -57,3 +57,8 @@ test-results/
 # playwright
 /playwright-report/
 /blob-report/
+
+# opennext
+.open-next/
+.wrangler/
+cloudflare-env.d.ts
