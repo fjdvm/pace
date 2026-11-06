@@ -17,7 +17,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
           POSTGRES_DB: pace
         ports:
           - 5432:5432
@@ -27,7 +27,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/pace
+      DATABASE_URL: postgresql://postgres@localhost:5432/pace
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
