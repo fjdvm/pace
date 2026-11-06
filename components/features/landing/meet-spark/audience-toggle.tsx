@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMotionEnabled } from "../shared/use-motion-enabled";
 import { StudentsBands } from "./students-bands";
+import { InstructorsBands } from "./instructors-bands";
 
 const options = ["Students", "Instructors"] as const;
 type Audience = (typeof options)[number];
@@ -44,7 +45,7 @@ export function AudienceToggle() {
           transition={{ duration: motionEnabled ? 0.25 : 0 }}
           className="flex w-full flex-col"
         >
-          {active === "Students" ? <StudentsBands /> : null}
+          {active === "Students" ? <StudentsBands /> : <InstructorsBands />}
         </motion.div>
       </AnimatePresence>
     </Tabs>

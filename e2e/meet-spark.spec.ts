@@ -32,7 +32,8 @@ test("students tab shows the four bands and toggle swaps them", async ({ page })
   }
   await section.getByRole("tab", { name: "Instructors" }).click();
   await expect(section.getByRole("tab", { name: "Instructors" })).toHaveAttribute("aria-selected", "true");
-  await expect(section.locator("[data-band]")).toHaveCount(0);
+  await expect(section.locator("[data-band]")).toHaveCount(4);
+  await expect(section.locator("[data-band=\"create-class\"]")).toHaveCount(1);
   await section.getByRole("tab", { name: "Students" }).click();
   await expect(section.locator("[data-band]")).toHaveCount(4);
 });
@@ -44,4 +45,19 @@ test("band animations settle in view and reduced motion shows final state", asyn
   await unguided.scrollIntoViewIfNeeded();
   await expect(unguided.getByText("what should print when n is 0?")).toBeVisible();
   await expect(page.locator('[data-band="hearts"]').getByLabel("3 of 5 hearts")).toBeVisible();
+});
+
+test("instructors tab shows the four bands", async ({ page }) => {
+  await page.goto("/");
+  const section = page.locator("#meet-spark");
+  await section.getByRole("tab", { name: "Instructors" }).click();
+  for (const name of [
+    "Create a class and post activities",
+    "Read each student's conversation with Spark",
+    "Set how much AI help students get",
+    "Review activity flags and AI summaries",
+  ]) {
+    await expect(section.getByRole("heading", { name })).toHaveCount(1);
+  }
+  await expect(section.locator("[data-band]")).toHaveCount(4);
 });
