@@ -17,13 +17,13 @@ export function FanSlot({
     <div
       style={style}
       data-fan-slot
-      className="absolute animate-pace-fan-rise [transform-style:preserve-3d] [left:calc(230px+var(--i)*138px)] [top:calc(170px-var(--i)*22px)] max-sm:[left:calc(22px+var(--i)*100px)] max-sm:[top:calc(52px-var(--i)*14px)]"
+      className="absolute animate-pace-fan-rise [transform-style:preserve-3d] [left:calc(230px+var(--i)*138px)] [top:calc(170px-var(--i)*22px)] max-sm:[left:calc(16px+var(--i)*144px)] max-sm:[top:calc(60px-var(--i)*20px)]"
     >
       <div
         style={{ animationDuration: `${4.4 + (index % 4) * 0.7}s`, animationDelay: `${index * 0.4}s` }}
         className="group animate-pace-fan-float [transform-style:preserve-3d]"
       >
-        <div className="relative origin-top-left transition-transform duration-500 ease-out [transform-style:preserve-3d] [transform:rotateX(8deg)_rotateY(28deg)_rotateZ(-4deg)] max-sm:scale-[0.625] max-sm:[transform:scale(0.625)_rotateX(8deg)_rotateY(14deg)_rotateZ(-4deg)] group-hover:[transform:rotateY(0deg)_scale(1.05)] max-sm:group-hover:[transform:scale(0.656)_rotateY(0deg)]">
+        <div className="relative origin-top-left transition-transform duration-500 ease-out [transform-style:preserve-3d] [transform:rotateX(8deg)_rotateY(28deg)_rotateZ(-4deg)] max-sm:scale-[0.9] max-sm:[transform:scale(0.9)_rotateX(8deg)_rotateY(14deg)_rotateZ(-4deg)] group-hover:[transform:rotateY(0deg)_scale(1.05)] max-sm:group-hover:[transform:scale(0.945)_rotateY(0deg)]">
           {children}
           {fade && (
             <div

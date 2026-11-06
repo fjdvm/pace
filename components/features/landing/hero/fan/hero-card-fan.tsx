@@ -13,7 +13,7 @@ export function HeroCardFan() {
   return (
     <div
       data-hero-fan
-      className="relative h-[232px] w-full overflow-hidden sm:h-[460px]"
+      className="relative h-[290px] w-full overflow-hidden sm:h-[460px]"
     >
       <div className="absolute left-1/2 top-0 h-full w-[358px] -translate-x-1/2 [perspective:1600px] max-sm:animate-pace-fan-drift sm:w-[1440px]">
         {cards.map((Card, i) => (
