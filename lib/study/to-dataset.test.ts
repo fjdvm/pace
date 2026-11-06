@@ -42,6 +42,32 @@ describe("toDataset", () => {
     ]);
   });
 
+  it("reads new Sitting rows by Respondent code and ignores Sitting 1 ratings", () => {
+    const pace = (code: string, sitting: number, profile: object = {}): StoredResponse =>
+      row(`n${sitting}${code}`, "student", {
+        role: "student",
+        sitting,
+        respondentId: code,
+        respondentCode: `R-${code}`,
+        yearLevel: null,
+        coursesTaken: null,
+        aiUsage: null,
+        profile,
+        answers: Object.fromEntries(
+          ["PU", "PEOU", "ATU", "BI"].flatMap((c) => [1, 2, 3, 4, 5].map((i) => [`${c}${i}`, { setup: sitting === 1 ? "current" : "pace", value: sitting }])),
+        ),
+      });
+    const mixed = toDataset(
+      [pace("X", 1, { yearLevel: "4th year", coursesTaken: "5 or more", aiUsage: "Often" }), pace("X", 2), pace("Y", 1)],
+      4,
+      DEFAULT_THEMES,
+    );
+    expect(mixed.respondents).toHaveLength(1);
+    expect(mixed.respondents[0].id).toBe("R-X");
+    expect(mixed.respondents[0].answers.PU).toEqual([2, 2, 2, 2, 2]);
+    expect(mixed.respondents[0].profile).toMatchObject({ yearLevel: "4th year", aiUsage: "Often" });
+  });
+
   it("carries targets and the respondent profile", () => {
     expect(dataset.studentTarget).toBe(248);
     expect(dataset.instructorTarget).toBe(4);

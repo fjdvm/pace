@@ -6,7 +6,10 @@ export type StudyRole = "student" | "instructor";
 export type RespondentProfile = {
   yearLevel: string | null;
   coursesTaken: string | null;
-  aiUsage: string;
+  aiUsage: string | null;
+  yearsTeaching?: string | null;
+  coursesHandled?: string | null;
+  allowsAi?: string | null;
 };
 
 export type Respondent = {
