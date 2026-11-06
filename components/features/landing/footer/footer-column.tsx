@@ -3,7 +3,7 @@ import type { FooterColumnData } from "./footer-links";
 
 const linkClass = "text-base leading-6 text-white transition-opacity hover:opacity-70";
 
-export function FooterColumn({ title, links, homeHref }: FooterColumnData & { homeHref: string }) {
+export function FooterColumn({ title, links }: FooterColumnData) {
   return (
     <div className="flex w-[170px] flex-col gap-4">
       <p className="text-[15px] leading-normal text-lp-faint">{title}</p>
@@ -13,7 +13,7 @@ export function FooterColumn({ title, links, homeHref }: FooterColumnData & { ho
             {link.label}
           </a>
         ) : (
-          <Link key={link.label} href={link.anchor ? `${homeHref}${link.href}` : link.href} className={linkClass}>
+          <Link key={link.label} href={link.href} className={linkClass}>
             {link.label}
           </Link>
         ),

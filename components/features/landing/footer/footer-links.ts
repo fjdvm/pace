@@ -2,7 +2,6 @@ export type FooterLink = {
   label: string;
   href: string;
   external?: boolean;
-  anchor?: boolean;
 };
 
 export type FooterColumnData = {
@@ -14,26 +13,26 @@ export const footerColumns: FooterColumnData[] = [
   {
     title: "The study",
     links: [
-      { label: "Statement of the problem", href: "#separate-tools", anchor: true },
-      { label: "Conceptual framework", href: "#hearts", anchor: true },
-      { label: "Methodology", href: "#monitoring", anchor: true },
+      { label: "Statement of the problem", href: "/study/problem" },
+      { label: "Conceptual framework", href: "/study/framework" },
+      { label: "Methodology", href: "/study/methodology" },
       { label: "Questionnaire", href: "/research/questionnaire" },
     ],
   },
   {
     title: "Platform",
     links: [
-      { label: "For students", href: "#meet-spark", anchor: true },
-      { label: "For instructors", href: "#meet-spark", anchor: true },
-      { label: "Spark", href: "#meet-spark", anchor: true },
+      { label: "For students", href: "/students" },
+      { label: "For instructors", href: "/instructors" },
+      { label: "Spark", href: "/spark" },
     ],
   },
   {
     title: "Project",
     links: [
-      { label: "Researchers", href: "https://github.com/fjdvm/fr-gaits", external: true },
+      { label: "Researchers", href: "/researchers" },
       { label: "Polytechnic University of the Philippines", href: "https://www.pup.edu.ph", external: true },
-      { label: "Privacy and data", href: "/privacy" },
+      { label: "Privacy and data", href: "/privacy-and-data" },
     ],
   },
 ];

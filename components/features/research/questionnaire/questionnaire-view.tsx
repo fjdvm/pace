@@ -42,7 +42,7 @@ export function QuestionnaireView({ closed, nav }: { closed: boolean; nav: React
           </div>
         )}
       </main>
-      <LandingFooter homeHref="/" />
+      <LandingFooter />
     </div>
   );
 }
