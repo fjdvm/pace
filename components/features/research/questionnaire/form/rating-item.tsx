@@ -36,7 +36,7 @@ export function RatingItem({ item, scale, setup, value, onChange }: Props) {
           <Radio.Root
             key={rating}
             value={String(rating)}
-            className="flex min-w-fit flex-none cursor-pointer sm:flex-1 items-start justify-center rounded-xl border border-[#e3e1dd] bg-white px-3 py-[11px] text-[13px] font-medium text-[#3d3d3d] shadow-[0_3px_0_0_#e0ded9] transition-[transform,box-shadow,background-color] data-[checked]:translate-y-[3px] data-[checked]:border-[#111] data-[checked]:bg-[#111] data-[checked]:text-white data-[checked]:shadow-[0_0_0_0_#e0ded9]"
+            className="flex min-w-fit flex-none cursor-pointer motion-reduce:transition-none sm:flex-1 items-start justify-center rounded-xl border border-[#e3e1dd] bg-white px-3 py-[11px] text-[13px] font-medium text-[#3d3d3d] shadow-[0_3px_0_0_#e0ded9] transition-[transform,box-shadow,background-color] data-[checked]:translate-y-[3px] data-[checked]:border-[#111] data-[checked]:bg-[#111] data-[checked]:text-white data-[checked]:shadow-[0_0_0_0_#e0ded9]"
           >
             {label}
           </Radio.Root>

@@ -12,7 +12,7 @@ export function StepPills({ steps }: Props) {
           key={step.label}
           data-state={step.state}
           className={cn(
-            "flex items-center gap-2 rounded-full border px-3.5 py-2 transition-colors duration-300",
+            "flex items-center gap-2 rounded-full border px-3.5 py-2 transition-colors duration-300 motion-reduce:transition-none",
             step.state === "current" ? "border-[#111] bg-[#111] text-white" : "border-[#e3e1dd] bg-white",
           )}
         >
