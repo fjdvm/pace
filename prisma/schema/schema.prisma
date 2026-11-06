@@ -28,6 +28,7 @@ model User {
   notifications      Notification[]
   posts              Post[]
   comments           Comment[]
+  respondents        Respondent[]
 
   @@map("users")
 }

@@ -6,16 +6,47 @@ model SystemSetting {
   @@map("system_settings")
 }
 
-model StudyResponse {
-  id            String   @id @default(uuid())
-  version       String
-  yearLevel     String?  @map("year_level")
-  coursesTaken  String?  @map("courses_taken")
-  aiUsage       String   @map("ai_usage")
-  answers       Json
-  comments      Json     @default("{}")
-  commentThemes Json     @default("{}") @map("comment_themes")
-  createdAt     DateTime @default(now()) @map("created_at")
+model Respondent {
+  id        String          @id @default(uuid())
+  userId    String          @map("user_id")
+  role      String
+  code      String          @unique
+  createdAt DateTime        @default(now()) @map("created_at")
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  responses StudyResponse[]
+  drafts    StudyDraft[]
 
+  @@unique([userId, role])
+  @@map("respondents")
+}
+
+model StudyResponse {
+  id            String      @id @default(uuid())
+  version       String
+  role          String?
+  sitting       Int?
+  respondentId  String?     @map("respondent_id")
+  yearLevel     String?     @map("year_level")
+  coursesTaken  String?     @map("courses_taken")
+  aiUsage       String?     @map("ai_usage")
+  profile       Json        @default("{}")
+  answers       Json
+  comments      Json        @default("{}")
+  commentThemes Json        @default("{}") @map("comment_themes")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  respondent    Respondent? @relation(fields: [respondentId], references: [id], onDelete: Cascade)
+
+  @@unique([respondentId, sitting])
   @@map("study_responses")
+}
+
+model StudyDraft {
+  respondentId String     @map("respondent_id")
+  sitting      Int
+  state        Json
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  respondent   Respondent @relation(fields: [respondentId], references: [id], onDelete: Cascade)
+
+  @@id([respondentId, sitting])
+  @@map("study_drafts")
 }

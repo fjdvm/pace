@@ -35,7 +35,7 @@ export function ItemInsights({ items, group }: { items: Item[]; group: StudyRole
             Lowest item: {low.id} ({low[group].mean.toFixed(2)})
           </p>
           <p className="text-xs leading-relaxed text-pace-ink-2">
-            {who} rate &ldquo;{low.text}&rdquo; lowest, and opinions are {spread} (SD {low[group].sd.toFixed(2)}).
+            {who} rate &ldquo;{low.texts[group]}&rdquo; lowest, and opinions are {spread} (SD {low[group].sd.toFixed(2)}).
           </p>
         </div>
       </div>
@@ -46,7 +46,7 @@ export function ItemInsights({ items, group }: { items: Item[]; group: StudyRole
             Highest item: {high.id} ({high[group].mean.toFixed(2)})
           </p>
           <p className="text-xs leading-relaxed text-pace-ink-2">
-            {Math.round(high[group].distribution[4])}% strongly agree: &ldquo;{high.text}&rdquo;
+            {Math.round(high[group].distribution[4])}% strongly agree: &ldquo;{high.texts[group]}&rdquo;
           </p>
         </div>
       </div>

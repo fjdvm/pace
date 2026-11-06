@@ -1,4 +1,4 @@
-import { CONSTRUCTS, PILOT_SIZE, SCALE_CUTOFF, type ConstructId } from "./questionnaire";
+import { CONSTRUCTS, PILOT_SIZE, SCALE_CUTOFF, constructItemTexts, type ConstructId } from "./questionnaire";
 import type { ThemeTone } from "./themes";
 import { cronbachAlpha, interpretMean, mannWhitney, mean, median, sampleSd } from "./stats";
 import type { Respondent, StudyDataset, StudyRole } from "./dataset";
@@ -20,7 +20,7 @@ export type StudyResults = {
     r: number;
     result: string;
   }[];
-  items: { constructId: ConstructId; id: string; text: string; student: ItemStats; instructor: ItemStats }[];
+  items: { constructId: ConstructId; id: string; texts: Record<StudyRole, string>; student: ItemStats; instructor: ItemStats }[];
   themes: { id: string; label: string; tone: ThemeTone; count: number }[];
   commentCount: number;
   uncodedCount: number;
@@ -110,10 +110,10 @@ export function analyzeStudy(dataset: StudyDataset, { final }: { final: boolean 
       };
     }),
     items: CONSTRUCTS.flatMap(({ id, items }) =>
-      items.map((text, index) => ({
+      items.map((_, index) => ({
         constructId: id,
         id: `${id}${index + 1}`,
-        text,
+        texts: { student: constructItemTexts("student", id)[index], instructor: constructItemTexts("instructor", id)[index] },
         student: describeItem(students.map((r) => r.answers[id][index])),
         instructor: describeItem(instructors.map((r) => r.answers[id][index])),
       })),
