@@ -59,3 +59,15 @@ _Avoid_: Logo, mark
 **Hearts**:
 The limited allowance of AI help a Student spends to ask for a hint. The Instructor sets how many Hearts a Post gives, and they refill after a cooldown.
 _Avoid_: Lives, credits, tokens
+
+**Respondent**:
+A User taking part in the research Questionnaire, as a student or as an instructor. A Respondent is known to researchers only by a pseudonymous code, never by their Google identity.
+_Avoid_: Participant, subject
+
+**Sitting**:
+One of the two times a Respondent fills in the Questionnaire: Sitting 1 before using PACE, Sitting 2 after. The same Respondent links the two. A Sitting cannot be edited once submitted.
+_Avoid_: Round, wave, session
+
+**Setup**:
+Which way of working an answer rates: the current workflow, or PACE. Sitting 1 answers rate the current workflow; Sitting 2 answers rate PACE.
+_Avoid_: Condition, group
