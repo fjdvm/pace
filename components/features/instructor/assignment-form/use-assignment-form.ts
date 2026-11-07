@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { createAssignment } from "@/app/actions/create-assignment";
@@ -28,6 +28,7 @@ export function useAssignmentForm({
   const router = useRouter();
   const busy = useRef(false);
   const revision = useRef(0);
+  const attemptedAutosave = useRef(-1);
   const [id, setId] = useState(assignmentId);
   const [itemEditing, setItemEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -121,6 +122,14 @@ export function useAssignmentForm({
       setIsSaving(false);
     }
   };
+  useEffect(() => {
+    if (!dirty || !values.isDraft || isSaving || itemEditing || validateAssignment(values) || attemptedAutosave.current === revision.current) return;
+    const timer = window.setTimeout(() => {
+      attemptedAutosave.current = revision.current;
+      void persist(true);
+    }, 1200);
+    return () => window.clearTimeout(timer);
+  });
   return {
     values,
     id,

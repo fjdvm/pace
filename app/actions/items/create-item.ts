@@ -16,7 +16,7 @@ export async function createItem(assignmentId: string, input: CodingItemInput | 
       return tx.item.create({
         data: {
           ...data, assignmentId, position: (items[0]?.position ?? -1) + 1,
-          testCases: { create: (data.kind === "coding" ? (input as CodingItemInput).testCases ?? [] : []).map((tc) => ({ ...tc, assignmentId })) },
+          testCases: { create: (data.kind === "coding" ? (input as CodingItemInput).testCases ?? [] : []).map((tc) => ({ ...tc })) },
         },
       });
     });

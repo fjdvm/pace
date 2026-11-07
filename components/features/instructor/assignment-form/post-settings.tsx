@@ -14,12 +14,14 @@ type Props = {
   values: AssignmentFormValues;
   classes: InstructorClassSummary[];
   locked: boolean;
+  totalPoints?: number;
   showPostTitle?: boolean;
   onChange: (patch: Partial<AssignmentFormValues>) => void;
 };
 
 export function PostSettings({
   values,
+  totalPoints,
   classes,
   locked,
   onChange,
@@ -72,7 +74,8 @@ export function PostSettings({
           id="post-points"
           type="number"
           min={0}
-          value={values.points ?? 100}
+          readOnly={totalPoints !== undefined}
+          value={totalPoints ?? values.points ?? 100}
           onChange={(event) => onChange({ points: event.target.valueAsNumber })}
           className={formControl}
         />

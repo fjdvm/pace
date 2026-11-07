@@ -41,10 +41,14 @@ for (const width of [1440, 390]) {
     } else {
       await expect(teaching.getByText("12 turned in – Sum of Two Numbers")).toBeVisible();
       await expect(teaching.getByText("8 turned in – Sum of Two Numbers")).toBeVisible();
-      expect(cards[0]).toMatchObject({ x: 304, y: 88, width: 296, height: 292 });
+      expect(cards[0]).toMatchObject({ y: 88, width: 296, height: 292 });
+      const region = await teaching.boundingBox();
+      expect(region).not.toBeNull();
+      const last = cards[cards.length - 1];
+      expect(Math.abs((cards[0].x - region!.x) - (region!.x + region!.width - last.x - last.width))).toBeLessThanOrEqual(1);
       expect(cards[1].x - cards[0].x).toBe(320);
     }
-    await page.screenshot({ path: `docs/verification/issue-162/home-${width}.png`, fullPage: true });
+    await page.screenshot({ path: `docs/verification/issue-164/teaching-${width}.png`, fullPage: true });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 }
@@ -62,4 +66,27 @@ test("creating a Class from mobile Home adds it to Teaching", async ({ page, con
   await expect(page.getByRole("region", { name: "Teaching", exact: true }).getByText("CS 202 · Algorithms")).toBeVisible();
   await page.reload();
   await expect(page.getByRole("region", { name: "Teaching", exact: true }).getByText("BSIT 2-2 · 0 students")).toBeVisible();
+});
+
+test("Teaching centers wrapped rows and never exceeds four cards", async ({ page, context }) => {
+  await page.setViewportSize({ width: 2400, height: 1000 });
+  await auth.signIn(context);
+  await page.goto("/dashboard");
+  const teaching = page.getByRole("region", { name: "Teaching", exact: true });
+  await expect(teaching).toBeVisible();
+  await teaching.evaluate((section) => {
+    const card = section.querySelector('[data-slot="card"]')!;
+    while (section.children.length < 6) section.append(card.cloneNode(true));
+  });
+  const cards = await teaching.locator('[data-slot="card"]').evaluateAll((nodes) => nodes.map((node) => {
+    const { x, y, width } = node.getBoundingClientRect();
+    return { x, y, width };
+  }));
+  expect(cards.filter((card) => card.y === cards[0].y)).toHaveLength(4);
+  expect(cards[4].y).toBeGreaterThan(cards[0].y);
+  const region = (await teaching.boundingBox())!;
+  for (const row of [cards.slice(0, 4), cards.slice(4)]) {
+    const last = row[row.length - 1];
+    expect(Math.abs((row[0].x - region.x) - (region.x + region.width - last.x - last.width))).toBeLessThanOrEqual(1);
+  }
 });
