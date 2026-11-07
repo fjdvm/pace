@@ -2,6 +2,7 @@ import type { InstructorAssignment } from "../types";
 import { ClassworkRowMenu } from "./classwork-row-menu";
 import { groupByWeek } from "./group-by-week";
 import { WeekSection } from "./week-section";
+import { instructorWorkMeta } from "./instructor-work-meta";
 import { WorkRow } from "./work-row";
 
 type InstructorWorkListProps = {
@@ -22,7 +23,7 @@ export function InstructorWorkList({ items, onDelete }: InstructorWorkListProps)
               key={item.id}
               href={item.isDraft ? `/dashboard/assignments/${item.id}/edit` : `/dashboard/submissions/${item.id}`}
               title={item.title}
-              meta={item.isDraft ? "Draft" : `${item.turnedIn} turned in · ${item.assigned} assigned`}
+              meta={instructorWorkMeta(item)}
               menu={<ClassworkRowMenu assignmentId={item.id} onDelete={() => onDelete(item)} />}
             />
           ))}

@@ -7,11 +7,18 @@ import type { ClassPageData } from "@/components/features/class-page/types";
 
 async function countTurnedIn(classId: string, assignmentIds: string[]) {
   const rows = await prisma.submission.groupBy({
-    by: ["assignmentId"],
+    by: ["assignmentId", "status"],
     where: { assignmentId: { in: assignmentIds }, student: { enrollments: { some: { classId } } } },
     _count: { _all: true },
   });
-  return new Map(rows.map((r) => [r.assignmentId, r._count._all]));
+  const counts = new Map<string, { turnedIn: number; graded: number }>();
+  for (const row of rows) {
+    const count = counts.get(row.assignmentId) ?? { turnedIn: 0, graded: 0 };
+    count.turnedIn += row._count._all;
+    if (row.status === "graded" || row.status === "returned") count.graded += row._count._all;
+    counts.set(row.assignmentId, count);
+  }
+  return counts;
 }
 
 export async function loadClassPageData(classId: string, userId: string): Promise<ClassPageData | null> {
@@ -68,7 +75,9 @@ export async function loadClassPageData(classId: string, userId: string): Promis
       language: a.language,
       dueDate: a.dueDate.toISOString(),
       testCaseCount: a._count.testCases,
-      turnedIn: turnedIn.get(a.id) ?? 0,
+      turnedIn: turnedIn.get(a.id)?.turnedIn ?? 0,
+      graded: turnedIn.get(a.id)?.graded ?? 0,
+      missing: a.dueDate < new Date() ? Math.max(0, assigned - (turnedIn.get(a.id)?.turnedIn ?? 0)) : 0,
       assigned,
       isSharedWithOtherClasses: a._count.classes > 1,
     })),

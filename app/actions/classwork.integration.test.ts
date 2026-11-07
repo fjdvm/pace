@@ -38,6 +38,18 @@ it("lists saved Drafts and published Posts with Student counts, scoped to the Cl
   } });
   data = await loadClassPageData(classId, instructorId);
   expect(data).toMatchObject({ assignments: [{ id, isDraft: false, assigned: 1, turnedIn: 1 }] });
+  await prisma.assignment.update({ where: { id }, data: { dueDate: new Date("2020-01-01") } });
+  await prisma.submission.updateMany({ where: { assignmentId: id }, data: { status: "graded" } });
+  data = await loadClassPageData(classId, instructorId);
+  expect(data).toMatchObject({ assignments: [{ graded: 1, missing: 0 }] });
+  const { instructorWorkMeta } = await import("@/components/features/class-page/classwork/instructor-work-meta");
+  if (data?.role !== "instructor") throw new Error("Expected instructor data");
+  expect(instructorWorkMeta(data.assignments[0])).toBe("1 graded");
+  await prisma.submission.deleteMany({ where: { assignmentId: id } });
+  data = await loadClassPageData(classId, instructorId);
+  expect(data).toMatchObject({ assignments: [{ graded: 0, missing: 1 }] });
+  if (data?.role !== "instructor") throw new Error("Expected instructor data");
+  expect(instructorWorkMeta(data.assignments[0])).toBe("1 missing");
   const foreign = await prisma.class.create({ data: { instructorId, name: "Other", joinCode: randomUUID() } });
   expect(await loadClassPageData(foreign.id, instructorId)).toMatchObject({ assignments: [] });
   expect(await loadClassPageData(foreign.id, studentId)).toBeNull();
