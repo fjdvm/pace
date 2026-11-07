@@ -8,7 +8,7 @@
 ## Verification
 
 - Real disposable Postgres, Prisma schema plus existing legacy Item triggers: 105 Vitest files / 530 tests pass.
-- `npx tsc --noEmit` and ESLint on changed files pass.
+- `npx tsc --noEmit`, full ESLint (no errors), and `npm run build` pass. ESLint excludes gitignored scratch fixtures.
 - Playwright using existing mock auth at 1440 × 900 and 390 × 844 checks menu copy, dialog bounds, creation, Instructor/Student reading, permissions, deletion and persistence after reload.
 - Migration applied to the configured database and recorded in Supabase migration history; verified nullable text column exists.
 - Standards review: 0 findings. Spec review: 0 code findings; gaps published on issue #163.
