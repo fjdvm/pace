@@ -95,17 +95,17 @@ export function usePostItems(
       setBusy(false);
     }
   };
-  const remove = async (): Promise<boolean> => {
-    if (editing === "new") { edit(null); return true; }
-    if (!postId || !editing || busy) return false;
+  const remove = async (itemId = editing): Promise<boolean> => {
+    if (itemId === "new") { edit(null); return true; }
+    if (!postId || !itemId || busy) return false;
     setBusy(true);
     try {
-      const result = await deleteItem(postId, editing);
+      const result = await deleteItem(postId, itemId);
       if (!result.success) {
         toast.error(result.error);
         return false;
       }
-      setItems((prev) => prev.filter((i) => i.id !== editing));
+      setItems((prev) => prev.filter((i) => i.id !== itemId));
       edit(null);
       return true;
     } catch {

@@ -118,6 +118,7 @@ export function ChoiceEditor({
             disabled={busy}
             aria-label="Points"
             type="number"
+            step="any"
             min={0}
             value={value.points}
             onChange={(e) => patch({ points: Number(e.target.value) })}

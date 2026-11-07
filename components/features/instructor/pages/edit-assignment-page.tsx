@@ -40,6 +40,7 @@ export async function EditAssignmentPage({ params }: PageProps) {
       locked={hasStudentWork(assignment._count)}
       initial={{
         itemId: assignment.items[0]?.id,
+        hasCodingItem: assignment.items.length > 0,
         isDraft: assignment.isDraft,
         label: assignment.label,
         starterCode: assignment.items[0]?.starterCode ?? "",
@@ -48,7 +49,7 @@ export async function EditAssignmentPage({ params }: PageProps) {
         itemInstructions: assignment.items[0]?.instructions,
         title: assignment.title,
         instructions: assignment.instructions,
-        language: assignment.language,
+        language: assignment.items[0]?.language || "Python",
         dueDate: toDateTimeLocal(assignment.dueDate),
         heartsCount: assignment.heartsCount,
         heartsRegenMinutes: assignment.heartsRegenMinutes,

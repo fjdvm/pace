@@ -65,7 +65,7 @@ export function AssignmentFormView({
         onPreview={() => setPreview(true)}
         onDelete={requestDelete}
       />
-      {desktop && form.id ? (
+      {(desktop || form.values.hasCodingItem === false) && form.id ? (
         <AnswerItems
           form={form}
           locked={locked}

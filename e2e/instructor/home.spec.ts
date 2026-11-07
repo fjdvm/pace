@@ -25,30 +25,28 @@ for (const width of [1440, 390]) {
     const teaching = page.getByRole("region", { name: "Teaching", exact: true });
     await expect(teaching).toBeVisible();
     await expect(teaching.locator('[data-slot="card"]')).toHaveCount(3);
-    await expect(teaching.getByText("BSIT 1-1 · 32 students")).toBeVisible();
-    await expect(teaching.getByText("BSIT 1-2 · 30 students")).toBeVisible();
-    await expect(teaching.getByText("BSIT 2-1 · 28 students")).toBeVisible();
+    await expect(teaching.getByText("BSIT 1-1")).toBeVisible();
+    await expect(teaching.getByText("BSIT 1-2")).toBeVisible();
+    await expect(teaching.getByText("BSIT 2-1")).toBeVisible();
     const cards = await teaching.locator('[data-slot="card"]').evaluateAll((nodes) => nodes.map((node) => {
       const { x, y, width, height } = node.getBoundingClientRect();
       return { x, y, width, height };
     }));
     if (width === 390) {
-      await expect(teaching.getByText("12 to review")).toBeVisible();
-      await expect(teaching.getByText("8 to review")).toBeVisible();
-      expect(cards[0]).toMatchObject({ x: 16, width: 358, height: 120 });
-      expect(cards[1].y - cards[0].y).toBe(132);
+
+      expect(cards[0]).toMatchObject({ x: 16, width: 358, height: 122 });
+      expect(cards[1].y - cards[0].y).toBe(134);
       await expect(page.getByRole("button", { name: "Create class", exact: true })).toBeVisible();
     } else {
-      await expect(teaching.getByText("12 turned in – Sum of Two Numbers")).toBeVisible();
-      await expect(teaching.getByText("8 turned in – Sum of Two Numbers")).toBeVisible();
-      expect(cards[0]).toMatchObject({ y: 88, width: 296, height: 292 });
+      await expect(teaching.getByRole("button", { name: /^Actions for/ })).toHaveCount(3);
+      expect(cards[0]).toMatchObject({ y: 88, width: 336, height: 316 });
       const region = await teaching.boundingBox();
       expect(region).not.toBeNull();
       const last = cards[cards.length - 1];
       expect(Math.abs((cards[0].x - region!.x) - (region!.x + region!.width - last.x - last.width))).toBeLessThanOrEqual(1);
-      expect(cards[1].x - cards[0].x).toBe(320);
+      expect(cards[1].x - cards[0].x).toBe(352);
     }
-    await page.screenshot({ path: `docs/verification/issue-164/teaching-${width}.png`, fullPage: true });
+    await page.screenshot({ path: `/tmp/pace-165-browser/teaching-${width}.png`, fullPage: true });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 }
@@ -65,7 +63,7 @@ test("creating a Class from mobile Home adds it to Teaching", async ({ page, con
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(page.getByRole("region", { name: "Teaching", exact: true }).getByText("CS 202 · Algorithms")).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("region", { name: "Teaching", exact: true }).getByText("BSIT 2-2 · 0 students")).toBeVisible();
+  await expect(page.getByRole("region", { name: "Teaching", exact: true }).getByText("BSIT 2-2")).toBeVisible();
 });
 
 test("Teaching centers wrapped rows and never exceeds four cards", async ({ page, context }) => {

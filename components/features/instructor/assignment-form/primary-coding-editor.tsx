@@ -4,6 +4,7 @@ import { StarterCodeSection } from "./starter-code-section";
 import { CodingTests } from "./coding-tests";
 
 export function PrimaryCodingEditor({ form, locked }: { form: ReturnType<typeof useAssignmentForm>; locked: boolean }) {
+  if (form.values.hasCodingItem === false) return null;
   return (
     <>
       <DetailsSection values={form.values} onTitleChange={form.changeTitle} onInstructionsChange={form.changeInstructions} />
