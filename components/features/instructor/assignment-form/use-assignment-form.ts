@@ -95,7 +95,7 @@ export function useAssignmentForm({
       setId(savedId);
       setDirty(revision.current !== savingRevision);
       setSavedAt(new Date().toISOString());
-      setValues((prev) => ({ ...prev, isDraft, itemId: prev.itemId ?? savedId }));
+      setValues((prev) => ({ ...prev, isDraft, itemId: prev.itemId ?? (!id ? savedId : undefined) }));
       if (isDraft) {
         if (!id && savedId)
           window.history.replaceState(

@@ -54,7 +54,7 @@ for (const width of [1440, 390]) {
       await expect(page.getByLabel("Starter code", { exact: true })).toHaveValue("a = int(input())\nb = int(input())\n# Your code here");
       await expect(page.getByRole("region", { name: "Post Items" })).toContainText("1 item · 100 points total");
       await page.getByRole("button", { name: "+ Add item", exact: true }).click();
-      await page.getByRole("menuitem", { name: "Coding Starter code and test cases" }).click();
+      await page.getByRole("menuitem", { name: "Coding Editor, test cases, AI tutor" }).click();
       await page.getByRole("button", { name: "Done", exact: true }).click();
       await expect(page.getByText("Item title is required", { exact: true })).toBeVisible();
       await expect(page.getByRole("button", { name: "Done", exact: true })).toBeVisible();
@@ -95,7 +95,7 @@ for (const width of [1440, 390]) {
       await page.getByRole("button", { name: "Manage items", exact: true }).click();
       const panel = page.getByRole("dialog");
       await panel.getByRole("button", { name: "+ Add item", exact: true }).click();
-      await page.getByRole("menuitem", { name: "Coding Starter code and test cases" }).click();
+      await page.getByRole("menuitem", { name: "Coding Editor, test cases, AI tutor" }).click();
       await panel.getByLabel("Title", { exact: true }).fill("Mobile Coding Item");
       await panel.getByLabel("Instructions", { exact: true }).fill("Print one");
       await panel.getByLabel("Test 1 expected output", { exact: true }).fill("1");

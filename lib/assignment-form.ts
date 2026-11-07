@@ -8,6 +8,7 @@ export type AssignmentFormValues = {
   label?: "Assignment" | "Activity" | "Quiz";
   isDraft?: boolean;
   itemId?: string;
+  hasCodingItem?: boolean;
   itemTitle?: string;
   itemInstructions?: string;
   starterCode?: string;
@@ -38,6 +39,7 @@ export function validateAssignment(values: AssignmentFormValues) {
     return "Item title is required";
   if (
     !values.isDraft &&
+    values.hasCodingItem !== false &&
     values.itemInstructions !== undefined &&
     !values.itemInstructions.trim()
   )
@@ -85,10 +87,11 @@ export function validateAssignment(values: AssignmentFormValues) {
     )
   )
     return "Invalid test cases";
-  if (!values.isDraft && values.testCases.length === 0)
+  if (!values.isDraft && values.hasCodingItem !== false && values.testCases.length === 0)
     return "Add at least one test case";
   if (
     !values.isDraft &&
+    values.hasCodingItem !== false &&
     values.testCases.some((tc) => !tc.expectedOutput.trim())
   )
     return "Every test case needs an expected output";
