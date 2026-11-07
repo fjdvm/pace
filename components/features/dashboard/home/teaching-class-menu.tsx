@@ -17,7 +17,7 @@ export function TeachingClassMenu({ cls }: { cls: TeachingHomeClass }) {
   }
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger aria-label={`Actions for ${cls.name}`} className="absolute right-0.5 top-1 flex size-10 cursor-pointer items-center justify-center rounded-full outline-none hover:bg-black/15 focus-visible:ring-2 focus-visible:ring-white sm:hidden">
+      <DropdownMenuTrigger aria-label={`Actions for ${cls.name}`} className="absolute right-1 top-1 flex size-10 cursor-pointer items-center justify-center rounded-full text-white outline-none hover:bg-black/15 focus-visible:ring-2 focus-visible:ring-white sm:bottom-1 sm:top-auto sm:text-pace-ink-2 sm:hover:bg-pace-sunken sm:focus-visible:ring-pace-purple">
         <Image src="/instructor-home/more.svg" alt="" width={24} height={24} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

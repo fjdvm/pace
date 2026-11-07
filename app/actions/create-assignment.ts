@@ -21,7 +21,7 @@ export async function createAssignment(params: CreateAssignmentParams) {
       testCases,
     } = params;
 
-    const invalid = validateAssignment(params);
+    const invalid = validateAssignment({ ...params, hasCodingItem: true });
     if (invalid) throw new Error(invalid);
 
     const supabase = await createClient();

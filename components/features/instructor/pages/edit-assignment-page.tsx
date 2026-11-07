@@ -40,6 +40,7 @@ export async function EditAssignmentPage({ params }: PageProps) {
       locked={hasStudentWork(assignment._count)}
       initial={{
         itemId: assignment.items[0]?.id,
+        hasCodingItem: assignment.items.length > 0,
         isDraft: assignment.isDraft,
         label: assignment.label,
         starterCode: assignment.items[0]?.starterCode ?? "",

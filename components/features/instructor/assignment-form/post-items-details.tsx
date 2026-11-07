@@ -30,7 +30,7 @@ export function PostItemsDetails({
         />
       </label>
       <p className="text-[13px]">
-        <b>{count} items</b>
+        <b>{count} {count === 1 ? "item" : "items"}</b>
         <span className="text-pace-muted">
           {" "}
           · {total} points total (added up from the items)

@@ -16,8 +16,6 @@ export async function updateAssignment(
   values: AssignmentFormValues,
 ) {
   try {
-    const invalid = validateAssignment(values);
-    if (invalid) throw new Error(invalid);
     const userId = await currentUserId();
     const notifyClassIds = await prisma.$transaction(async (tx) => {
       const assignment = await requireItemInstructor(tx, assignmentId, userId);
@@ -27,13 +25,15 @@ export async function updateAssignment(
         where: { assignmentId, kind: "coding", ...(values.itemId ? { id: values.itemId } : {}) },
         orderBy: { position: "asc" },
       });
-      if (!item) throw new Error("Coding Item not found");
+      const invalid = validateAssignment({ ...values, hasCodingItem: !!item });
+      if (invalid) throw new Error(invalid);
+      if (!item && await tx.item.count({ where: { assignmentId } }) === 0) throw new Error("A Post must have at least one Item");
       const locked = hasStudentWork(assignment._count);
-      const tests = await tx.testCase.findMany({
+      const tests = item ? await tx.testCase.findMany({
         where: { assignmentId, itemId: item.id },
-      });
+      }) : [];
       if (
-        locked &&
+        item && locked &&
         (values.language !== item.language ||
           (values.starterCode !== undefined &&
             values.starterCode !== item.starterCode) ||
@@ -76,7 +76,7 @@ export async function updateAssignment(
           heartsRegenMinutes: values.heartsRegenMinutes,
         },
       });
-      await tx.item.update({
+      if (item) await tx.item.update({
         where: { id: item.id },
         data: {
           title: values.itemTitle?.trim() ?? item.title,
@@ -109,7 +109,7 @@ export async function updateAssignment(
             assignmentId,
           })),
         });
-      if (!locked) {
+      if (item && !locked) {
         await tx.testCase.deleteMany({
           where: { assignmentId, itemId: item.id },
         });
