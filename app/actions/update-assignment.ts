@@ -1,5 +1,6 @@
 "use server";
 
+import { assertPublishableCodingItems } from "@/lib/items/publishable-coding";
 import { prisma } from "@/lib/prisma";
 import { currentUserId, requireItemInstructor } from "@/lib/items/permissions";
 import { hasStudentWork } from "@/lib/items/started";
@@ -124,9 +125,7 @@ export async function updateAssignment(
         const codingItems = await tx.item.findMany({
           where: { assignmentId, kind: "coding" }, include: { testCases: true },
         });
-        if (codingItems.some((coding) => !coding.title.trim() || !coding.instructions.trim() || !coding.testCases.length || coding.testCases.some((test) => !test.expectedOutput.trim()))) {
-          throw new Error("Every Coding Item needs a title, instructions and complete test cases before assigning");
-        }
+        assertPublishableCodingItems(codingItems);
       }
       return publishIds;
     });

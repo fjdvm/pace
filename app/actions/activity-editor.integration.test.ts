@@ -93,3 +93,21 @@ it("keeps the Post a Draft when an additional Coding Item has incomplete tests",
   expect(await updateAssignment(id, { ...values, isDraft: false })).toMatchObject({ success: false });
   expect(await readPost(id)).toMatchObject({ post: { isDraft: true } });
 });
+
+it("rejects incomplete Coding Item writes directly on an assigned Post", async () => {
+  const { createAssignment } = await import("./create-assignment");
+  const { createItem } = await import("./items/create-item");
+  const { updateItem } = await import("./items/update-item");
+  const { readPost } = await import("./read-post");
+  const created = await createAssignment({ ...values, isDraft: false });
+  const id = created.assignment!.id;
+  const input = { kind: "coding", title: "Second", instructions: "Print one", language: "Python", points: 10, testCases: [] };
+  expect(await createItem(id, input)).toMatchObject({ success: false });
+  const added = await createItem(id, { ...input, testCases: [{ input: "", expectedOutput: "1", visible: true }] });
+  expect(added).toMatchObject({ success: true });
+  expect(await updateItem(id, added.item!.id, input)).toMatchObject({ success: false });
+  expect(await updateItem(id, added.item!.id, { ...input, testCases: [{ input: "", expectedOutput: "", visible: false }] })).toMatchObject({ success: false });
+  const post = await readPost(id);
+  expect(post.post!.items[1].testCases).toHaveLength(1);
+  expect(post.post!.items[1].testCases[0].expectedOutput).toBe("1");
+});

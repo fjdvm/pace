@@ -1,5 +1,6 @@
 "use server";
 
+import { assertPublishableCodingItems } from "@/lib/items/publishable-coding";
 import { multipleChoiceData, type MultipleChoiceInput } from "@/lib/items/multiple-choice";
 import { shortAnswerData, type ShortAnswerInput } from "@/lib/items/short-answer";
 import { prisma } from "@/lib/prisma";
@@ -11,7 +12,10 @@ export async function createItem(assignmentId: string, input: CodingItemInput | 
     const userId = await currentUserId();
     const data = input.kind === "short_answer" ? shortAnswerData(input as ShortAnswerInput) : input.kind === "multiple_choice" ? multipleChoiceData(input as MultipleChoiceInput) : codingItemData(input as CodingItemInput);
     const item = await prisma.$transaction(async (tx) => {
-      await requireItemInstructor(tx, assignmentId, userId);
+      const assignment = await requireItemInstructor(tx, assignmentId, userId);
+      if (assignment.isDraft === false && data.kind === "coding") {
+        assertPublishableCodingItems([{ ...data, testCases: (input as CodingItemInput).testCases ?? [] }]);
+      }
       const items = await tx.item.findMany({ where: { assignmentId }, orderBy: { position: "desc" }, take: 1 });
       return tx.item.create({
         data: {

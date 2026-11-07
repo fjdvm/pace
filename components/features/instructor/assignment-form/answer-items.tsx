@@ -45,7 +45,7 @@ export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
   return (
     <div className="flex flex-1 flex-col md:flex-row">
       <main className="flex min-w-0 flex-1 flex-col gap-5 px-4 py-4 md:px-10 md:py-8">
-        <section className="flex flex-col gap-3 rounded-xl border border-pace-line bg-white p-4 md:p-6" aria-label="Post Items">
+        <section className="flex flex-col gap-3 rounded-[12px] border border-pace-line bg-white p-4 md:p-6" aria-label="Post Items">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold">Items</h2>
             <p className="text-[13px] text-pace-muted">{count} {count === 1 ? "item" : "items"} · {total} points total</p>

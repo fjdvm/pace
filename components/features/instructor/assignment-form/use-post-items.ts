@@ -48,9 +48,9 @@ export function usePostItems(
         .then((result) => {
           if (!active) return;
           if (!result.success) {
-        toast.error(result.error);
-        return false;
-      }
+            toast.error(result.error);
+            return;
+          }
           setItems(result.items);
           setLoaded(true);
         })
@@ -95,18 +95,22 @@ export function usePostItems(
       setBusy(false);
     }
   };
-  const remove = async () => {
-    if (editing === "new") return edit(null);
-    if (!postId || !editing || busy) return;
+  const remove = async (): Promise<boolean> => {
+    if (editing === "new") { edit(null); return true; }
+    if (!postId || !editing || busy) return false;
     setBusy(true);
     try {
       const result = await deleteItem(postId, editing);
-      if (!result.success) return toast.error(result.error);
+      if (!result.success) {
+        toast.error(result.error);
+        return false;
+      }
       setItems((prev) => prev.filter((i) => i.id !== editing));
       edit(null);
       return true;
     } catch {
       toast.error("Could not delete Item");
+      return false;
     } finally {
       setBusy(false);
     }
