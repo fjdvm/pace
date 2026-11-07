@@ -7,7 +7,7 @@ import { ExternalLink, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DeletePostDialog } from "@/components/features/classes/delete-post-dialog";
 
-export function RowMenu({ href, onDelete }: { href: string; onDelete?: () => void }) {
+export function RowMenu({ href, onDelete, entryName }: { href: string; onDelete?: () => void; entryName?: string }) {
   const [confirming, setConfirming] = useState(false);
   return (
     <>
@@ -27,6 +27,7 @@ export function RowMenu({ href, onDelete }: { href: string; onDelete?: () => voi
         </DropdownMenuContent>
       </DropdownMenu>
       <DeletePostDialog
+        entryName={entryName}
         open={confirming}
         onOpenChange={setConfirming}
         onConfirm={() => {

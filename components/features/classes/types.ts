@@ -8,6 +8,7 @@ export interface CommentData {
 export interface StreamPostData {
   id: string;
   type: string;
+  title?: string | null;
   body: string | null;
   linkUrl: string | null;
   assignmentId: string | null;

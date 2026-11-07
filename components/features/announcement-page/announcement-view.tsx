@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Megaphone } from "lucide-react";
+import { ArrowLeft, BookOpen, Megaphone } from "lucide-react";
 import { CommentThread } from "@/components/features/classes/comment-thread";
 import { resolveAuthorDisplay } from "@/components/features/classes/comment-utils";
 import type { StreamPostData } from "@/components/features/classes/types";
@@ -18,12 +18,13 @@ export function AnnouncementView({ data, post }: { data: ClassPageData; post: St
       </Link>
       <div className="flex items-start gap-4">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-pace-green">
-          <Megaphone className="size-5 text-white" />
+          {post.type === "material" ? <BookOpen className="size-5 text-white" /> : <Megaphone className="size-5 text-white" />}
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="text-[13px] text-pace-muted">
             {author.name} · {longDate.format(new Date(post.createdAt))}
           </p>
+          {post.type === "material" && <h1 className="break-words text-[22px] font-semibold text-pace-ink">{post.title}</h1>}
           <p className="whitespace-pre-wrap break-words text-[15px] leading-[1.55] text-pace-ink">{post.body}</p>
           {post.linkUrl && (
             <a href={post.linkUrl} target="_blank" rel="noopener noreferrer" className="break-all text-[13px] font-semibold text-pace-green-deep underline">

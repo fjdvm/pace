@@ -3,6 +3,7 @@ model Post {
   classId      String    @map("class_id")
   authorId     String    @map("author_id")
   type         String
+  title        String?
   body         String?
   linkUrl      String?   @map("link_url")
   assignmentId String?   @map("assignment_id")

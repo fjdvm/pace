@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { MaterialDialog } from "../stream/material-dialog";
 import { AnnouncementDialog } from "../stream/announcement-dialog";
 import {
   paceButtonBase,
@@ -17,6 +18,7 @@ import {
 } from "@/components/features/student/shared/pace-button";
 
 export function CreatePostMenu({ classId }: { classId: string }) {
+  const [material, setMaterial] = useState(false);
   const [announcement, setAnnouncement] = useState(false);
   const row = "gap-3.5 rounded-none py-2.5 pl-4 pr-6 focus:bg-pace-sunken";
   return (
@@ -75,15 +77,15 @@ export function CreatePostMenu({ classId }: { classId: string }) {
             />
           </DropdownMenuItem>
           <DropdownMenuItem
-            disabled
-            className={`${row} data-disabled:opacity-100`}
-            title="Materials are coming in a separate ticket"
+            onClick={() => setMaterial(true)}
+            className={row}
           >
             <Image src="/class/book.svg" alt="" width={24} height={24} />
             <MenuCopy title="Material" subtitle="Notes, slides, or links" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <MaterialDialog classId={classId} open={material} onOpenChange={setMaterial} />
       <AnnouncementDialog
         classId={classId}
         open={announcement}
