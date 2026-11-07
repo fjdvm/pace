@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { paceButtonBase, paceButtonStyles } from "@/components/features/student/shared/pace-button";
@@ -10,6 +10,13 @@ export function FileDropZone({ onFile }: { onFile: (file: File) => void }) {
   const browse = useRef<HTMLInputElement>(null);
   const camera = useRef<HTMLInputElement>(null);
   const [over, setOver] = useState(false);
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("capture") !== "photo") return;
+    url.searchParams.delete("capture");
+    window.history.replaceState(null, "", url);
+    camera.current?.click();
+  }, []);
   const pick = (files: FileList | null) => {
     if (files?.[0]) onFile(files[0]);
   };

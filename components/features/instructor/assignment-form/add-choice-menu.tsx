@@ -1,3 +1,5 @@
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { MobileAddChoice } from "./mobile-add-choice";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -12,6 +14,8 @@ const kinds: { kind: Kind; icon: string; title: string; description: string }[] 
 export function AddChoiceMenu({ disabled, onAdd, classId, onOpen }: {
   disabled: boolean; onAdd: (kind: Kind) => void; classId?: string; onOpen?: () => void;
 }) {
+  const desktop = useMediaQuery("(min-width: 768px)");
+  if (!desktop) return <MobileAddChoice disabled={disabled} classId={classId} onAdd={onAdd} onOpen={onOpen} />;
   return (
     <DropdownMenu onOpenChange={(open) => { if (open) onOpen?.(); }}>
       <DropdownMenuTrigger render={<Button variant="outline" disabled={disabled} className="h-10 rounded-full bg-white px-[18px] shadow-[0_3px_0_#d6d3cb]" />}>

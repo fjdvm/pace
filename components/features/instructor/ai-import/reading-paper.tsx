@@ -3,8 +3,8 @@ import { fileBadge } from "./file-meta";
 export function ReadingPaper({ fileName }: { fileName: string }) {
   const badge = fileBadge(fileName);
   return (
-    <div className="hidden h-full min-h-[480px] shrink-0 justify-center rounded-[12px] bg-pace-sunken p-8 md:flex">
-      <div className="h-fit w-[520px] max-w-full space-y-3.5 rounded-[4px] border border-pace-line bg-white p-7 shadow-[0_4px_16px_rgba(0,0,0,.12)]">
+    <div className="hidden h-full min-h-[480px] w-full shrink-0 justify-center rounded-[12px] bg-pace-sunken p-8 md:flex">
+      <div className="h-fit w-full max-w-full space-y-3.5 rounded-[4px] border border-pace-line bg-white p-7 shadow-[0_4px_16px_rgba(0,0,0,.12)]">
         <p className="text-[11px] font-bold uppercase tracking-[.66px] text-pace-muted">{badge.label} · {fileName}</p>
         {[1, 2, 3].map((n) => (
           <div key={n} className="flex items-start gap-2.5 rounded-[6px] border border-dashed border-pace-purple bg-pace-purple-tint p-2.5">

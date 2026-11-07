@@ -31,8 +31,8 @@ for (const width of [1440, 390]) {
     if (width === 390) await page.getByRole("button", { name: "Manage items", exact: true }).click();
     const items = page.getByRole("region", { name: "Post Items", exact: true });
     await page.getByRole("button", { name: "+ Add item", exact: true }).click();
-    await expect(page.getByRole("menuitem", { name: /Coding/ })).toContainText("Editor, test cases, AI tutor");
-    await expect(page.getByRole("menuitem", { name: /Short answer/ })).toContainText("Typed answer, graded by you");
+    await expect(page.getByRole("menuitem", { name: /Coding/ })).toContainText(width === 390 ? "Editor and test cases" : "Editor, test cases, AI tutor");
+    await expect(page.getByRole("menuitem", { name: /Short answer/ })).toContainText(width === 390 ? "Typed answer" : "Typed answer, graded by you");
     await page.screenshot({ path: `/tmp/pace-165-browser/add-item-${width}.png`, fullPage: false });
     await page.getByRole("menuitem", { name: /Multiple choice/ }).click();
     await page.getByLabel("Question", { exact: true }).fill("What does break do inside a loop?");

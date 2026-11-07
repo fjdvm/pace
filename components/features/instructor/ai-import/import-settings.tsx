@@ -20,14 +20,14 @@ export function ImportSettingsFields({ value, onChange }: Props) {
         <div className="space-y-2">
           <Label className="text-[13px] font-semibold">Activity type</Label>
           <Select value={value.kinds} onValueChange={(kinds) => onChange({ ...value, kinds: kinds as ImportSettings["kinds"] })}>
-            <SelectTrigger className="h-12 w-full rounded-[12px] border-[1.5px] border-pace-line-strong bg-white px-4"><SelectValue>{KINDS.find((k) => k.value === value.kinds)?.label}</SelectValue></SelectTrigger>
+            <SelectTrigger aria-label="Activity type" className="data-[size=default]:h-12 w-full rounded-[12px] border-[1.5px] border-pace-line-strong bg-white px-4"><SelectValue>{KINDS.find((k) => k.value === value.kinds)?.label}</SelectValue></SelectTrigger>
             <SelectContent>{KINDS.map((k) => <SelectItem key={k.value} value={k.value}>{k.label}</SelectItem>)}</SelectContent>
           </Select>
         </div>
         <div className="space-y-2">
           <Label className="text-[13px] font-semibold">Language</Label>
           <Select value={value.language} onValueChange={(language) => onChange({ ...value, language: language ?? "Python" })}>
-            <SelectTrigger className="h-12 w-full rounded-[12px] border-[1.5px] border-pace-line-strong bg-white px-4"><SelectValue>{value.language}</SelectValue></SelectTrigger>
+            <SelectTrigger aria-label="Language" className="data-[size=default]:h-12 w-full rounded-[12px] border-[1.5px] border-pace-line-strong bg-white px-4"><SelectValue>{value.language}</SelectValue></SelectTrigger>
             <SelectContent>{IMPORT_LANGUAGES.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent>
           </Select>
         </div>
@@ -45,7 +45,7 @@ function Toggle({ title, hint, checked, onChange }: { title: string; hint: strin
         <p className="text-[15px] leading-[1.55]">{title}</p>
         <p className="text-[13px] text-pace-muted">{hint}</p>
       </div>
-      <Switch checked={checked} onCheckedChange={onChange} aria-label={title} />
+      <Switch className="data-[size=default]:h-6 data-[size=default]:w-10 [&_[data-slot=switch-thumb]]:size-5! [&_[data-slot=switch-thumb]]:data-checked:translate-x-4!" checked={checked} onCheckedChange={onChange} aria-label={title} />
     </div>
   );
 }

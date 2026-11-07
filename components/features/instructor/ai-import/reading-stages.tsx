@@ -1,3 +1,5 @@
+import { Spinner } from "@/components/ui/spinner";
+
 export const READING_STAGES = [
   { title: "Reading the file", hint: "Pages, printed or handwritten text" },
   { title: "Finding the items", hint: "Splitting the sheet into separate tasks" },
@@ -12,8 +14,8 @@ export function ReadingStages({ stage }: { stage: number }) {
         const state = i < stage ? "done" : i === stage ? "active" : "todo";
         return (
           <li key={s.title} className="flex items-start gap-3.5">
-            <span className={`flex size-7 shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-white ${state === "done" ? "bg-pace-green" : state === "active" ? "bg-pace-purple" : "bg-pace-sunken"}`}>
-              {state === "done" ? "✓" : state === "active" ? "•" : ""}
+            <span className={`flex size-7 shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-white ${state === "done" ? "bg-pace-green" : state === "active" ? "animate-pulse motion-reduce:animate-none bg-pace-purple" : "bg-pace-sunken"}`}>
+              {state === "done" ? "✓" : state === "active" ? <Spinner className="size-4 motion-reduce:animate-none" /> : ""}
             </span>
             <div className={state === "todo" ? "text-pace-muted" : ""}>
               <p className="text-[15px] font-bold leading-[1.55]">{s.title}</p>

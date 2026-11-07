@@ -26,7 +26,8 @@ export function UploadStep({ file, settings, error, cancelHref, onCancel, onFile
           <p className="text-[13px] leading-normal text-pace-ink-2">Upload your activity sheet. The AI reads it and turns each item into a ready-to-edit activity. Nothing is posted until you review it.</p>
         </div>
         {error && <p role="alert" className="rounded-[8px] bg-pace-red-tint p-3 text-[13px] font-bold text-pace-red">{error}</p>}
-        {file ? <UploadedFileRow file={file} onRemove={() => onFile(null)} /> : <FileDropZone onFile={onFile} />}
+        <FileDropZone onFile={onFile} />
+        {file && <UploadedFileRow file={file} onRemove={() => onFile(null)} />}
         <ImportSettingsFields value={settings} onChange={onSettings} />
         <div className="flex justify-end gap-3">
           {onCancel ? (

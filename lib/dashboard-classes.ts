@@ -15,7 +15,12 @@ export const getDashboardClasses = cache(async (userId: string) => {
       where: { studentId: userId },
       select: {
         archived: true,
-        class: { select: { id: true, name: true, archived: true, instructor: instructorSelect } },
+        class: { select: {
+          id: true, name: true, archived: true, instructor: instructorSelect,
+          _count: { select: { assignments: {
+            where: { assignment: { isDraft: false, submissions: { none: { studentId: userId } } } },
+          } } },
+        } },
       },
       orderBy: { enrolledAt: "desc" },
     }),
@@ -25,9 +30,10 @@ export const getDashboardClasses = cache(async (userId: string) => {
       ...cls,
       instructorName: getDisplayName(instructor),
     })),
-    enrolled: enrollments.map(({ archived, class: { instructor, ...cls } }) => ({
+    enrolled: enrollments.map(({ archived, class: { instructor, _count, ...cls } }) => ({
       ...cls,
       archived: archived || cls.archived,
+      todoCount: _count.assignments,
       instructorName: getDisplayName(instructor),
     })),
   };

@@ -1,3 +1,4 @@
+import { SetClassTitle } from "@/components/features/dashboard/top-bar/class-title-context";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
@@ -16,5 +17,5 @@ export async function AiImportPage({ searchParams }: PageProps) {
     select: { id: true, name: true },
   });
   if (!cls) redirect("/dashboard");
-  return <AiImportView classId={cls.id} className={cls.name} />;
+  return <><SetClassTitle id={cls.id} name={cls.name} /><AiImportView classId={cls.id} className={cls.name} /></>;
 }

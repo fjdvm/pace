@@ -34,8 +34,9 @@ for (const width of [1440, 390]) {
     }));
     if (width === 390) {
 
-      expect(cards[0]).toMatchObject({ x: 16, width: 358, height: 122 });
-      expect(cards[1].y - cards[0].y).toBe(134);
+      expect(cards[0]).toMatchObject({ x: 16, width: 358 });
+      await expect(teaching.getByText("12 to review", { exact: true })).toBeVisible();
+      expect(cards[1].y - cards[0].y).toBeCloseTo(cards[0].height + 12);
       await expect(page.getByRole("button", { name: "Create class", exact: true })).toBeVisible();
     } else {
       await expect(teaching.getByRole("button", { name: /^Actions for/ })).toHaveCount(3);

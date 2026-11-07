@@ -9,9 +9,10 @@ type ClassCardProps = {
   name: string;
   instructorName: string;
   menu?: React.ReactNode;
+  summary?: string;
 };
 
-export function ClassCard({ id, name, instructorName, menu }: ClassCardProps) {
+export function ClassCard({ id, name, instructorName, menu, summary }: ClassCardProps) {
   const colour = classColour(id);
   const { title, section } = splitSection(name);
   return (
@@ -28,7 +29,9 @@ export function ClassCard({ id, name, instructorName, menu }: ClassCardProps) {
         {section && <p className="truncate text-[13px] font-bold leading-normal">{section}</p>}
         <p className="truncate text-[13px] leading-normal">Prof. {instructorName.replace(/^prof\.?\s+/i, "")}</p>
       </div>
-      <div className="hidden flex-1 border-b border-pace-line sm:block" />
+      <div className="flex flex-1 items-end border-b border-pace-line px-4 py-4 sm:pt-12">
+        {summary && <p className="text-[13px] font-bold text-pace-ink-2">{summary}</p>}
+      </div>
       <div className="hidden h-[52px] sm:block" />
       <span
         aria-hidden
