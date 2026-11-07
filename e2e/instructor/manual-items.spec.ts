@@ -61,6 +61,16 @@ for (const width of [1440, 390]) {
     await expect(page.getByRole("radio", { name: "Mark option 2 correct", exact: true })).toBeChecked();
     await items.getByRole("button", { name: "Delete", exact: true }).click();
     await expect(items).toContainText("2 items · 105 points total");
+    await items.getByRole("button", { name: /Lab Activity 3: Loops Coding/ }).click();
+    await page.getByRole("button", { name: "Delete Item", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Delete Item", exact: true })).not.toBeVisible();
+    await expect(page.getByText("1 item · 5 points total", { exact: true })).toBeAttached();
+    await page.getByLabel("Title", { exact: true }).fill("Manual Items only");
+    await page.getByLabel("Instructions (optional)", { exact: true }).fill("");
+    if (width === 1440) await expect(page.getByRole("button", { name: /^Draft saved/ })).toBeVisible();
+    else await expect(page.locator("header time")).toBeAttached();
+    await page.reload();
+    await expect(page.getByLabel("Title", { exact: true })).toHaveValue("Manual Items only");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }

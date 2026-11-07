@@ -61,7 +61,7 @@ export function validateAssignment(values: AssignmentFormValues) {
     (!Number.isFinite(values.points) || values.points < 0)
   )
     return "Points must be a non-negative number";
-  if (!values.isDraft && !values.instructions.trim())
+  if (!values.isDraft && values.hasCodingItem !== false && values.itemInstructions === undefined && !values.instructions.trim())
     return "Please enter instructions";
   if (!values.dueDate || Number.isNaN(new Date(values.dueDate).getTime()))
     return "Please set a valid due date";
