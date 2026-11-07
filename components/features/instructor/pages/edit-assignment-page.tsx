@@ -49,7 +49,7 @@ export async function EditAssignmentPage({ params }: PageProps) {
         itemInstructions: assignment.items[0]?.instructions,
         title: assignment.title,
         instructions: assignment.instructions,
-        language: assignment.language,
+        language: assignment.items[0]?.language || "Python",
         dueDate: toDateTimeLocal(assignment.dueDate),
         heartsCount: assignment.heartsCount,
         heartsRegenMinutes: assignment.heartsRegenMinutes,

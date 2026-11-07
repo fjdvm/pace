@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { MoreVertical } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -18,7 +18,7 @@ export function TeachingClassMenu({ cls }: { cls: TeachingHomeClass }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger aria-label={`Actions for ${cls.name}`} className="absolute right-1 top-1 flex size-10 cursor-pointer items-center justify-center rounded-full text-white outline-none hover:bg-black/15 focus-visible:ring-2 focus-visible:ring-white sm:bottom-1 sm:top-auto sm:text-pace-ink-2 sm:hover:bg-pace-sunken sm:focus-visible:ring-pace-purple">
-        <Image src="/instructor-home/more.svg" alt="" width={24} height={24} />
+        <MoreVertical className="size-6" strokeWidth={1.5} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem render={<Link href={cls.reviews[0] ? `/dashboard/submissions/${cls.reviews[0].assignmentId}` : "/dashboard/submissions"} />}>To review</DropdownMenuItem>

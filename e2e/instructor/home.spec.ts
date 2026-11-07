@@ -46,7 +46,7 @@ for (const width of [1440, 390]) {
       expect(Math.abs((cards[0].x - region!.x) - (region!.x + region!.width - last.x - last.width))).toBeLessThanOrEqual(1);
       expect(cards[1].x - cards[0].x).toBe(352);
     }
-    await page.screenshot({ path: `docs/verification/issue-165/teaching-${width}.png`, fullPage: true });
+    await page.screenshot({ path: `/tmp/pace-165-browser/teaching-${width}.png`, fullPage: true });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 }

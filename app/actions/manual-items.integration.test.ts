@@ -38,6 +38,7 @@ it("authors both manual kinds, persists edits, reorders and removes any Item wit
   expect(short).toMatchObject({ success: true, item: { kind: "short_answer", correctOption: null } });
   expect(await updateItem(postId, mc.item!.id, { ...choice, points: 15, options: ["Continues", "Stops"], correctOption: 1 })).toMatchObject({ success: true });
   expect(await reorderItems(postId, [short.item!.id, mc.item!.id, codingId])).toMatchObject({ success: true });
+  expect(await prisma.assignment.findUniqueOrThrow({ where: { id: postId } })).toMatchObject({ instructions: "Answer all items", language: "Python" });
   expect(await readItems(postId)).toMatchObject({ totalPoints: 45, items: [{ id: short.item!.id }, { id: mc.item!.id, points: 15, options: ["Continues", "Stops"], correctOption: 1 }, { id: codingId }] });
   expect(await deleteItem(postId, codingId)).toMatchObject({ success: true });
   expect(await readItems(postId)).toMatchObject({ totalPoints: 20 });
@@ -48,7 +49,7 @@ it("authors both manual kinds, persists edits, reorders and removes any Item wit
   const { readPost } = await import("./read-post");
   const post = await prisma.assignment.findUniqueOrThrow({ where: { id: postId }, include: { classes: true } });
   expect(await updateAssignment(postId, { title: "Manual Items", instructions: "", isDraft: false, language: "Python", dueDate: "2099-10-28T23:59", heartsCount: 5, heartsRegenMinutes: 30, classIds: post.classes.map((c) => c.classId), testCases: [] })).toMatchObject({ success: true });
-  expect(await readPost(postId)).toMatchObject({ post: { isDraft: false, totalPoints: 5, items: [{ kind: "short_answer" }] } });
+  expect(await readPost(postId)).toMatchObject({ post: { isDraft: false, totalPoints: 5, items: [{ kind: "short_answer", title: "Explain when a loop stops" }] } });
 });
 
 it("rejects incomplete options and answer keys without changing stored Items", async () => {

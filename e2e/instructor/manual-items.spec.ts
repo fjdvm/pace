@@ -33,7 +33,7 @@ for (const width of [1440, 390]) {
     await page.getByRole("button", { name: "+ Add item", exact: true }).click();
     await expect(page.getByRole("menuitem", { name: /Coding/ })).toContainText("Editor, test cases, AI tutor");
     await expect(page.getByRole("menuitem", { name: /Short answer/ })).toContainText("Typed answer, graded by you");
-    await page.screenshot({ path: `docs/verification/issue-165/add-item-${width}.png`, fullPage: true });
+    await page.screenshot({ path: `/tmp/pace-165-browser/add-item-${width}.png`, fullPage: false });
     await page.getByRole("menuitem", { name: /Multiple choice/ }).click();
     await page.getByLabel("Question", { exact: true }).fill("What does break do inside a loop?");
     const options = ["Skips to the next iteration", "Exits the loop right away", "Restarts the loop", "Ends the program"];
@@ -42,7 +42,7 @@ for (const width of [1440, 390]) {
     await page.getByLabel("Points", { exact: true }).fill("15");
     await expect(page.getByText("115 points total (added up from the items)")).toBeVisible();
     await expect(page.getByText("Item 2 of 2 · 15 pts")).toBeVisible();
-    await page.screenshot({ path: `docs/verification/issue-165/multiple-choice-${width}.png`, fullPage: true });
+    await page.screenshot({ path: `/tmp/pace-165-browser/multiple-choice-${width}.png`, fullPage: false });
     await page.getByRole("button", { name: "Done", exact: true }).click();
     await expect(items).toContainText("2 items · 115 points total");
     await page.getByRole("button", { name: "+ Add item", exact: true }).click();
