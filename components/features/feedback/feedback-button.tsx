@@ -22,7 +22,7 @@ export function FeedbackButton({ inline = false }: { inline?: boolean }) {
         className={
           inline
             ? "flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full border-[1.5px] border-pace-line-strong bg-white text-pace-ink"
-            : "fixed bottom-6 right-6 z-[9999] w-12 h-12 rounded-full bg-pace-ink text-white shadow-[0_4px_0_0_var(--color-pace-line-strong)] hover:scale-105 transition-all cursor-pointer flex items-center justify-center"
+            : `${pathname === "/dashboard" ? "hidden sm:flex" : "flex"} fixed bottom-6 right-6 z-[9999] w-12 h-12 rounded-full bg-pace-ink text-white shadow-[0_4px_0_0_var(--color-pace-line-strong)] hover:scale-105 transition-all cursor-pointer flex items-center justify-center`
         }
       >
         <HelpCircle className="h-5 w-5" />
