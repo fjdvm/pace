@@ -4,13 +4,15 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Check, UserRoundCog } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { resolveHomeView, saveHomeView, type HomeView } from "@/lib/home-view";
+import type { TeachingHomeClass } from "@/app/actions/teaching-home";
+import { TeachingGrid } from "./teaching-grid";
 import { ClassGrid } from "./class-grid";
 
 type ClassItem = { id: string; name: string; instructorName: string };
 type View = HomeView;
 
 type ClassSwitcherProps = {
-  teaching: ClassItem[];
+  teaching: TeachingHomeClass[];
   enrolled: ClassItem[];
   savedView?: string;
 };
@@ -46,7 +48,7 @@ export function ClassSwitcher({ teaching, enrolled, savedView }: ClassSwitcherPr
           </TabsList>
         </Tabs>
       )}
-      <ClassGrid title={view} classes={view === "Teaching" ? teaching : enrolled} />
+      {view === "Teaching" ? <TeachingGrid classes={teaching} /> : <ClassGrid title="Enrolled" classes={enrolled} />}
     </>
   );
 }
