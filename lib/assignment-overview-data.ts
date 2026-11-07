@@ -55,7 +55,7 @@ export async function getAssignmentOverview(
     new Map(activeClasses.flatMap((c) => c.enrollments.map((e) => [e.student.id, e.student] as const))).values(),
   );
   const names = new Map(roster.map((s) => [s.id, getDisplayName(s)]));
-  const pairs = await computeSimilarityPairs(assignment.language as SupportedLanguage, submissions);
+  const pairs = assignment.similarityCheckEnabled === false ? [] : await computeSimilarityPairs(assignment.language as SupportedLanguage, submissions);
   const topSimilarity = new Map<string, number>();
   for (const pair of pairs) {
     for (const id of [pair.studentAId, pair.studentBId]) {

@@ -5,6 +5,10 @@ export interface AssignmentData {
   instructions: string;
   language: string;
   dueDate: string;
+  aiTutorEnabled?: boolean;
+  tieredHintsEnabled?: boolean;
+  monitoringEnabled?: boolean;
+  similarityCheckEnabled?: boolean;
   heartsCount: number;
   heartsRegenMinutes: number;
   instructorEmail: string;

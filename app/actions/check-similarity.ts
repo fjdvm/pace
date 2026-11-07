@@ -22,6 +22,7 @@ export async function checkSimilarity(assignmentId: string) {
       throw new Error("Unauthorized: You do not own this assignment");
     }
 
+    if (assignment.similarityCheckEnabled === false) return { success: true, pairs: [] };
     const submissions = await prisma.submission.findMany({
       where: { assignmentId },
       select: { studentId: true, code: true },

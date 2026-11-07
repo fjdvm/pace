@@ -56,7 +56,7 @@ export function useWorkspaceTutor({ props, items, activeId, code, runResults, su
     setChatInput: (value: string) => setInputs((previous) => ({ ...previous, [activeId]: value })),
     chatMessages, isLoading, isStreaming: status === "streaming",
     sendToTutor(text: string) {
-      if (!text.trim() || isLoading || submitted || hearts.currentCount <= 0) return;
+      if (assignment.aiTutorEnabled === false || !text.trim() || isLoading || submitted || hearts.currentCount <= 0) return;
       void sendMessage({ text }, { body: {
         assignmentId: assignment.id, itemId: activeId, currentCode: code, lastRunResults: runResults,
       } });

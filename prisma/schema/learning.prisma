@@ -6,6 +6,10 @@ model Assignment {
   instructions           String
   language               String
   dueDate                DateTime          @map("due_date")
+  aiTutorEnabled Boolean @default(true) @map("ai_tutor_enabled")
+  tieredHintsEnabled Boolean @default(true) @map("tiered_hints_enabled")
+  monitoringEnabled Boolean @default(true) @map("monitoring_enabled")
+  similarityCheckEnabled Boolean @default(true) @map("similarity_check_enabled")
   heartsCount            Int               @default(5) @map("hearts_count")
   heartsRegenMinutes     Int               @default(30) @map("hearts_regen_minutes")
   createdBy              String            @map("created_by")

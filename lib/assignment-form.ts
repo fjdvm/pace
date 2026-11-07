@@ -5,6 +5,10 @@ export type TestCaseForm = {
 };
 
 export type AssignmentFormValues = {
+  aiTutorEnabled?: boolean;
+  tieredHintsEnabled?: boolean;
+  monitoringEnabled?: boolean;
+  similarityCheckEnabled?: boolean;
   label?: "Assignment" | "Activity" | "Quiz";
   isDraft?: boolean;
   itemId?: string;
@@ -34,6 +38,9 @@ export function decodeLineBreaks(value: string) {
 }
 
 export function validateAssignment(values: AssignmentFormValues) {
+  for (const key of ["aiTutorEnabled", "tieredHintsEnabled", "monitoringEnabled", "similarityCheckEnabled"] as const) {
+    if (values[key] !== undefined && typeof values[key] !== "boolean") return "Invalid Post setting";
+  }
   if (!values.title.trim()) return "Please enter a title";
   if (values.itemTitle !== undefined && !values.itemTitle.trim())
     return "Item title is required";

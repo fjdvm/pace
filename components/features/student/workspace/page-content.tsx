@@ -82,6 +82,10 @@ export async function AssignmentWorkspacePage({ params, searchParams }: PageProp
     language: codingItem.language,
     dueDate: assignment.dueDate.toISOString(),
     heartsCount: assignment.heartsCount,
+    aiTutorEnabled: assignment.aiTutorEnabled,
+    tieredHintsEnabled: assignment.tieredHintsEnabled,
+    monitoringEnabled: assignment.monitoringEnabled,
+    similarityCheckEnabled: assignment.similarityCheckEnabled,
     heartsRegenMinutes: assignment.heartsRegenMinutes,
     instructorEmail: assignment.instructor.email,
   };

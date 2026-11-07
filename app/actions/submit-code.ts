@@ -3,7 +3,7 @@
 import { assertChoiceConfiguration } from "@/lib/items/choice-configuration";
 import { multipleChoiceScore, validateChoice } from "@/lib/items/multiple-choice";
 import { revalidatePath } from "next/cache";
-import type { Prisma } from "@/lib/generated/prisma/client";
+import { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { computeRiskScore } from "@/lib/risk-score";
@@ -86,7 +86,7 @@ export async function submitCode(
           code: first.code,
           score,
           testResults: first.results as unknown as Prisma.InputJsonValue,
-          behavioralSignals: {
+          behavioralSignals: post.monitoringEnabled === false ? Prisma.JsonNull : {
             ...behavioralSignals,
             riskScore: computeRiskScore(behavioralSignals.events, {
               finalCodeLength: answers.reduce(

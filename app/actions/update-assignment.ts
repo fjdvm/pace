@@ -73,6 +73,10 @@ export async function updateAssignment(
           isDraft,
           dueDate: new Date(values.dueDate),
           heartsCount: values.heartsCount,
+          aiTutorEnabled: values.aiTutorEnabled,
+          tieredHintsEnabled: values.tieredHintsEnabled,
+          monitoringEnabled: values.monitoringEnabled,
+          similarityCheckEnabled: values.similarityCheckEnabled,
           heartsRegenMinutes: values.heartsRegenMinutes,
         },
       });

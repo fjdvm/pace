@@ -1,3 +1,4 @@
+import { PostClasses } from "./post-classes";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -39,28 +40,7 @@ export function PostSettings({
           />
         </FormField>
       )}
-      <FormField label="For" htmlFor="post-class">
-        <Select
-          value={values.classIds[0] ?? ""}
-          onValueChange={(value) => {
-            if (value) onChange({ classIds: [value] });
-          }}
-          disabled={locked}
-        >
-          <SelectTrigger id="post-class" className={formControl}>
-            <SelectValue placeholder="Choose a Class">
-              {classes.find((cls) => cls.id === values.classIds[0])?.name}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {classes.map((cls) => (
-              <SelectItem key={cls.id} value={cls.id}>
-                {cls.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </FormField>
+      <PostClasses classes={classes} selected={values.classIds} locked={locked} onChange={(classIds) => onChange({ classIds })} />
       <FormField label="Assign to" htmlFor="post-students">
         <Input
           id="post-students"

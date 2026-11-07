@@ -54,3 +54,19 @@ it("does not spend hearts if the model cannot be initialized", async () => {
   expect((await request()).status).toBe(500);
   expect(mocks.transaction).not.toHaveBeenCalled();
 });
+it("blocks a disabled tutor before model initialization or spending Hearts", async () => {
+  const { post } = await import("../../../test/tutor-fixture");
+  mocks.access.mockResolvedValueOnce({ ...post, aiTutorEnabled: false });
+  expect((await request()).status).toBe(403);
+  expect(mocks.model).not.toHaveBeenCalled();
+  expect(mocks.transaction).not.toHaveBeenCalled();
+});
+it("keeps hints at tier one when tiered hints are disabled", async () => {
+  const { post } = await import("../../../test/tutor-fixture");
+  mocks.access.mockResolvedValueOnce({ ...post, tieredHintsEnabled: false });
+  mocks.hearts.update.mockImplementation(async ({ data }) => typeof data.currentCount === "number"
+    ? data : { currentCount: 1, totalSpent: 4, lastRegenAt: new Date() });
+  expect((await request()).status).toBe(200);
+  const options = mocks.stream.mock.results[0].value.toUIMessageStreamResponse.mock.calls[0][0];
+  expect(options.messageMetadata({ part: { type: "start" } })).toEqual({ hintLevel: 1 });
+});

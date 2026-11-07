@@ -49,7 +49,7 @@ export async function loadItemInsight(postId: string, studentId: string, itemId:
   const flag = itemRisk(events, itemId, firstItemId, code.length, activity.typed).flag;
   let similar: { name: string; percent: number } | null = null;
   let similarStudentId: string | null = null;
-  if (item.kind === "coding") {
+  if (post.similarityCheckEnabled !== false && item.kind === "coding") {
     const answers = post.submissions.flatMap((s) => {
       const a = s.answers.find((x) => x.itemId === itemId);
       return a ? [{ studentId: s.studentId, code: a.code }] : [];

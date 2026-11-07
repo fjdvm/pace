@@ -21,6 +21,10 @@ export async function readPost(assignmentId: string) {
     return { success: true, post: {
       id: post.id, title: post.title, label: post.label, isDraft: post.isDraft,
       dueDate: post.dueDate, createdAt: post.createdAt,
+      aiTutorEnabled: post.aiTutorEnabled,
+      tieredHintsEnabled: post.tieredHintsEnabled,
+      monitoringEnabled: post.monitoringEnabled,
+      similarityCheckEnabled: post.similarityCheckEnabled,
       heartsCount: post.heartsCount, heartsRegenMinutes: post.heartsRegenMinutes,
       items: post.items.map((item) => ({ ...item, correctOption: isInstructor ? item.correctOption : undefined, testCases: item.testCases.filter((tc) => isInstructor || tc.visible) })),
       totalPoints: post.items.reduce((sum, item) => sum + item.points, 0),
