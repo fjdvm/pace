@@ -15,7 +15,7 @@ export function ClassCard({ id, name, instructorName, menu }: ClassCardProps) {
   const colour = classColour(id);
   const { title, section } = splitSection(name);
   return (
-    <Card className="relative flex w-full gap-0 border-0 bg-transparent py-0 shadow-none ring-0 sm:h-[316px] sm:w-[336px]">
+    <Card className="relative flex w-full gap-0 overflow-visible rounded-none border-0 bg-transparent py-0 shadow-none ring-0 sm:h-[316px] sm:w-[336px]">
     <Link
       href={`/dashboard/classes/${id}`}
       className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-pace-line bg-white outline-none focus-visible:ring-2 focus-visible:ring-pace-purple"
