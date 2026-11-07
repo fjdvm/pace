@@ -8,7 +8,7 @@ import type { TeachingHomeClass } from "@/app/actions/teaching-home";
 import { TeachingGrid } from "./teaching-grid";
 import { ClassGrid } from "./class-grid";
 
-type ClassItem = { id: string; name: string; instructorName: string };
+type ClassItem = { id: string; name: string; instructorName: string; todoCount?: number };
 type View = HomeView;
 
 type ClassSwitcherProps = {

@@ -57,12 +57,12 @@ export function DashboardShell({
           studentXp={studentXp}
         />
         <div className="flex min-h-0 flex-1">
-          <AppSidebar
+          {pathname !== "/dashboard/assignments/import" && <AppSidebar
             teaching={teaching}
             enrolled={enrolled}
             isAdmin={isAdmin}
-          />
-          <SidebarInset className="min-w-0 overflow-y-auto bg-pace-canvas">
+          />}
+          <SidebarInset className={`min-w-0 overflow-y-auto ${pathname === "/dashboard/assignments/import" ? "bg-white" : "bg-pace-canvas"}`}>
             {children}
           </SidebarInset>
         </div>

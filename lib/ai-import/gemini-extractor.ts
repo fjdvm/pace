@@ -24,6 +24,7 @@ export async function extractWithGemini(input: ExtractInput, settings: ImportSet
       : [{ type: "file" as const, data: input.data, mediaType: input.mediaType }];
   const { output } = await generateText({
     model,
+    timeout: 120_000,
     output: Output.object({ schema: importSchema }),
     system: buildImportPrompt(settings),
     messages: [{ role: "user", content }],

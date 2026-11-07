@@ -13,7 +13,7 @@ beforeEach(() => {
     { id: "t1", name: "Mine", archived: false, joinCode: "ABC123", instructor: { name: "Ernesto Odpaga", email: "e@test.com" } },
   ]);
   db.enrollment.findMany.mockResolvedValue([
-    { archived: false, class: { id: "e1", name: "Theirs", archived: true, instructor: { name: null, email: "maria.reyes@test.com" } } },
+    { archived: false, class: { id: "e1", name: "Theirs", archived: true, _count: { assignments: 1 }, instructor: { name: null, email: "maria.reyes@test.com" } } },
   ]);
 });
 
@@ -24,6 +24,6 @@ it("returns the Instructor name for Teaching and Enrolled Classes and keeps join
     { id: "t1", name: "Mine", archived: false, joinCode: "ABC123", instructorName: "Ernesto Odpaga" },
   ]);
   expect(result.enrolled).toEqual([
-    { id: "e1", name: "Theirs", archived: true, instructorName: "Maria Reyes" },
+    { id: "e1", name: "Theirs", archived: true, todoCount: 1, instructorName: "Maria Reyes" },
   ]);
 });
