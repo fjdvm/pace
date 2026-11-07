@@ -42,8 +42,7 @@ for (const width of [1440, 390]) {
       expect(cards[0]).toMatchObject({ y: 88, width: 336, height: 316 });
       const region = await teaching.boundingBox();
       expect(region).not.toBeNull();
-      const last = cards[cards.length - 1];
-      expect(Math.abs((cards[0].x - region!.x) - (region!.x + region!.width - last.x - last.width))).toBeLessThanOrEqual(1);
+      expect(cards[0].x).toBe(region!.x);
       expect(cards[1].x - cards[0].x).toBe(352);
     }
     await page.screenshot({ path: `/tmp/pace-165-browser/teaching-${width}.png`, fullPage: true });
@@ -66,7 +65,7 @@ test("creating a Class from mobile Home adds it to Teaching", async ({ page, con
   await expect(page.getByRole("region", { name: "Teaching", exact: true }).getByText("BSIT 2-2")).toBeVisible();
 });
 
-test("Teaching centers wrapped rows and never exceeds four cards", async ({ page, context }) => {
+test("Teaching left-aligns wrapped rows and never exceeds four cards", async ({ page, context }) => {
   await page.setViewportSize({ width: 2400, height: 1000 });
   await auth.signIn(context);
   await page.goto("/dashboard");
@@ -84,7 +83,6 @@ test("Teaching centers wrapped rows and never exceeds four cards", async ({ page
   expect(cards[4].y).toBeGreaterThan(cards[0].y);
   const region = (await teaching.boundingBox())!;
   for (const row of [cards.slice(0, 4), cards.slice(4)]) {
-    const last = row[row.length - 1];
-    expect(Math.abs((row[0].x - region.x) - (region.x + region.width - last.x - last.width))).toBeLessThanOrEqual(1);
+    expect(row[0].x).toBe(region.x);
   }
 });
