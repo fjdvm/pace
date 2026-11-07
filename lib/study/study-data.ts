@@ -6,11 +6,11 @@ import { toDataset } from "./to-dataset";
 
 export async function getStudyBundle() {
   const [rows, instructors, closedAt, themes] = await Promise.all([
-    prisma.studyResponse.findMany({ orderBy: { createdAt: "asc" } }),
+    prisma.studyResponse.findMany({ orderBy: { createdAt: "asc" }, include: { respondent: { select: { code: true } } } }),
     prisma.user.count({ where: { classes: { some: {} } } }),
     getQuestionnaireClosedAt(),
     getThemes(),
   ]);
-  const dataset = toDataset(rows, instructors, themes);
+  const dataset = toDataset(rows.map(({ respondent, ...row }) => ({ ...row, respondentCode: respondent?.code ?? null })), instructors, themes);
   return { dataset, results: analyzeStudy(dataset, { final: !!closedAt }), closedAt };
 }

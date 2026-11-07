@@ -58,8 +58,9 @@ test("instructors tab shows the four bands", async ({ page }) => {
   ]) {
     await expect(section.getByRole("heading", { name })).toHaveCount(1);
   }
-  await expect(section.locator("[data-band]")).toHaveCount(5);
-  await expect(section.getByText("Importing an activity from a PDF or a photo is in development and is not part of the evaluation.")).toBeVisible();
+  await expect(section.locator("[data-band]")).toHaveCount(4);
+  await expect(section.getByText("Importing an activity from a PDF or a photo")).toHaveCount(0);
+  await expect(section.getByText("Large paste 2 min before turn-in")).toHaveCount(0);
 });
 
 test("instructors tab has no lab photo", async ({ page }) => {

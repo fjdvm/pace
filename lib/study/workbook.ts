@@ -19,9 +19,9 @@ export async function buildStudyWorkbook(dataset: StudyDataset, results: StudyRe
   }
 
   const items = workbook.addWorksheet("Items");
-  items.addRow(["Construct", "Item", "Students mean", "Students SD", "Instructors mean", "Instructors SD"]);
+  items.addRow(["Construct", "Item (students)", "Item (instructors)", "Students mean", "Students SD", "Instructors mean", "Instructors SD"]);
   for (const i of results.items) {
-    items.addRow([i.constructId, i.text, round(i.student.mean), round(i.student.sd), round(i.instructor.mean), round(i.instructor.sd)]);
+    items.addRow([i.constructId, i.texts.student, i.texts.instructor, round(i.student.mean), round(i.student.sd), round(i.instructor.mean), round(i.instructor.sd)]);
   }
 
   const comparison = workbook.addWorksheet("Students vs instructors");
@@ -31,9 +31,9 @@ export async function buildStudyWorkbook(dataset: StudyDataset, results: StudyRe
   }
 
   const respondents = workbook.addWorksheet("Respondents");
-  respondents.addRow(["Respondent", "Role", "Submitted", "Year level", "Courses taken", "AI tool use", ...CONSTRUCTS.flatMap((c) => c.items.map((_, i) => `${c.id}${i + 1}`))]);
+  respondents.addRow(["Respondent", "Role", "Submitted", "Year level", "Courses taken", "AI tool use", "Years teaching", "Courses handled", "Allows AI", ...CONSTRUCTS.flatMap((c) => c.items.map((_, i) => `${c.id}${i + 1}`))]);
   for (const r of dataset.respondents) {
-    respondents.addRow([r.id, r.role, r.submittedAt, r.profile?.yearLevel ?? "", r.profile?.coursesTaken ?? "", r.profile?.aiUsage ?? "", ...CONSTRUCTS.flatMap((c) => r.answers[c.id])]);
+    respondents.addRow([r.id, r.role, r.submittedAt, r.profile?.yearLevel ?? "", r.profile?.coursesTaken ?? "", r.profile?.aiUsage ?? "", r.profile?.yearsTeaching ?? "", r.profile?.coursesHandled ?? "", r.profile?.allowsAi ?? "", ...CONSTRUCTS.flatMap((c) => r.answers[c.id])]);
   }
 
   const comments = workbook.addWorksheet("Comments");

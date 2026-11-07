@@ -18,7 +18,7 @@ export function ItemRow({ item, stats, group, highlight }: ItemRowProps) {
   return (
     <div className={cn(itemGrid, "border-t border-pace-line py-3.5", highlight && "bg-pace-amber-tint")}>
       <span className="text-sm font-bold text-pace-ink">{item.id}</span>
-      <span className="text-[13px] text-pace-ink">{item.text}</span>
+      <span className="text-[13px] text-pace-ink">{item.texts[group === "S" ? "student" : "instructor"]}</span>
       {hasData ? <DistributionBar distribution={stats.distribution} /> : <span className="text-xs text-pace-muted">No answers</span>}
       <span className="text-sm font-bold text-pace-ink">{formatMean(stats)}</span>
       <span className="font-mono text-xs text-pace-ink-2">{hasData ? stats.sd.toFixed(2) : "—"}</span>

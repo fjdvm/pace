@@ -1,32 +1,57 @@
 import { describe, expect, it } from "vitest";
-import { aboutYouComplete, countAnswered, emptyAnswers, stepStates } from "./form-progress";
+import { completeState } from "./fixtures-state";
+import { countAnswered, emptyState, firstOpenStep, isComplete, stepStates } from "./form-progress";
+import { buildSittingForm } from "./sitting-form";
 
-describe("countAnswered", () => {
-  it("counts non-null ratings across constructs", () => {
-    const answers = emptyAnswers();
-    answers.PU[0] = 5;
-    answers.BI[4] = 1;
-    expect(countAnswered(answers)).toBe(2);
-    expect(countAnswered(emptyAnswers())).toBe(0);
+describe("sitting totals", () => {
+  it.each([
+    ["student", 1, 33],
+    ["student", 2, 35],
+    ["instructor", 1, 38],
+    ["instructor", 2, 40],
+  ] as const)("%s sitting %i has %i required answers", (role, sitting, total) => {
+    expect(buildSittingForm(role, sitting).total).toBe(total);
   });
 });
 
-describe("aboutYouComplete", () => {
-  it("needs year level and courses for students", () => {
-    expect(aboutYouComplete("student", { yearLevel: "", coursesTaken: "", aiUsage: "never" })).toBe(false);
-    expect(aboutYouComplete("student", { yearLevel: "2nd year", coursesTaken: "3", aiUsage: "never" })).toBe(true);
+describe("countAnswered and isComplete", () => {
+  const form = buildSittingForm("student", 1);
+
+  it("counts profile answers and ratings and ignores invalid ones", () => {
+    const state = emptyState();
+    state.profile.yearLevel = "2nd year";
+    state.profile.coursesTaken = "99";
+    state.answers.P1 = 5;
+    state.answers.P2 = 6;
+    expect(countAnswered(form, state)).toBe(2);
+    expect(isComplete(form, state)).toBe(false);
   });
 
-  it("only needs AI usage for instructors", () => {
-    expect(aboutYouComplete("instructor", { yearLevel: "", coursesTaken: "", aiUsage: "often" })).toBe(true);
-    expect(aboutYouComplete("instructor", { yearLevel: "", coursesTaken: "", aiUsage: "" })).toBe(false);
+  it("enables submit only when every statement is answered", () => {
+    const state = completeState("student", 1);
+    expect(isComplete(form, state)).toBe(true);
+    delete state.answers.PEOU5;
+    expect(isComplete(form, state)).toBe(false);
+  });
+
+  it("does not require the optional comments in Sitting 2", () => {
+    expect(isComplete(buildSittingForm("instructor", 2), completeState("instructor", 2))).toBe(true);
   });
 });
 
 describe("stepStates", () => {
-  it("moves the current step forward as sections complete", () => {
-    expect(stepStates(false, 0, 20)).toEqual(["current", "todo", "todo"]);
-    expect(stepStates(true, 5, 20)).toEqual(["done", "current", "todo"]);
-    expect(stepStates(true, 20, 20)).toEqual(["done", "done", "current"]);
+  const form = buildSittingForm("student", 1);
+
+  it("marks the active step current and finished steps done", () => {
+    const state = emptyState();
+    state.profile = { yearLevel: "1st year", coursesTaken: "1", aiUsage: "Never" };
+    expect(stepStates(form, state, "problems")).toEqual(["done", "current", "todo"]);
+  });
+
+  it("opens at the first unfinished step", () => {
+    expect(firstOpenStep(form, emptyState())).toBe("about");
+    const state = completeState("student", 1);
+    delete state.answers.P3;
+    expect(firstOpenStep(form, state)).toBe("problems");
   });
 });
