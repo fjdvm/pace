@@ -6,6 +6,7 @@ import { TutorHeader } from "./tutor-header";
 import { TutorMessages } from "./tutor-messages";
 
 type TutorPanelProps = {
+  tieredHintsEnabled?: boolean;
   messages: ChatMessage[];
   isLoading: boolean;
   isStreaming: boolean;
@@ -28,12 +29,14 @@ export function TutorPanel(props: TutorPanelProps) {
   return (
     <div className="flex h-full w-full min-w-0 flex-col overflow-hidden lg:border-l border-pace-line bg-white">
       <TutorHeader
+        tieredHintsEnabled={props.tieredHintsEnabled}
         hearts={props.hearts}
         maxHearts={props.maxHearts}
         heartsSpent={props.heartsSpent}
         timeToRegen={props.timeToRegen}
       />
       <TutorMessages
+        tieredHintsEnabled={props.tieredHintsEnabled}
         messages={props.messages}
         isLoading={props.isLoading}
         isStreaming={props.isStreaming}

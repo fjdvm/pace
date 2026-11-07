@@ -12,3 +12,8 @@ it("caps subsequent hint levels at five", () => {
 it("uses the server's actual tier even when a rejected request remains in local chat", () => {
   expect(hintLevelForMessage([{ role: "user" }, { role: "user" }, { role: "assistant", hintLevel: 1 }], 2)).toBe(1);
 });
+
+it("keeps future and reloaded hints at level one when tiering is disabled", () => {
+  expect(nextHintLevel(4, false)).toBe(1);
+  expect(hintLevelForMessage([{ role: "user" }, { role: "assistant" }, { role: "user" }, { role: "assistant" }], 3, false)).toBe(1);
+});

@@ -12,12 +12,12 @@ export function YourWorkCard({ data, workHref }: { data: StudentAssignmentData; 
         <h2 className="text-base font-bold leading-[1.35] tracking-[-0.08px] text-pace-ink">Your work</h2>
         <span className="text-[13px] font-bold text-pace-green-deep">{workStatusLabel(data.items)}</span>
       </div>
-      <HeartsRow left={data.heartsLeft} max={data.heartsMax} />
-      <p className="text-[13px] text-pace-muted">Each question to the AI tutor uses one heart.</p>
+      {data.aiTutorEnabled !== false && <HeartsRow left={data.heartsLeft} max={data.heartsMax} />}
+      {data.aiTutorEnabled !== false && <p className="text-[13px] text-pace-muted">Each question to the AI tutor uses one heart.</p>}
       <Link href={workHref} className={cn(paceButtonBase, paceButtonStyles.green, "h-[52px] w-full text-[15px]")}>
         {startLabel(data.items)}
       </Link>
-      <p className="text-[13px] text-pace-muted">Typing, pasting, and tab switches are recorded while you work.</p>
+      {data.monitoringEnabled !== false && <p className="text-[13px] text-pace-muted">Typing, pasting, and tab switches are recorded while you work.</p>}
     </section>
   );
 }

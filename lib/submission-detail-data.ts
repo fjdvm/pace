@@ -47,7 +47,7 @@ export async function getSubmissionDetail(
   const index = ordered.findIndex((s) => s.studentId === studentId);
 
   let similar: SubmissionDetail["similar"] = null;
-  if (submission) {
+  if (submission && assignment.similarityCheckEnabled !== false) {
     const pairs = await computeSimilarityPairs(assignment.language as SupportedLanguage, submissions);
     const top = pairs.find((p) => p.studentAId === studentId || p.studentBId === studentId);
     if (top) {
@@ -89,7 +89,7 @@ export async function getCompareData(
   rightId: string,
 ): Promise<CompareData | null> {
   const assignment = await loadOwnedAssignment(instructorId, assignmentId);
-  if (!assignment || leftId === rightId) return null;
+  if (!assignment || assignment.similarityCheckEnabled === false || leftId === rightId) return null;
 
   const submissions = await prisma.submission.findMany({
     where: { assignmentId },

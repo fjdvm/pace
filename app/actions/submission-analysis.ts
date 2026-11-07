@@ -70,7 +70,7 @@ export async function getSubmissionAnalysis(assignmentId: string, studentId: str
     const accuracy = computeAccuracy(targetSubmission.testResults as unknown as TestResult[]);
     const classComparison = computeClassComparison(targetSubmission.score, allSubmissions);
     const behavioralSummary = computeBehavioralSummary(targetSubmission.behavioralSignals as unknown as StoredBehavioralSignals);
-    const similarSubmissions = await computeSimilarSubmissions(
+    const similarSubmissions = assignment.similarityCheckEnabled === false ? [] : await computeSimilarSubmissions(
       studentId,
       targetSubmission.code,
       assignment.language as SupportedLanguage,

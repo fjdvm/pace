@@ -1,11 +1,12 @@
 import { nextHintLevel } from "./hint-levels";
 type Props = {
+  tieredHintsEnabled?: boolean;
   hearts: number;
   maxHearts: number;
   heartsSpent: number;
   timeToRegen: string;
 };
-export function TutorHeader({ heartsSpent }: Props) {
+export function TutorHeader({ heartsSpent, tieredHintsEnabled }: Props) {
   return (
     <div className="hidden shrink-0 items-center lg:flex gap-2.5 border-b border-pace-line px-4 py-3.5">
       <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-pace-purple text-[11px] font-bold text-white">
@@ -18,7 +19,7 @@ export function TutorHeader({ heartsSpent }: Props) {
         </p>
       </div>
       <span className="rounded-full bg-pace-purple-tint px-2.5 py-1 text-xs font-bold text-pace-purple">
-        Hint level {nextHintLevel(heartsSpent)} next
+        Hint level {nextHintLevel(heartsSpent, tieredHintsEnabled)} next
       </span>
     </div>
   );

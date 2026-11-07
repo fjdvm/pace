@@ -78,7 +78,7 @@ export function AssignmentFormView({
                 locked={locked}
                 onChange={form.patch}
               />
-              <MonitoringSettings />
+              <MonitoringSettings values={form.values} onChange={form.patch} />
             </>
           )}
           codingEditor={<PrimaryCodingEditor form={form} locked={locked} />}
@@ -96,7 +96,7 @@ export function AssignmentFormView({
               locked={locked}
               onChange={form.patch}
             />
-            <MonitoringSettings />
+            <MonitoringSettings values={form.values} onChange={form.patch} />
           </aside>
         </div>
       ) : (

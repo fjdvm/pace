@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "Missing or invalid parameters" }, { status: 400 });
     }
     const post = await requireStudentPost(assignmentId, user.id);
+    if (post.aiTutorEnabled === false) return Response.json({ error: "AI tutor is disabled for this Post" }, { status: 403 });
     const item = post.items.find((i) => i.id === itemId && i.kind === "coding");
     if (!item) return Response.json({ error: "Coding Item not found in this Post" }, { status: 404 });
     const model = await getModelWithFallback(assignmentId);
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest) {
       where: { studentId: user.id, assignmentId, itemId },
       orderBy: { createdAt: "asc" },
     });
-    const tier = Math.min(5, Math.max(1, hearts.totalSpent));
+    const tier = post.tieredHintsEnabled === false ? 1 : Math.min(5, Math.max(1, hearts.totalSpent));
     const result = streamText({
       model,
       system: buildSystemPrompt(item, currentCode, lastRunResults, hearts.totalSpent, tier),

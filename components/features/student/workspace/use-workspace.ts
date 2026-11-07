@@ -65,7 +65,7 @@ export function useWorkspace(props: WorkspaceViewProps) {
     recordKeystroke,
     recordRunAttempt,
     collectSignals,
-  } = useBehavioralTracking(!!submission, activeId);
+  } = useBehavioralTracking(!!submission || assignment.monitoringEnabled === false, activeId);
 
   const handleCodeChange = useCallback(
     (value: string | undefined) => {

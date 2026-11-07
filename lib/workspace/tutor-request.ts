@@ -4,10 +4,11 @@ import { regenerateItemHearts } from "@/lib/hearts";
 
 export async function recordTutorRequest(
   studentId: string,
-  post: { id: string; heartsCount: number; heartsRegenMinutes: number },
+  post: { id: string; heartsCount: number; heartsRegenMinutes: number; aiTutorEnabled?: boolean },
   itemId: string,
   message: string,
 ) {
+  if (post.aiTutorEnabled === false) throw new WorkspaceError("AI tutor is disabled for this Post", 403);
   return prisma.$transaction(async (tx) => {
     await tx.$queryRaw`SELECT id FROM assignments WHERE id = ${post.id} FOR UPDATE`;
     const submission = await tx.submission.findUnique({

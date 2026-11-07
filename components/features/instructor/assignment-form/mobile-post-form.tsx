@@ -108,7 +108,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
         </span>
       </Button>
       <div className="py-1">
-        <MonitoringSettings mobile />
+        <MonitoringSettings mobile values={values} onChange={patch} />
       </div>
       <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
         <MobileItemsPanel form={form} classes={classes} locked={locked} />

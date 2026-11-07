@@ -52,6 +52,10 @@ export async function EditAssignmentPage({ params }: PageProps) {
         language: assignment.items[0]?.language || "Python",
         dueDate: toDateTimeLocal(assignment.dueDate),
         heartsCount: assignment.heartsCount,
+        aiTutorEnabled: assignment.aiTutorEnabled,
+        tieredHintsEnabled: assignment.tieredHintsEnabled,
+        monitoringEnabled: assignment.monitoringEnabled,
+        similarityCheckEnabled: assignment.similarityCheckEnabled,
         heartsRegenMinutes: assignment.heartsRegenMinutes,
         classIds: assignment.classes.map((c) => c.classId),
         testCases: (assignment.items[0]?.testCases ?? []).map((tc) => ({

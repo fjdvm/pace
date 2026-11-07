@@ -69,6 +69,8 @@ export async function loadStudentAssignment(
     where: { studentId: userId, assignmentId },
   });
   return {
+    monitoringEnabled: assignment.monitoringEnabled,
+    aiTutorEnabled: assignment.aiTutorEnabled,
     totalPoints: assignment.items.reduce((sum, i) => sum + i.points, 0),
     submission: submission
       ? {

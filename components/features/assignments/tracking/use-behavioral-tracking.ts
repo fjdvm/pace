@@ -102,12 +102,14 @@ export function useBehavioralTracking(disabled: boolean, activeItemId?: string) 
   }, [disabled]);
 
   const recordKeystroke = useCallback(() => {
+    if (disabled) return;
     if (trackingRef.current.typingStartTime === 0) trackingRef.current.typingStartTime = Date.now();
     trackingRef.current.keystrokeCount += 1;
     trackingRef.current.itemKeystrokes += 1;
-  }, []);
+  }, [disabled]);
 
   const recordRunAttempt = useCallback((passedCount: number, totalCount: number) => {
+    if (disabled) return;
     trackingRef.current.events.push({
       type: "run_attempt",
       timestamp: Date.now(),
@@ -115,9 +117,10 @@ export function useBehavioralTracking(disabled: boolean, activeItemId?: string) 
       totalCount,
       itemId: itemRef.current,
     });
-  }, []);
+  }, [disabled]);
 
   const collectSignals = useCallback((): BehavioralSignals => {
+    if (disabled) return { pasteCount: 0, pasteLength: 0, keystrokeCount: 0, wpm: 0, totalFocusTimeSecs: 0, tabSwitchCount: 0, events: [] };
     if (trackingRef.current.focusStartTime > 0) {
       trackingRef.current.totalFocusTimeSecs += (Date.now() - trackingRef.current.focusStartTime) / 1000;
       trackingRef.current.focusStartTime = 0;
@@ -136,7 +139,7 @@ export function useBehavioralTracking(disabled: boolean, activeItemId?: string) 
       tabSwitchCount: trackingRef.current.tabSwitchCount,
       events: trackingRef.current.events,
     };
-  }, [flushTyping]);
+  }, [flushTyping, disabled]);
 
   return { handleEditorMount, recordKeystroke, recordRunAttempt, collectSignals };
 }

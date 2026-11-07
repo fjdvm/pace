@@ -7,13 +7,14 @@ import type { ChatMessage } from "@/components/features/assignments/workspace-ch
 import { hintLevelForMessage, hintLevelName } from "./hint-levels";
 
 type TutorMessagesProps = {
+  tieredHintsEnabled?: boolean;
   messages: (ChatMessage & { hintLevel?: number })[];
   isLoading: boolean;
   isStreaming: boolean;
   children?: React.ReactNode;
 };
 
-export function TutorMessages({ messages, isLoading, isStreaming, children }: TutorMessagesProps) {
+export function TutorMessages({ messages, isLoading, isStreaming, children, tieredHintsEnabled }: TutorMessagesProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const visible = messages.filter((m) => m.content.trim() !== "" || !isLoading);
 
@@ -29,7 +30,7 @@ export function TutorMessages({ messages, isLoading, isStreaming, children }: Tu
         </p>
       )}
       {visible.map((m, i) => {
-        const hintCount = hintLevelForMessage(visible, i);
+        const hintCount = hintLevelForMessage(visible, i, tieredHintsEnabled);
         if (m.role === "user") {
           return (
             <div key={m.id || i} className="flex shrink-0 justify-end lg:justify-start">
