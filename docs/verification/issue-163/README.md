@@ -13,7 +13,7 @@
 - Migration applied to the configured database and recorded in Supabase migration history; verified nullable text column exists.
 - Standards review: 0 findings. Spec review: 0 code findings; gaps published on issue #163.
 - Screenshots: `menu-*.png`, `dialog-*.png`, `reading-*.png`.
-- Fixed stale auth mock setup in two existing test files; skip Instructor-only roster loading for Student reading pages.
+- Fixed stale auth mock setup in three existing test files; skip Instructor-only roster loading for Student reading pages.
 
 ## Figma gaps
 

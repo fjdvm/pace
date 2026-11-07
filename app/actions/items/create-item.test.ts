@@ -36,6 +36,7 @@ it.each([{ classes: [] }, { classes: [{ class: { instructorId: "other" } }] }, {
 });
 
 it("requires authentication", async () => {
+  vi.resetModules();
   mockUnauthenticated();
   const { createItem } = await import("./create-item");
   expect(await createItem("post", input)).toMatchObject({ success: false, error: "Unauthorized" });
