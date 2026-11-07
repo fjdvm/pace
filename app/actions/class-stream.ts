@@ -62,6 +62,7 @@ export async function getClassStream(classId: string) {
         return {
           id: post.id,
           type: post.type,
+          title: post.title,
           body: post.body,
           linkUrl: post.linkUrl,
           assignmentId: post.assignmentId,
@@ -79,6 +80,7 @@ export async function getClassStream(classId: string) {
       return {
         id: post.id,
         type: post.type,
+        title: post.title,
         body: post.body,
         linkUrl: post.linkUrl,
         assignmentId: post.assignmentId,

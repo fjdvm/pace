@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Megaphone } from "lucide-react";
+import { BookOpen, Megaphone } from "lucide-react";
 import { resolveAuthorDisplay } from "@/components/features/classes/comment-utils";
 import type { RosterInstructor, RosterStudent, StreamPostData } from "@/components/features/classes/types";
 import { assignmentTitle, professorLabel } from "./assignment-title";
@@ -22,19 +22,20 @@ type AnnouncementRowProps = {
 };
 
 export function AnnouncementRow({ classId, post, isInstructor, currentUserId, roster, instructor, onDelete }: AnnouncementRowProps) {
+  const isMaterial = post.type === "material";
   const isAssignment = post.type === "assignment_created";
   const author = resolveAuthorDisplay(post.authorId, currentUserId, instructor, roster);
   const canDelete = isInstructor && post.authorId === currentUserId;
   const href = postHref(post, classId, isInstructor);
   const title = assignmentTitle(post.body);
-  const mobileText = isAssignment ? `New assignment: ${title}` : post.body;
-  const text = isAssignment ? `${professorLabel(author.name)} posted a new assignment: ${title}` : post.body;
+  const mobileText = isAssignment ? `New assignment: ${title}` : isMaterial ? `Material: ${post.title}` : post.body;
+  const text = isAssignment ? `${professorLabel(author.name)} posted a new assignment: ${title}` : isMaterial ? `Material: ${post.title}` : post.body;
   const count = post.classComments.length;
 
   return (
     <article className="relative flex items-center gap-4 rounded-lg border border-pace-line bg-white py-4 pl-5 pr-2 hover:bg-pace-canvas">
       <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-pace-green">
-        {isAssignment ? <Image src="/class/assignment.svg" alt="" width={24} height={24} /> : <Megaphone className="size-5 text-white" />}
+        {isAssignment ? <Image src="/class/assignment.svg" alt="" width={24} height={24} /> : isMaterial ? <BookOpen className="size-5 text-white" /> : <Megaphone className="size-5 text-white" />}
       </span>
       <Link
         href={href}
@@ -51,7 +52,7 @@ export function AnnouncementRow({ classId, post, isInstructor, currentUserId, ro
         </span>
       </Link>
       <div className="relative z-10">
-        <RowMenu href={href} onDelete={canDelete ? () => onDelete(post.id) : undefined} />
+        <RowMenu entryName={isMaterial ? "Material" : undefined} href={href} onDelete={canDelete ? () => onDelete(post.id) : undefined} />
       </div>
     </article>
   );

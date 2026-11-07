@@ -43,9 +43,9 @@ export async function deletePost(postId: string) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Unauthorized: You must be logged in");
 
-    const post = await prisma.post.findUnique({ where: { id: postId } });
+    const post = await prisma.post.findUnique({ where: { id: postId }, include: { class: true } });
     if (!post) throw new Error("Post not found");
-    if (post.authorId !== user.id) {
+    if (post.type === "material" ? post.class.instructorId !== user.id : post.authorId !== user.id) {
       throw new Error("Unauthorized: You can only delete your own posts");
     }
 

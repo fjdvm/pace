@@ -62,6 +62,7 @@ describe("per-Class access", () => {
   });
 
   it("requires sign-in to create or join a Class", async () => {
+    vi.resetModules();
     mockUnauthenticated();
     const { createClass } = await import("./create-class");
     const { joinClass } = await import("./join-class");

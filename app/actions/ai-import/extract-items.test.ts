@@ -81,6 +81,7 @@ it("requires the Instructor of the Class", async () => {
 });
 
 it("requires login", async () => {
+  vi.resetModules();
   mockUnauthenticated();
   const { extractItems } = await import("./extract-items");
   expect(await extractItems(form(pdf()))).toMatchObject({ success: false, error: expect.stringContaining("logged in") });

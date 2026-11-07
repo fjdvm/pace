@@ -21,6 +21,7 @@ export function useClassStreamRealtime(
           onPostInserted({
             id: row.id as string,
             type: row.type as string,
+            title: (row.title as string) ?? null,
             body: (row.body as string) ?? null,
             linkUrl: (row.link_url as string) ?? null,
             assignmentId: (row.assignment_id as string) ?? null,

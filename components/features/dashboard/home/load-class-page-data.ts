@@ -30,7 +30,7 @@ export async function loadClassPageData(classId: string, userId: string): Promis
 
   const [stream, roster, board] = await Promise.all([
     getClassStream(classId),
-    getClassRoster(classId),
+    isInstructor ? getClassRoster(classId) : Promise.resolve({ success: true, students: [] }),
     getClassLeaderboardTabData(classId),
   ]);
   const base = {

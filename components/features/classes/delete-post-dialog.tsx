@@ -12,17 +12,18 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface DeletePostDialogProps {
+  entryName?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
 }
 
-export function DeletePostDialog({ open, onOpenChange, onConfirm }: DeletePostDialogProps) {
+export function DeletePostDialog({ open, onOpenChange, onConfirm, entryName = "announcement" }: DeletePostDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete this announcement?</AlertDialogTitle>
+          <AlertDialogTitle>Delete this {entryName}?</AlertDialogTitle>
           <AlertDialogDescription>
             This will permanently remove the post and all its comments. This action cannot be undone.
           </AlertDialogDescription>
