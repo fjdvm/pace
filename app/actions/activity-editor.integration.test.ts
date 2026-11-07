@@ -107,7 +107,11 @@ it("rejects incomplete Coding Item writes directly on an assigned Post", async (
   expect(added).toMatchObject({ success: true });
   expect(await updateItem(id, added.item!.id, input)).toMatchObject({ success: false });
   expect(await updateItem(id, added.item!.id, { ...input, testCases: [{ input: "", expectedOutput: "", visible: false }] })).toMatchObject({ success: false });
+  const choice = await createItem(id, { kind: "multiple_choice", title: "Pick one", instructions: "", points: 10, options: ["A", "B"], correctOption: 0 });
+  expect(choice).toMatchObject({ success: true });
+  expect(await updateItem(id, choice.item!.id, { ...input, testCases: undefined })).toMatchObject({ success: false });
   const post = await readPost(id);
+  expect(post.post!.items[2].kind).toBe("multiple_choice");
   expect(post.post!.items[1].testCases).toHaveLength(1);
   expect(post.post!.items[1].testCases[0].expectedOutput).toBe("1");
 });

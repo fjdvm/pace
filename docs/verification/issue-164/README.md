@@ -12,9 +12,9 @@ Teaching remains a wrapping flex layout, centered horizontally, limited to 1,256
 
 - `npx tsc --noEmit`: passed.
 - Targeted ESLint: passed.
-- `DATABASE_URL=<disposable local Postgres> npm test`: 107 files, 537 tests passed.
-- Real-Postgres action checks cover multiple Coding Items, starter code/test persistence, totals, descriptive Labels, Draft visibility, publishing, hidden-test filtering and rejecting an empty Post. Only external execution is mocked in the solution-check test.
-- Playwright with existing mock auth covers editor autosave/reload at 1440 and 390, additional Coding Item creation/editing, mobile configuration, Teaching centering at 1440/390 and a six-card layout at 2400 that wraps after four.
+- `DATABASE_URL=<disposable local Postgres> npm test`: 107 files, 539 tests passed.
+- Real-Postgres action checks cover multiple Coding Items, starter code/test persistence, totals, descriptive Labels, Draft visibility, publishing, hidden-test filtering and rejecting an empty Post and incomplete Coding Items, including direct writes to an assigned Post. Only external execution is mocked in the solution-check test.
+- `npx playwright test --config playwright.instructor.config.ts`: 8 checks passed, including the existing Material flows. Playwright with existing mock auth covers editor autosave/reload at 1440 and 390, additional Coding Item creation/editing, failed-save retention, in-flight typing during first autosave, mobile configuration, Teaching centering at 1440/390 and a six-card layout at 2400 that wraps after four.
 - Screenshots: [desktop editor](editor-1440.png), [mobile editor](editor-390.png), [desktop Teaching](teaching-1440.png), [mobile Teaching](teaching-390.png).
 
 ## Figma data gaps
@@ -24,3 +24,7 @@ Teaching remains a wrapping flex layout, centered horizontally, limited to 1,256
 - Monitoring/tutor policies are enabled platform-wide. Existing switches display that state and remain disabled rather than suggesting a per-Post setting is saved.
 - Actual Class names, enrollment, dates, Item counts and test results replace Figma sample values. Solution success appears only after execution. Mobile device border/status bar are browser chrome.
 - Extra authoring controls expose Label/language, Item points, ordering, deletion and mobile Item management. They use the existing design tokens; no fabricated Topic/sample backend values are shown.
+
+Review: Standards and Spec reviews identified autosave failure handling, in-flight typing loss, and incomplete publication paths. Those findings were fixed and covered by regression checks. The positional Item-row API was replaced by component props. No findings remain after re-review.
+
+The requested GitHub Copilot bot review was attempted; GitHub reported insufficient remaining review quota. Independent Standards and Spec reviews completed locally.

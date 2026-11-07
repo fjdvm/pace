@@ -25,8 +25,11 @@ export async function updateItem(assignmentId: string, itemId: string, input: Co
       if (hasStudentWork(assignment._count) && (
         (input as CodingItemInput).testCases !== undefined || data.language !== existing.language || updatedData.starterCode !== existing.starterCode
       )) throw new Error("Cannot change coding configuration after a Student has started");
+      if (assignment.isDraft === false && data.kind === "coding") {
+        const testCases = (input as CodingItemInput).testCases ?? await tx.testCase.findMany({ where: { itemId, assignmentId } });
+        assertPublishableCodingItems([{ ...data, testCases }]);
+      }
       if (data.kind === "coding" && (input as CodingItemInput).testCases !== undefined) {
-        if (assignment.isDraft === false) assertPublishableCodingItems([{ ...data, testCases: (input as CodingItemInput).testCases! }]);
         await tx.testCase.deleteMany({ where: { itemId, assignmentId } });
         await tx.testCase.createMany({ data: (input as CodingItemInput).testCases!.map((tc) => ({ ...tc, itemId, assignmentId })) });
       }
