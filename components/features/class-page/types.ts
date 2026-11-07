@@ -9,6 +9,8 @@ export interface InstructorAssignment {
   isDraft?: boolean;
   testCaseCount: number;
   turnedIn: number;
+  graded?: number;
+  missing?: number;
   assigned: number;
   isSharedWithOtherClasses: boolean;
 }

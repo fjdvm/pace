@@ -35,7 +35,7 @@ export function ClassSwitcher({ teaching, enrolled, savedView }: ClassSwitcherPr
   return (
     <>
       {both && (
-        <Tabs value={view} onValueChange={(next) => select(next as View)} className="gap-0 sm:mx-auto sm:w-full sm:max-w-[1392px]">
+        <Tabs value={view} onValueChange={(next) => select(next as View)} className="gap-0 sm:mx-auto sm:w-full sm:max-w-7xl">
           <TabsList className="h-10 group-data-horizontal/tabs:h-10 overflow-hidden rounded-full border border-[#747775] bg-transparent p-0">
             <TabsTrigger value="Teaching" className={trigger}>
               <UserRoundCog strokeWidth={1.5} />

@@ -9,7 +9,7 @@ type ClassGridProps = {
 export function ClassGrid({ title, classes }: ClassGridProps) {
   if (classes.length === 0) return null;
   return (
-    <section aria-label={title} className="flex flex-col gap-3 sm:w-full sm:max-w-[1392px] sm:flex-row sm:flex-wrap sm:gap-4">
+    <section aria-label={title} className="flex flex-col gap-3 sm:mx-auto sm:w-full sm:max-w-7xl sm:flex-row sm:flex-wrap sm:gap-4">
       {classes.map((cls) => (
         <ClassCard key={cls.id} {...cls} menu={title === "Enrolled" ? <EnrolledClassMenu id={cls.id} name={cls.name} /> : undefined} />
       ))}

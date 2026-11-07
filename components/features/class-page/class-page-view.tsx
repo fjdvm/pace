@@ -18,7 +18,7 @@ export function ClassPageView({ data }: { data: ClassPageData }) {
   const others = tabsFor(isInstructor).filter((t) => t.id !== "stream");
 
   return (
-    <Tabs value={tab} onValueChange={(value) => setTab(value as ClassPageTab)} className="min-h-full gap-0">
+    <Tabs value={tab} onValueChange={(value) => setTab(value as ClassPageTab)} className={`min-h-full gap-0 ${isInstructor && tab === "classwork" ? "bg-white" : ""}`}>
       <ClassTabList isInstructor={isInstructor} />
       <div className="flex flex-1 flex-col items-center gap-4 p-4 md:px-6 md:py-6">
         {data.archived && (
@@ -30,7 +30,7 @@ export function ClassPageView({ data }: { data: ClassPageData }) {
           <StreamTab data={data} onViewAll={() => setTab("classwork")} />
         </TabsContent>
         {others.map((t) => (
-          <TabsContent key={t.id} value={t.id} className="w-full max-w-5xl">
+          <TabsContent key={t.id} value={t.id} className={`w-full ${isInstructor && t.id === "classwork" ? "max-w-[800px]" : "max-w-5xl"}`}>
             <OtherPanels tab={t.id as Exclude<ClassPageTab, "stream">} data={data} />
           </TabsContent>
         ))}
