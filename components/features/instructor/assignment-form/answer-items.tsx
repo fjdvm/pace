@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
+import { itemKindLabel } from "@/lib/items/presentation";
 import Image from "next/image";
 import { PostItemsDetails } from "./post-items-details";
 import { Button } from "@/components/ui/button";
@@ -77,8 +78,8 @@ export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
               <div className="flex items-center gap-2.5 px-3.5 py-3 text-[13px] font-bold">
                 <span aria-hidden className="text-pace-muted">⋮⋮</span>
                 <span className="flex size-[26px] shrink-0 items-center justify-center rounded-full bg-pace-sunken text-[11px]">{displayCount}</span>
-                <span className="min-w-0 flex-1">New {newKind === "short_answer" ? "short answer" : "multiple choice"} item</span>
-                <span className="rounded-full bg-pace-green-tint px-2.5 py-1 text-xs text-pace-green-deep">{newKind === "short_answer" ? "Short answer" : "Multiple choice"}</span>
+                <span className="min-w-0 flex-1">New {itemKindLabel(newKind).toLowerCase()} item</span>
+                <span className="rounded-full bg-pace-green-tint px-2.5 py-1 text-xs text-pace-green-deep">{itemKindLabel(newKind)}</span>
                 <span>{preview?.points ?? 10} pts</span>
               </div>
               {answerEditor}
@@ -99,7 +100,7 @@ export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
         {state.editing && <Button variant="outline" disabled={state.busy} onClick={finish}>Close editor</Button>}
       </main>
       <aside className="flex min-w-0 flex-col gap-4 px-4 pb-6 md:w-[36%] md:max-w-[420px] md:shrink-0 md:p-0">
-        {preview ? preview.kind === "multiple_choice" ? <ChoicePreview value={preview} index={activeIndex} total={displayCount} /> : <ShortAnswerPreview value={preview} index={activeIndex} total={displayCount} /> : settings(total)}
+        {preview ? preview.kind === "multiple_choice" ? <ChoicePreview value={preview} index={activeIndex} total={displayCount} /> : <ShortAnswerPreview value={preview} index={activeIndex} total={displayCount} /> : <section className="space-y-3.5 rounded-[12px] border border-pace-line bg-white p-5"><h2 className="text-base font-bold">Settings</h2>{settings(total)}</section>}
       </aside>
     </div>
   );

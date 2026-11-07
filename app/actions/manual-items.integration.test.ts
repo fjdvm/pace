@@ -47,7 +47,7 @@ it("authors both manual kinds, persists edits, reorders and removes any Item wit
   const { updateAssignment } = await import("./update-assignment");
   const { readPost } = await import("./read-post");
   const post = await prisma.assignment.findUniqueOrThrow({ where: { id: postId }, include: { classes: true } });
-  expect(await updateAssignment(postId, { title: "Manual Items", instructions: "Answer all items", isDraft: false, language: "Python", dueDate: "2099-10-28T23:59", heartsCount: 5, heartsRegenMinutes: 30, classIds: post.classes.map((c) => c.classId), testCases: [] })).toMatchObject({ success: true });
+  expect(await updateAssignment(postId, { title: "Manual Items", instructions: "", isDraft: false, language: "Python", dueDate: "2099-10-28T23:59", heartsCount: 5, heartsRegenMinutes: 30, classIds: post.classes.map((c) => c.classId), testCases: [] })).toMatchObject({ success: true });
   expect(await readPost(postId)).toMatchObject({ post: { isDraft: false, totalPoints: 5, items: [{ kind: "short_answer" }] } });
 });
 
