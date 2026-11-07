@@ -1,5 +1,6 @@
 "use server";
 
+import { assertPublishableCodingItems } from "@/lib/items/publishable-coding";
 import { prisma } from "@/lib/prisma";
 import { currentUserId, requireItemInstructor } from "@/lib/items/permissions";
 import { hasStudentWork } from "@/lib/items/started";
@@ -119,6 +120,12 @@ export async function updateAssignment(
             itemId: item.id,
           })),
         });
+      }
+      if (!isDraft) {
+        const codingItems = await tx.item.findMany({
+          where: { assignmentId, kind: "coding" }, include: { testCases: true },
+        });
+        assertPublishableCodingItems(codingItems);
       }
       return publishIds;
     });

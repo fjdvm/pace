@@ -1,5 +1,6 @@
 "use client";
 
+import { ItemsSummary } from "./items-summary";
 import { AnswerItems } from "./answer-items";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -9,12 +10,10 @@ import { useAssignmentActions } from "@/components/features/dashboard/instructor
 import type { AssignmentFormValues } from "@/lib/assignment-form";
 import type { InstructorClassSummary } from "@/components/features/instructor/types";
 import { useAssignmentForm } from "./use-assignment-form";
-import { DetailsSection } from "./details-section";
+import { PrimaryCodingEditor } from "./primary-coding-editor";
 import { FormHeader } from "./form-header";
 import { PostSettings } from "./post-settings";
 import { MonitoringSettings } from "./monitoring-settings";
-import { StarterCodeSection } from "./starter-code-section";
-import { CodingTests } from "./coding-tests";
 import { MobilePostForm } from "./mobile-post-form";
 import { PostPreview } from "./post-preview";
 
@@ -58,7 +57,7 @@ export function AssignmentFormView({
         values={form.values}
         backHref={backHref}
         savedAt={form.savedAt}
-        dirty={form.dirty}
+        dirty={form.dirty || form.itemEditing}
         busy={form.isSaving}
         onChange={form.patch}
         onSave={form.saveDraft}
@@ -66,65 +65,29 @@ export function AssignmentFormView({
         onPreview={() => setPreview(true)}
         onDelete={requestDelete}
       />
-      {form.id ? (
+      {desktop && form.id ? (
         <AnswerItems
           form={form}
           locked={locked}
-          settings={
+          settings={(total) => (
             <>
               <PostSettings
                 values={form.values}
+                totalPoints={total}
                 classes={classes}
                 locked={locked}
                 onChange={form.patch}
               />
               <MonitoringSettings />
             </>
-          }
-          codingEditor={
-            <>
-              <DetailsSection
-                values={form.values}
-                onTitleChange={form.changeTitle}
-                onInstructionsChange={form.changeInstructions}
-              />
-              <StarterCodeSection
-                values={form.values}
-                locked={locked}
-                onChange={form.patch}
-              />
-              <CodingTests
-                testCases={form.values.testCases}
-                points={form.values.points ?? 100}
-                locked={locked}
-                onChange={form.changeTestCase}
-                onAdd={form.addTestCase}
-                onRemove={form.removeTestCase}
-              />
-            </>
-          }
+          )}
+          codingEditor={<PrimaryCodingEditor form={form} locked={locked} />}
         />
       ) : desktop ? (
         <div className="flex flex-1 items-stretch">
           <main className="flex min-w-0 flex-1 flex-col gap-5 px-10 py-8">
-            <DetailsSection
-              values={form.values}
-              onTitleChange={form.changeTitle}
-              onInstructionsChange={form.changeInstructions}
-            />
-            <StarterCodeSection
-              values={form.values}
-              locked={locked}
-              onChange={form.patch}
-            />
-            <CodingTests
-              testCases={form.values.testCases}
-              points={form.values.points ?? 100}
-              locked={locked}
-              onChange={form.changeTestCase}
-              onAdd={form.addTestCase}
-              onRemove={form.removeTestCase}
-            />
+            <ItemsSummary values={form.values} />
+            <PrimaryCodingEditor form={form} locked={locked} />
           </main>
           <aside className="flex w-[300px] shrink-0 flex-col gap-4 border-l border-pace-line bg-white px-6 py-8 xl:w-[380px]">
             <PostSettings

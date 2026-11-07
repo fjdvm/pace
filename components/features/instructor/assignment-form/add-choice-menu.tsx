@@ -10,10 +10,10 @@ export function AddChoiceMenu({
   onAdd,
 }: {
   disabled: boolean;
-  onAdd: (kind: "multiple_choice" | "short_answer") => void;
+  onAdd: (kind: "coding" | "multiple_choice" | "short_answer") => void;
 }) {
   return (
-    <div className="flex justify-center rounded-[12px] border border-dashed border-pace-line-strong p-4">
+    <div className="flex">
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
@@ -27,6 +27,7 @@ export function AddChoiceMenu({
           + Add item
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-80 rounded-[12px] p-1.5">
+          <DropdownMenuItem onClick={() => onAdd("coding")} className="rounded-[8px] p-3"><span><b className="block text-[15px]">Coding</b><span className="text-[13px] text-pace-muted">Starter code and test cases</span></span></DropdownMenuItem>
           <DropdownMenuItem onClick={() => onAdd("multiple_choice")} className="rounded-[8px] p-3">
             <span className="mr-3 flex size-8 items-center justify-center rounded-full bg-pace-green-tint text-pace-green">
               ◉

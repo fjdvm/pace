@@ -1,5 +1,6 @@
 "use server";
 
+import { assertPublishableCodingItems } from "@/lib/items/publishable-coding";
 import { multipleChoiceData, type MultipleChoiceInput } from "@/lib/items/multiple-choice";
 import { shortAnswerData, type ShortAnswerInput } from "@/lib/items/short-answer";
 import { prisma } from "@/lib/prisma";
@@ -24,6 +25,10 @@ export async function updateItem(assignmentId: string, itemId: string, input: Co
       if (hasStudentWork(assignment._count) && (
         (input as CodingItemInput).testCases !== undefined || data.language !== existing.language || updatedData.starterCode !== existing.starterCode
       )) throw new Error("Cannot change coding configuration after a Student has started");
+      if (assignment.isDraft === false && data.kind === "coding") {
+        const testCases = (input as CodingItemInput).testCases ?? await tx.testCase.findMany({ where: { itemId, assignmentId } });
+        assertPublishableCodingItems([{ ...data, testCases }]);
+      }
       if (data.kind === "coding" && (input as CodingItemInput).testCases !== undefined) {
         await tx.testCase.deleteMany({ where: { itemId, assignmentId } });
         await tx.testCase.createMany({ data: (input as CodingItemInput).testCases!.map((tc) => ({ ...tc, itemId, assignmentId })) });

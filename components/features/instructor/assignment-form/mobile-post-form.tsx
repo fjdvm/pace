@@ -1,3 +1,4 @@
+import { MobileItemsPanel } from "./mobile-items-panel";
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -110,6 +111,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
         <MonitoringSettings mobile />
       </div>
       <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
+        <MobileItemsPanel form={form} classes={classes} locked={locked} />
         <Button variant="outline" onClick={() => setPanel("settings")}>
           Post settings &amp; starter code
         </Button>
@@ -132,17 +134,14 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
             Delete
           </Button>
         )}
-        {form.savedAt && !form.dirty && (
+        {form.savedAt && !form.dirty && !form.itemEditing && (
           <time
             dateTime={form.savedAt}
             className="text-xs text-pace-muted"
             aria-live="polite"
           >
             Draft saved ·{" "}
-            {new Date(form.savedAt).toLocaleTimeString([], {
-              hour: "numeric",
-              minute: "2-digit",
-            })}
+            {new Date(form.savedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
           </time>
         )}
       </div>
@@ -160,6 +159,8 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
           </DialogHeader>
           {panel === "tests" ? (
             <CodingTests
+              language={values.language}
+              classId={values.classIds[0]}
               testCases={values.testCases}
               points={values.points ?? 100}
               locked={locked}

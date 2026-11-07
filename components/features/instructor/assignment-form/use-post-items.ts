@@ -7,6 +7,8 @@ import { updateItem } from "@/app/actions/items/update-item";
 import { deleteItem } from "@/app/actions/items/delete-item";
 import { readItems } from "@/app/actions/items/read-items";
 import type { AnswerInput } from "./answer-editor";
+import type { CodingItemInput } from "@/lib/items/input";
+import type { TestCaseForm } from "@/lib/assignment-form";
 import type { MultipleChoiceInput } from "@/lib/items/multiple-choice";
 
 export type AuthoringItem = {
@@ -17,6 +19,9 @@ export type AuthoringItem = {
   instructions: string;
   options: string[];
   correctOption: number | null;
+  language?: string;
+  starterCode?: string;
+  testCases?: TestCaseForm[];
 };
 export const emptyChoice: MultipleChoiceInput = {
   kind: "multiple_choice",
@@ -42,7 +47,10 @@ export function usePostItems(
       void readItems(postId)
         .then((result) => {
           if (!active) return;
-          if (!result.success) return toast.error(result.error);
+          if (!result.success) {
+            toast.error(result.error);
+            return;
+          }
           setItems(result.items);
           setLoaded(true);
         })
@@ -55,42 +63,54 @@ export function usePostItems(
     setEditingState(id);
     onEditingChange(id !== null && id !== primaryId);
   };
-  const save = async (input: AnswerInput) => {
-    if (!postId || busy) return;
+  const save = async (input: AnswerInput | CodingItemInput, close = true): Promise<boolean> => {
+    if (!postId || busy) return false;
     setBusy(true);
     try {
       const result =
         editing === "new"
           ? await createItem(postId, input)
           : await updateItem(postId, editing!, input);
-      if (!result.success || !result.item) return toast.error(result.error);
-      const saved = { ...input, options: result.item.options, correctOption: result.item.correctOption, id: result.item.id };
+      if (!result.success || !result.item) {
+        toast.error(result.error);
+        return false;
+      }
+      const saved = { ...input, kind: input.kind ?? "coding", options: result.item.options, correctOption: result.item.correctOption, id: result.item.id };
       setItems((prev) =>
         editing === "new"
           ? [...prev, saved]
           : prev.map((i) => (i.id === editing ? saved : i)),
       );
-      edit(null);
-      toast.success("Item saved");
+      if (close) {
+        edit(null);
+        toast.success("Item saved");
+      } else {
+        setEditingState(result.item.id);
+      }
       return true;
     } catch {
       toast.error("Could not save Item");
+      return false;
     } finally {
       setBusy(false);
     }
   };
-  const remove = async () => {
-    if (editing === "new") return edit(null);
-    if (!postId || !editing || busy) return;
+  const remove = async (): Promise<boolean> => {
+    if (editing === "new") { edit(null); return true; }
+    if (!postId || !editing || busy) return false;
     setBusy(true);
     try {
       const result = await deleteItem(postId, editing);
-      if (!result.success) return toast.error(result.error);
+      if (!result.success) {
+        toast.error(result.error);
+        return false;
+      }
       setItems((prev) => prev.filter((i) => i.id !== editing));
       edit(null);
       return true;
     } catch {
       toast.error("Could not delete Item");
+      return false;
     } finally {
       setBusy(false);
     }

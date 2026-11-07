@@ -1,3 +1,4 @@
+import { SolutionCheck } from "./solution-check";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,8 @@ import type { TestCaseForm } from "@/lib/assignment-form";
 import { formCard } from "./form-field";
 
 type Props = {
+  classId?: string;
+  language?: string;
   testCases: TestCaseForm[];
   points: number;
   locked: boolean;
@@ -28,6 +31,8 @@ type Props = {
 };
 
 export function CodingTests({
+  classId,
+  language = "Python",
   testCases,
   points,
   locked,
@@ -37,12 +42,15 @@ export function CodingTests({
 }: Props) {
   return (
     <section className={formCard}>
-      <div>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
         <h2 className="text-base font-bold">Test cases</h2>
         <p className="text-[13px] leading-normal text-pace-muted">
           Visible tests are shown to students. Hidden tests run only when they
           turn in.
         </p>
+        </div>
+        <SolutionCheck classId={classId} language={language} testCases={testCases} />
       </div>
       {locked && (
         <p className="text-[13px] text-pace-muted">
