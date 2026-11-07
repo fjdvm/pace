@@ -47,7 +47,10 @@ export function usePostItems(
       void readItems(postId)
         .then((result) => {
           if (!active) return;
-          if (!result.success) return toast.error(result.error);
+          if (!result.success) {
+        toast.error(result.error);
+        return false;
+      }
           setItems(result.items);
           setLoaded(true);
         })
@@ -60,15 +63,18 @@ export function usePostItems(
     setEditingState(id);
     onEditingChange(id !== null && id !== primaryId);
   };
-  const save = async (input: AnswerInput | CodingItemInput, close = true) => {
-    if (!postId || busy) return;
+  const save = async (input: AnswerInput | CodingItemInput, close = true): Promise<boolean> => {
+    if (!postId || busy) return false;
     setBusy(true);
     try {
       const result =
         editing === "new"
           ? await createItem(postId, input)
           : await updateItem(postId, editing!, input);
-      if (!result.success || !result.item) return toast.error(result.error);
+      if (!result.success || !result.item) {
+        toast.error(result.error);
+        return false;
+      }
       const saved = { ...input, kind: input.kind ?? "coding", options: result.item.options, correctOption: result.item.correctOption, id: result.item.id };
       setItems((prev) =>
         editing === "new"
@@ -84,6 +90,7 @@ export function usePostItems(
       return true;
     } catch {
       toast.error("Could not save Item");
+      return false;
     } finally {
       setBusy(false);
     }

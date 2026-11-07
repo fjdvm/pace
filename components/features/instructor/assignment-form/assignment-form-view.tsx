@@ -57,7 +57,7 @@ export function AssignmentFormView({
         values={form.values}
         backHref={backHref}
         savedAt={form.savedAt}
-        dirty={form.dirty}
+        dirty={form.dirty || form.itemEditing}
         busy={form.isSaving}
         onChange={form.patch}
         onSave={form.saveDraft}

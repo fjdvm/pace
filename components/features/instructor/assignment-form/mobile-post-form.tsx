@@ -134,7 +134,7 @@ export function MobilePostForm({ form, classes, locked, onDelete }: Props) {
             Delete
           </Button>
         )}
-        {form.savedAt && !form.dirty && (
+        {form.savedAt && !form.dirty && !form.itemEditing && (
           <time
             dateTime={form.savedAt}
             className="text-xs text-pace-muted"

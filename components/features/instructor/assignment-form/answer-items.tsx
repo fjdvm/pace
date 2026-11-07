@@ -23,9 +23,11 @@ type Props = {
 export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
   const primaryId = form.values.itemId ?? form.id;
   const state = usePostItems(form.id, form.setItemEditing, primaryId);
+  const [editorSession, setEditorSession] = useState(0);
   const [preview, setPreview] = useState<AnswerInput | null>(null);
   const [newKind, setNewKind] = useState<"coding" | "multiple_choice" | "short_answer">("coding");
   const select = (id: string | null, kind = newKind) => {
+    setEditorSession((current) => current + 1);
     state.edit(id);
     const item = state.items.find((candidate) => candidate.id === id);
     setPreview(id === "new" ? kind === "coding" ? null : kind === "short_answer" ? emptyShortAnswer : emptyChoice
@@ -51,7 +53,10 @@ export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
           {state.items.map((item, index) => (
             <div key={item.id} className={`flex items-center rounded-[10px] border ${activeId === item.id ? "border-pace-green bg-pace-green-tint" : "border-pace-line"}`}>
               <ItemOrderControls index={index} count={count} title={item.title} disabled={locked || state.busy || !!state.editing || form.isSaving} onMove={(direction) => state.move(item.id, direction)} />
-              {ItemAuthoringRow(state, select, item.id, item.id === primaryId ? form.values.itemTitle ?? item.title : item.title, item.kind, item.id === primaryId ? primaryPoints : item.points, index, item.id === primaryId ? (points) => form.patch({ points }) : undefined)}
+              <ItemAuthoringRow state={state} onSelect={select}
+                item={item.id === primaryId ? { ...item, title: form.values.itemTitle ?? item.title, points: primaryPoints } : item}
+                index={index} selected={activeId === item.id}
+                onPointsChange={item.id === primaryId ? (points) => form.patch({ points }) : undefined} />
             </div>
           ))}
           <div className="flex flex-wrap items-center gap-3">
@@ -61,7 +66,7 @@ export function AnswerItems({ form, locked, settings, codingEditor }: Props) {
         </section>
         {activeId === primaryId && codingEditor}
         {activeId !== primaryId && (isCoding ? (
-          <CodingItemEditor key={activeId} classId={form.values.classIds[0]} locked={locked} busy={state.busy} isDraft={form.values.isDraft}
+          <CodingItemEditor key={editorSession} itemNumber={activeIndex + 1} classId={form.values.classIds[0]} locked={locked} busy={state.busy} isDraft={form.values.isDraft}
             initial={active ? { ...active, language: active.language ?? "Python" } : undefined}
             onSave={async (input, close = true) => { const saved = await state.save(input, close); if (saved && close) finish(); return saved; }} onDelete={async () => { if (await state.remove()) finish(); }} />
         ) : (active || state.editing === "new") && (

@@ -5,18 +5,20 @@ import { FormField, formCard, formControl } from "./form-field";
 
 type Props = {
   values: AssignmentFormValues;
+  itemNumber?: number;
   onTitleChange: (title: string) => void;
   onInstructionsChange: (instructions: string) => void;
 };
 
 export function DetailsSection({
   values,
+  itemNumber = 1,
   onTitleChange,
   onInstructionsChange,
 }: Props) {
   return (
     <section className={formCard}>
-      <h2 className="text-base font-bold">Item 1 · Details</h2>
+      <h2 className="text-base font-bold">Item {itemNumber} · Details</h2>
       <FormField label="Title" htmlFor="post-title">
         <Input
           id="post-title"

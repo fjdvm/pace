@@ -21,6 +21,7 @@ test.afterAll(async () => {
 
 for (const width of [1440, 390]) {
   test(`Coding editor saves and reloads a Draft at ${width}`, async ({ page, context }) => {
+    test.setTimeout(60000);
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1600 });
     const saved = width === 1440 ? page.getByRole("button", { name: /^Draft saved/ }) : page.locator("main time");
     await auth.signIn(context);
@@ -54,18 +55,35 @@ for (const width of [1440, 390]) {
       await expect(page.getByRole("region", { name: "Post Items" })).toContainText("1 item · 100 points total");
       await page.getByRole("button", { name: "+ Add item", exact: true }).click();
       await page.getByRole("menuitem", { name: "Coding Starter code and test cases" }).click();
+      await page.getByRole("button", { name: "Done", exact: true }).click();
+      await expect(page.getByText("Item title is required", { exact: true })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Done", exact: true })).toBeVisible();
       await page.getByLabel("Title", { exact: true }).fill("Even or Odd");
+      let releaseSave!: () => void;
+      const saveGate = new Promise<void>((resolve) => { releaseSave = resolve; });
+      let delayNextSave = true;
+      await page.route("**/dashboard/assignments/*/edit", async (route) => {
+        if (delayNextSave && route.request().headers()["next-action"]) {
+          delayNextSave = false;
+          await saveGate;
+        }
+        await route.continue();
+      });
+      const savingNewItem = page.waitForRequest((request) => !!request.headers()["next-action"]);
       await page.getByLabel("Instructions", { exact: true }).fill("Print parity");
       await page.getByLabel("Item points", { exact: true }).fill("30");
       await page.getByLabel("Test 1 input", { exact: true }).fill("2");
       await page.getByLabel("Test 1 expected output", { exact: true }).fill("Even");
+      await savingNewItem;
+      await page.getByLabel("Title", { exact: true }).fill("Even or Odd (latest)");
+      releaseSave();
       await expect(page.getByRole("status").filter({ hasText: "Draft saved" })).toBeVisible();
       await page.getByRole("button", { name: "Done", exact: true }).click();
       await expect(page.getByRole("region", { name: "Post Items" })).toContainText("2 items · 130 points total");
       await page.reload();
-      await expect(page.getByRole("region", { name: "Post Items" })).toContainText("Even or Odd");
+      await expect(page.getByRole("region", { name: "Post Items" })).toContainText("Even or Odd (latest)");
       await expect(page.getByRole("region", { name: "Post Items" })).toContainText("2 items · 130 points total");
-      await page.getByRole("button", { name: /Even or Odd Coding/ }).click();
+      await page.getByRole("button", { name: /Even or Odd \(latest\) Coding/ }).click();
       await page.getByLabel("Title", { exact: true }).fill("Parity");
       await expect(page.getByRole("status").filter({ hasText: "Draft saved" })).toBeVisible();
       await page.reload();

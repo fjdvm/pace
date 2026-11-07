@@ -136,6 +136,7 @@ export function useAssignmentForm({
     dirty,
     savedAt,
     isSaving,
+    itemEditing,
     setItemEditing,
     patch,
     changeTitle: (title: string) => patch(codingItemTitlePatch(values, title)),

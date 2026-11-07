@@ -120,6 +120,14 @@ export async function updateAssignment(
           })),
         });
       }
+      if (!isDraft) {
+        const codingItems = await tx.item.findMany({
+          where: { assignmentId, kind: "coding" }, include: { testCases: true },
+        });
+        if (codingItems.some((coding) => !coding.title.trim() || !coding.instructions.trim() || !coding.testCases.length || coding.testCases.some((test) => !test.expectedOutput.trim()))) {
+          throw new Error("Every Coding Item needs a title, instructions and complete test cases before assigning");
+        }
+      }
       return publishIds;
     });
     if (notifyClassIds.length)

@@ -81,3 +81,15 @@ it("checks an Instructor solution against visible and hidden tests without savin
   expect(await checkCodingSolution(input)).toMatchObject({ success: false, error: expect.stringContaining("Instructor") });
   expect(executeTests).toHaveBeenCalledTimes(1);
 });
+
+it("keeps the Post a Draft when an additional Coding Item has incomplete tests", async () => {
+  const { createAssignment } = await import("./create-assignment");
+  const { createItem } = await import("./items/create-item");
+  const { updateAssignment } = await import("./update-assignment");
+  const { readPost } = await import("./read-post");
+  const created = await createAssignment(values);
+  const id = created.assignment!.id;
+  expect(await createItem(id, { kind: "coding", title: "Incomplete", instructions: "Finish this later", language: "Python", points: 10, testCases: [] })).toMatchObject({ success: true });
+  expect(await updateAssignment(id, { ...values, isDraft: false })).toMatchObject({ success: false });
+  expect(await readPost(id)).toMatchObject({ post: { isDraft: true } });
+});

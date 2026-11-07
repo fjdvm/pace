@@ -16,7 +16,7 @@ const db = vi.hoisted(() => ({
   class: { count: vi.fn() },
   assignment: { create: vi.fn(), findUnique: vi.fn(), update: vi.fn() },
   assignmentClass: { createMany: vi.fn(), deleteMany: vi.fn() },
-  item: { update: vi.fn(), findFirst: vi.fn() },
+  item: { update: vi.fn(), findFirst: vi.fn(), findMany: vi.fn() },
   testCase: { createMany: vi.fn(), deleteMany: vi.fn(), findMany: vi.fn() },
   post: { createMany: vi.fn(), deleteMany: vi.fn() },
   $queryRaw: vi.fn(),
@@ -57,6 +57,7 @@ beforeEach(() => {
     _count: { codeDrafts: 0, submissions: 0, heartsStates: 0, chatMessages: 0 },
   });
   db.item.findFirst.mockResolvedValue({ id: "post", ...values });
+  db.item.findMany.mockResolvedValue([{ id: "post", ...values }]);
   db.testCase.findMany.mockResolvedValue(values.testCases);
 });
 

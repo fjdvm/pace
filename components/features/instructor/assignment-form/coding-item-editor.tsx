@@ -15,6 +15,7 @@ import { FormField, formControl } from "./form-field";
 type Props = {
   initial?: CodingItemInput;
   classId?: string;
+  itemNumber: number;
   locked: boolean;
   busy: boolean;
   isDraft?: boolean;
@@ -22,7 +23,7 @@ type Props = {
   onDelete: () => void;
 };
 
-export function CodingItemEditor({ initial, classId, locked, busy, isDraft, onSave, onDelete }: Props) {
+export function CodingItemEditor({ initial, classId, itemNumber, locked, busy, isDraft, onSave, onDelete }: Props) {
   const [values, setValues] = useState<AssignmentFormValues>(() => ({
     ...emptyAssignment(), title: initial?.title ?? "", instructions: initial?.instructions ?? "",
     language: initial?.language ?? "Python", points: initial?.points ?? 10, starterCode: initial?.starterCode ?? "",
@@ -47,7 +48,7 @@ export function CodingItemEditor({ initial, classId, locked, busy, isDraft, onSa
   });
   return (
     <div className="space-y-4">
-      <DetailsSection values={values} onTitleChange={(title) => patch({ title })} onInstructionsChange={(instructions) => patch({ instructions })} />
+      <DetailsSection itemNumber={itemNumber} values={values} onTitleChange={(title) => patch({ title })} onInstructionsChange={(instructions) => patch({ instructions })} />
       <div className="grid grid-cols-2 gap-4 rounded-lg border border-pace-line bg-white p-6">
         <FormField label="Item points" htmlFor="coding-item-points"><Input id="coding-item-points" type="number" min={0} value={values.points} onChange={(event) => patch({ points: event.target.valueAsNumber })} className={formControl} /></FormField>
         <FormField label="Language" htmlFor="coding-item-language">
