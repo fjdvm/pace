@@ -65,7 +65,7 @@ test("creating a Class from mobile Home adds it to Teaching", async ({ page, con
   await expect(page.getByRole("region", { name: "Teaching", exact: true }).getByText("BSIT 2-2")).toBeVisible();
 });
 
-test("Teaching left-aligns wrapped rows and never exceeds four cards", async ({ page, context }) => {
+test("Teaching left-aligns wrapped rows and respects the 7xl cap", async ({ page, context }) => {
   await page.setViewportSize({ width: 2400, height: 1000 });
   await auth.signIn(context);
   await page.goto("/dashboard");
@@ -79,10 +79,12 @@ test("Teaching left-aligns wrapped rows and never exceeds four cards", async ({ 
     const { x, y, width } = node.getBoundingClientRect();
     return { x, y, width };
   }));
-  expect(cards.filter((card) => card.y === cards[0].y)).toHaveLength(4);
-  expect(cards[4].y).toBeGreaterThan(cards[0].y);
+  expect(cards.filter((card) => card.y === cards[0].y)).toHaveLength(3);
+  expect(cards[3].y).toBeGreaterThan(cards[0].y);
   const region = (await teaching.boundingBox())!;
-  for (const row of [cards.slice(0, 4), cards.slice(4)]) {
+  expect(region.width).toBeLessThanOrEqual(1280);
+  expect(region.x).toBeGreaterThan(0);
+  for (const row of [cards.slice(0, 3), cards.slice(3)]) {
     expect(row[0].x).toBe(region.x);
   }
 });
