@@ -69,6 +69,13 @@ for (const width of [1440, 390]) {
       await expect(page.getByRole("link", { name: /Choose a file/ })).toBeVisible();
       await expect(page.locator("[data-slot=sheet-content]")).toHaveCSS("opacity", "1");
       await page.screenshot({ path: "/tmp/pace-168/mobile-add-items-390.png", fullPage: true, animations: "disabled" });
+      const [camera] = await Promise.all([
+        page.waitForEvent("filechooser"),
+        page.getByRole("link", { name: /Take a photo/ }).click(),
+      ]);
+      expect(await camera.element().getAttribute("capture")).toBe("environment");
+      await camera.setFiles({ name: "scan.png", mimeType: "image/png", buffer: Buffer.from("photo") });
+      await expect(page.getByText("scan.png", { exact: true })).toBeVisible();
     }
     await page.goto("/dashboard?tab=teaching");
     await expect(page.getByText("0 to review", { exact: true })).toBeVisible();

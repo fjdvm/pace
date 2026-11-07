@@ -30,7 +30,7 @@ export function MobileAddChoice({ disabled, classId, onAdd, onOpen }: {
         </SheetHeader>
         <p className="text-[11px] font-bold uppercase tracking-[.66px] text-pace-purple">With AI</p>
         {[{ icon: "◎", title: "Take a photo", hint: "Snap the printed sheet" }, { icon: "▤", title: "Choose a file", hint: "PDF, Word, JPG or PNG" }].map((choice) => (
-          <Link key={choice.title} href={href} className={row}>
+          <Link key={choice.title} href={choice.title === "Take a photo" ? `${href}&capture=photo` : href} className={row}>
             <span aria-hidden className={`${iconStyle} bg-pace-purple-tint text-pace-purple`}>{choice.icon}</span>
             <span className="min-w-0 flex-1"><b className="block text-[15px]">{choice.title}</b><span className="text-[13px] text-pace-muted">{choice.hint}</span></span>
             <span aria-hidden className="text-pace-muted">›</span>
