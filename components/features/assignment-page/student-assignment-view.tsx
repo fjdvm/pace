@@ -68,6 +68,8 @@ export function StudentAssignmentView({
         <SubmittedMobile data={data} workHref={workHref} />
       ) : (
         <YourWorkSheet
+          monitoringEnabled={data.monitoringEnabled}
+          aiTutorEnabled={data.aiTutorEnabled}
           heartsLeft={data.heartsLeft}
           heartsMax={data.heartsMax}
           workHref={workHref}

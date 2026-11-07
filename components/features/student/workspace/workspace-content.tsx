@@ -51,6 +51,7 @@ export function WorkspaceContent(props: WorkspaceViewProps) {
   );
   const tutor = assignment.aiTutorEnabled === false ? <p className="p-6 text-sm text-pace-muted">AI tutor is disabled for this Post.</p> : (
     <TutorPanel
+      tieredHintsEnabled={assignment.tieredHintsEnabled}
       messages={ws.chatMessages}
       isLoading={ws.isLoading}
       isStreaming={ws.isStreaming}

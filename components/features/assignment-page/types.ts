@@ -23,6 +23,8 @@ export type AssignmentCommentsData = {
 };
 
 export type StudentAssignmentData = {
+  monitoringEnabled?: boolean;
+  aiTutorEnabled?: boolean;
   id: string;
   title: string;
   classId: string;

@@ -61,7 +61,7 @@ for (const width of [1440, 390]) {
     await context.clearCookies();
     await auth.signIn(context);
     await pool.query('UPDATE assignments SET monitoring_enabled=true WHERE id=$1', [id]);
-    await page.goto(`/dashboard/assignments/${id}`);
+    await page.goto(`/dashboard/assignments/${id}/work`);
     await expect(page.getByText('Your activity is recorded while you work on this Post, including typing, pasting, and tab switches.')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Continue to Post' })).toBeVisible();
     await page.screenshot({ path: `/tmp/pace-166-notice-${width}.png`, fullPage: true });
